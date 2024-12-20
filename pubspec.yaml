@@ -38,6 +38,9 @@ dependencies:
   rust_lib_llfile:
     path: rust_builder
   flutter_rust_bridge: 2.5.1
+  flutter_localizations:
+    sdk: flutter
+  intl: 0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -93,3 +96,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+  generate: true

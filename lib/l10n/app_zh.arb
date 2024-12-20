@@ -1,0 +1,16 @@
+{
+  "hello": "你好， {userName}。",
+  "@hello": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "狂徒张三"
+      }
+    }
+  }
+}
+
+
+
+
