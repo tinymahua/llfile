@@ -3,8 +3,23 @@ import 'package:llfile/src/rust/api/simple.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
+import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(800, 600),
+    center: true,
+    backgroundColor: Colors.black87,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden,
+    windowButtonVisibility: false,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, ()async {
+    await windowManager.setAsFrameless();
+  });
+
   await RustLib.init();
   runApp(const MyApp());
 }
@@ -14,6 +29,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final virtualWindowFrameBuilder = VirtualWindowFrameInit();
+
     return MaterialApp(
       locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -21,7 +38,15 @@ class MyApp extends StatelessWidget {
       theme: LlFileThemeData.lightTheme,
       darkTheme: LlFileThemeData.darkTheme,
       themeMode: ThemeMode.dark,
-      home: ThemeTestWidget(),
+      // home: ThemeTestWidget(),
+      builder: (context, child) => virtualWindowFrameBuilder(context, child),
+      home: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onPanStart: (details) {
+          windowManager.startDragging();
+        },
+        child: const ThemeTestWidget(),
+      ),
     );
   }
 }
