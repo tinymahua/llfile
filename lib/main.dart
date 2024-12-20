@@ -3,6 +3,7 @@ import 'package:llfile/src/rust/api/simple.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
+import 'package:llfile/widgets/event_bus_test.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: LlFileThemeData.lightTheme,
       darkTheme: LlFileThemeData.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       // home: ThemeTestWidget(),
       builder: (context, child) => virtualWindowFrameBuilder(context, child),
       home: GestureDetector(
@@ -60,13 +61,17 @@ class ThemeTestWidget extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Container(
-          width: 200,
-          height: 50,
+          // width: 200,
+          // height: 50,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
           ),
-          child: Text("LlFile Theme"),
+          child: const Row(children: [
+            Expanded(child: FirstWidget()),
+            VerticalDivider(width: 2,),
+            Expanded(child: SecondWidget()),
+          ]),
         ),
       ),
     );
