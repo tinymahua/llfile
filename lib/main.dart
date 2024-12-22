@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/src/rust/api/simple.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
     final virtualWindowFrameBuilder = VirtualWindowFrameInit();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       locale: const Locale('en'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -46,11 +48,14 @@ class MyApp extends StatelessWidget {
         onPanStart: (details) {
           windowManager.startDragging();
         },
-        child: const ThemeTestWidget(),
+        child: FsmgrPage(),
       ),
     );
   }
 }
+
+
+
 
 class ThemeTestWidget extends StatelessWidget {
   const ThemeTestWidget({super.key});
