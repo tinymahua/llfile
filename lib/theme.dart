@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class LlFileThemeData {
   static double dividerThickness = 1.0;
+  static double iconSize = 21.0;
   
   static Color lightSurfaceColor = const Color(0xffffffff);
   static Color lightOnSurfaceColor = Colors.black87;
@@ -11,6 +12,7 @@ class LlFileThemeData {
   static Color lightError = Colors.red;
   static Color lightOnError = Colors.white;
   static Brightness lightBrightness = Brightness.light;
+  static Color lightToolIconColor = const Color(0xff878787);
 
 
   static Color darkSurfaceColor = const Color(0xff262626);
@@ -21,11 +23,13 @@ class LlFileThemeData {
   static Color darkError = Colors.red;
   static Color darkOnError = Colors.white;
   static Brightness darkBrightness = Brightness.dark;
+  static Color darkToolIconColor = Colors.white60;
 
   static ThemeData get lightTheme {
     return ThemeData(
       appBarTheme: AppBarTheme(
         backgroundColor: lightCanvasColor,
+        iconTheme: IconThemeData(color: lightToolIconColor, size: iconSize),
       ),
       bottomAppBarTheme: BottomAppBarTheme(
         color: lightCanvasColor
@@ -51,6 +55,7 @@ class LlFileThemeData {
     return ThemeData(
       appBarTheme: AppBarTheme(
         backgroundColor: darkCanvasColor,
+        iconTheme: IconThemeData(color: darkToolIconColor, size: iconSize),
       ),
       bottomAppBarTheme: const BottomAppBarTheme(
         color: Color(0xff262626),

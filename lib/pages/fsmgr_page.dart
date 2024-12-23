@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/layout_events.dart';
+import 'package:llfile/widgets/areas/toolbar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
-
 
 class FsmgrPage extends StatefulWidget {
   const FsmgrPage({super.key});
@@ -18,32 +20,68 @@ class _FsmgrPageState extends State<FsmgrPage> {
   double _toolsSize = 48.0;
   double _statusSize = 24.0;
   double _sideSize = 200.0;
-  double _sideSizeMin = 120.0;
+  double _sideSizeMin = 28.0;
   double _sideSizeMax = 400.0;
   double _extraSize = 160;
   double _extraSizeMin = 120.0;
   double _extraSizeMax = 240;
 
+  bool _sidebarFolded = false;
+
   @override
   void initState() {
     super.initState();
     _middleMultiSplitViewController.areas = [
-      Area(data: null, id: "side", size: _sideSize, min: _sideSizeMin, max: _sideSizeMax),
+      Area(
+          data: null,
+          id: "side",
+          size: _sideSize,
+          min: _sideSizeMin,
+          max: _sideSizeMax),
       Area(data: null, id: "content", flex: 1),
-      Area(data: null, id: "extra", size: _extraSize, min: _extraSizeMin, max: _extraSizeMax),
+      Area(
+          data: null,
+          id: "extra",
+          size: _extraSize,
+          min: _extraSizeMin,
+          max: _extraSizeMax),
     ];
     _mainMultiSplitViewController.areas = [
-      Area(data: null, id: "tools", size: _toolsSize, min: _toolsSize, max: _toolsSize),
+      Area(
+          data: null,
+          id: "tools",
+          size: _toolsSize,
+          min: _toolsSize,
+          max: _toolsSize),
       Area(data: null, id: "middle", flex: 1),
-      Area(data: null, id: "status", size: _statusSize, min: _statusSize, max: _statusSize),
+      Area(
+          data: null,
+          id: "status",
+          size: _statusSize,
+          min: _statusSize,
+          max: _statusSize),
     ];
+    setupEvents();
   }
 
-  Widget buildToolsArea(){
+  setupEvents() {
+    eventBus.on<ToggleSidebarSwitchEvent>().listen((evt) {
+      setState(() {
+        _sidebarFolded = !_sidebarFolded;
+      });
+      setState(() {
+        _middleMultiSplitViewController.areas[0].size =
+        _sidebarFolded ? _sideSizeMin : _sideSize;
+      });
+    });
+  }
+
+  Widget buildToolsArea() {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).appBarTheme.backgroundColor,
       ),
+      child: LlToolbar(),
     );
   }
 
@@ -75,7 +113,8 @@ class _FsmgrPageState extends State<FsmgrPage> {
     MultiSplitView middleMultiSplitView = MultiSplitView(
       controller: _middleMultiSplitViewController,
       pushDividers: _pushDividers,
-      dividerBuilder: (axis, index, resizable, dragging, highlighted, themeData) {
+      dividerBuilder:
+          (axis, index, resizable, dragging, highlighted, themeData) {
         return Container(
           color: Theme.of(context).dividerTheme.color!,
         );
@@ -141,21 +180,3 @@ class _FsmgrPageState extends State<FsmgrPage> {
     return Container(color: Colors.transparent, child: buildLayout());
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
