@@ -7,4 +7,6 @@ edition = "2021"
 crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
+anyhow = "1.0.92"
 flutter_rust_bridge = "=2.5.1"
+sysinfo = { version = "0.33.0" }
