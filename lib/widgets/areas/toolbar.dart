@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
+import 'package:llfile/events/path_events.dart';
 import 'package:window_manager/window_manager.dart';
 
 class LlToolbar extends StatefulWidget {
@@ -10,36 +11,104 @@ class LlToolbar extends StatefulWidget {
   State<LlToolbar> createState() => _LlToolbarState();
 }
 
-
-
 class _LlToolbarState extends State<LlToolbar> {
   bool _isMaximized = false;
 
-  toggleSidebarSwitch(){
+  TextEditingController _fsPathTextController = TextEditingController();
+  FocusNode _fsPathFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    setupEvents();
+  }
+
+  setupEvents(){
+    eventBus.on<PathChangeEvent>().listen((evt){
+      setState(() {
+        _fsPathTextController.text = evt.path;
+      });
+    });
+  }
+
+  toggleSidebarSwitch() {
     eventBus.fire(ToggleSidebarSwitchEvent());
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       // 这里可以设置工具栏的高度等样式属性
       height: 50,
-      color: Colors.grey[300],
+      // color: Colors.grey[300],
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // 折叠侧边栏按钮
-          IconButton(
-            icon: Icon(
-              Icons.view_sidebar_outlined,
-              weight: 0.6,
-              size: Theme.of(context).appBarTheme.iconTheme!.size,
-              color: Theme.of(context).appBarTheme.iconTheme!.color!,
+          Expanded(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.view_sidebar_outlined,
+                    weight: 0.6,
+                    size: Theme.of(context).appBarTheme.iconTheme!.size,
+                    color: Theme.of(context).appBarTheme.iconTheme!.color!,
+                  ),
+                  onPressed: () {
+                    toggleSidebarSwitch();
+                  },
+                ),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.chevron_left,
+                      weight: 0.6,
+                      size: Theme.of(context).appBarTheme.iconTheme!.size,
+                      color: Theme.of(context).appBarTheme.iconTheme!.color!,
+                    )),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.refresh,
+                      weight: 0.6,
+                      size: Theme.of(context).appBarTheme.iconTheme!.size,
+                      color: Theme.of(context).appBarTheme.iconTheme!.color!,
+                    )),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 4),
+                    height: 28,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                          color: Theme.of(context).canvasColor,
+                          width: Theme.of(context).dividerTheme.thickness!),
+                    ),
+                    child: TextField(
+                        focusNode: _fsPathFocusNode,
+                        onEditingComplete: () => onFsPathInputDone(),
+                        onTapOutside: (e) => onFsPathInputDone(),
+                        textAlignVertical: TextAlignVertical.center,
+                        style: TextStyle(
+                            // fontFamily: "NotoSansSC",
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12.0,
+                            color: Theme.of(context).colorScheme.onSurface),
+                        controller: _fsPathTextController,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          focusedBorder:
+                              OutlineInputBorder(borderSide: BorderSide.none),
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                        )),
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              toggleSidebarSwitch();
-            },
           ),
+          SizedBox(width: 30),
           // 放置最小化、最大化、关闭按钮的Row
           Row(
             children: [
@@ -89,5 +158,25 @@ class _LlToolbarState extends State<LlToolbar> {
         ],
       ),
     );
+  }
+
+  onFsPathInputDone() async {
+    // String fsPath = _fsPathTextController.text.trim();
+    // print("FsPath Input done: $fsPath");
+    // eventBus.fire(FsEntitiesRefreshEvent(path: fsPath));
+    // _fsPathFocusNode.unfocus();
+  }
+
+  onBackPath() async {
+    // var appConfig = await readAppConfig();
+    //
+    // if (appConfig.fsPathHistories.isNotEmpty){
+    //   appConfig.fsPathHistories.removeLast();
+    //   writeAppConfig(appConfig);
+    //   if (appConfig.fsPathHistories.isNotEmpty){
+    //     eventBus.fire(PathChangeEvent(path: appConfig.fsPathHistories.last));
+    //     _fsPathFocusNode.unfocus();
+    //   }
+    // }
   }
 }

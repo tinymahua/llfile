@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/path_events.dart';
 import 'package:llfile/src/rust/api/lldisk.dart';
 
 class LlDiskListWidget extends StatefulWidget {
@@ -58,6 +60,7 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
                   setState(() {
                     _selectedIndex = index;
                   });
+                  eventBus.fire(PathChangeEvent(path: disk.mountPoint));
                 },
                 child: Row(
                   children: [

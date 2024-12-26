@@ -179,6 +179,8 @@ class _FsmgrPageState extends State<FsmgrPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.transparent, child: buildLayout());
+    return Scaffold(
+      appBar: null,
+        body: Container(color: Colors.transparent, child: buildLayout()));
   }
 }
