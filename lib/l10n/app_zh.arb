@@ -8,7 +8,10 @@
         "example": "狂徒张三"
       }
     }
-  }
+  },
+  "fsEntitiesTableHeaderName": "名称",
+  "fsEntitiesTableHeaderDate": "日期",
+  "fsEntitiesTableHeaderType": "类型"
 }
 
 

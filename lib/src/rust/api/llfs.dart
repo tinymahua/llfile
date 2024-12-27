@@ -6,26 +6,29 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-List<DiskPartition> getDiskPartitions() =>
-    RustLib.instance.api.crateApiLldiskGetDiskPartitions();
+Stream<FsEntity> getFsEntities({required String rootPath}) =>
+    RustLib.instance.api.crateApiLlfsGetFsEntities(rootPath: rootPath);
 
-class DiskPartition {
+class FsEntity {
   final String name;
-  final String mountPoint;
+  final bool isDir;
+  final String dateCreated;
 
-  const DiskPartition({
+  const FsEntity({
     required this.name,
-    required this.mountPoint,
+    required this.isDir,
+    required this.dateCreated,
   });
 
   @override
-  int get hashCode => name.hashCode ^ mountPoint.hashCode;
+  int get hashCode => name.hashCode ^ isDir.hashCode ^ dateCreated.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DiskPartition &&
+      other is FsEntity &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          mountPoint == other.mountPoint;
+          isDir == other.isDir &&
+          dateCreated == other.dateCreated;
 }

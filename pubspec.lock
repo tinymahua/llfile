@@ -207,6 +207,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.15.0"
+  multi_column_list_view:
+    dependency: "direct main"
+    description:
+      name: multi_column_list_view
+      sha256: "4488065e698d103057f5cc75d01520b68e6e37fe3fa68b4daacf99032e01fdc3"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.1"
   multi_split_view:
     dependency: "direct main"
     description:

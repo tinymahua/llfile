@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/lldisk.dart';
+import 'api/llfs.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -23,10 +24,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException dco_decode_AnyhowException(dynamic raw);
 
   @protected
+  RustStreamSink<FsEntity> dco_decode_StreamSink_fs_entity_Sse(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
   DiskPartition dco_decode_disk_partition(dynamic raw);
+
+  @protected
+  FsEntity dco_decode_fs_entity(dynamic raw);
 
   @protected
   List<DiskPartition> dco_decode_list_disk_partition(dynamic raw);
@@ -44,10 +54,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
 
   @protected
+  RustStreamSink<FsEntity> sse_decode_StreamSink_fs_entity_Sse(
+      SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   DiskPartition sse_decode_disk_partition(SseDeserializer deserializer);
+
+  @protected
+  FsEntity sse_decode_fs_entity(SseDeserializer deserializer);
 
   @protected
   List<DiskPartition> sse_decode_list_disk_partition(
@@ -66,17 +86,24 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_fs_entity_Sse(
+      RustStreamSink<FsEntity> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_disk_partition(DiskPartition self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_fs_entity(FsEntity self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_disk_partition(
@@ -94,9 +121,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

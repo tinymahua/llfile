@@ -8,7 +8,10 @@
         "example": "Bob"
       }
     }
-  }
+  },
+  "fsEntitiesTableHeaderName": "Name",
+  "fsEntitiesTableHeaderDate": "Date",
+  "fsEntitiesTableHeaderType": "Type"
 }
 
 

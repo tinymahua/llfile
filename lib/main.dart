@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: LlFileThemeData.lightTheme,
       darkTheme: LlFileThemeData.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       // home: ThemeTestWidget(),
       builder: (context, child) => virtualWindowFrameBuilder(context, child),
       home: GestureDetector(

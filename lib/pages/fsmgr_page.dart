@@ -3,6 +3,7 @@ import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/widgets/areas/sidebar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
+import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 class FsmgrPage extends StatefulWidget {
@@ -23,8 +24,8 @@ class _FsmgrPageState extends State<FsmgrPage> {
   double _sideSize = 200.0;
   double _sideSizeMin = 28.0;
   double _sideSizeMax = 400.0;
-  double _extraSize = 160;
-  double _extraSizeMin = 120.0;
+  double _extraSize = 120;
+  double _extraSizeMin = 100.0;
   double _extraSizeMax = 240;
 
   bool _sidebarFolded = false;
@@ -100,6 +101,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
+      child: const LlFsEntitiesListWidget(),
     );
   }
 

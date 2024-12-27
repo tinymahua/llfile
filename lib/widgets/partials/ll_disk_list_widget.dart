@@ -41,42 +41,43 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
             ? Colors.lightBlueAccent.withOpacity(0.2)
             : Colors.transparent;
 
-        return Container(
-          decoration: BoxDecoration(color: selectedColor,),
-          padding: const EdgeInsets.only(left: 8),
-          height: 20,
+        return GestureDetector(
+          onTap: () {
+            print("Tap: ${disk.name}");
+            setState(() {
+              _selectedIndex = index;
+            });
+            eventBus.fire(PathChangeEvent(path: disk.mountPoint));
+          },
           child: Container(
-            decoration: BoxDecoration(color: hoveredColor,),
-            child: MouseRegion(
-              onHover: (_){
-                print("Hover: ${disk.name}");
-                setState(() {
-                  _hoveredIndex = index;
-                });
-              },
-              child: GestureDetector(
-                onTap: () {
-                  print("Tap: ${disk.name}");
+            decoration: BoxDecoration(color: selectedColor,),
+            padding: const EdgeInsets.only(left: 8),
+            height: 20,
+            child: Container(
+              decoration: BoxDecoration(color: hoveredColor,),
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                onHover: (_){
+                  print("Hover: ${disk.name}");
                   setState(() {
-                    _selectedIndex = index;
+                    _hoveredIndex = index;
                   });
-                  eventBus.fire(PathChangeEvent(path: disk.mountPoint));
                 },
                 child: Row(
-                  children: [
-                    const Icon(Icons.storage, size: 16),
-                    SizedBox(width: 4,),
-                    Text(
-                      "${disk.name.isNotEmpty ? disk.name : "新加卷"}(${disk.mountPoint})",
-                      style: TextStyle(
-                          decoration: TextDecoration.none,
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.onSurface),
-                    ),
-                  ],
-                ),
+                    children: [
+                      const Icon(Icons.storage, size: 16),
+                      SizedBox(width: 4,),
+                      Text(
+                        "${disk.name.isNotEmpty ? disk.name : "新加卷"}(${disk.mountPoint})",
+                        style: TextStyle(
+                            decoration: TextDecoration.none,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.onSurface),
+                      ),
+                    ],
+                  ),
               ),
             ),
           ),
