@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/src/rust/api/simple.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
+import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/event_bus_test.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -11,7 +13,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(800, 600),
+    size: Size(960, 800),
     center: true,
     backgroundColor: Colors.black87,
     skipTaskbar: false,
@@ -21,6 +23,8 @@ Future<void> main() async {
   windowManager.waitUntilReadyToShow(windowOptions, ()async {
     await windowManager.setAsFrameless();
   });
+
+  Get.put(PathHistoryDb());
 
   await RustLib.init();
   runApp(const MyApp());

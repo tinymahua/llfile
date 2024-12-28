@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/path_model.dart';
+import 'package:llfile/utils/db.dart';
 import 'package:window_manager/window_manager.dart';
 
 class LlToolbar extends StatefulWidget {
@@ -14,8 +17,9 @@ class LlToolbar extends StatefulWidget {
 class _LlToolbarState extends State<LlToolbar> {
   bool _isMaximized = false;
 
-  TextEditingController _fsPathTextController = TextEditingController();
-  FocusNode _fsPathFocusNode = FocusNode();
+  final TextEditingController _fsPathTextController = TextEditingController();
+  final FocusNode _fsPathFocusNode = FocusNode();
+  final PathHistoryDb _pathHistoryDb = Get.find<PathHistoryDb>();
 
   @override
   void initState() {
@@ -61,7 +65,9 @@ class _LlToolbarState extends State<LlToolbar> {
                   },
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      onBackPath();
+                    },
                     icon: Icon(
                       Icons.chevron_left,
                       weight: 0.6,
@@ -69,7 +75,9 @@ class _LlToolbarState extends State<LlToolbar> {
                       color: Theme.of(context).appBarTheme.iconTheme!.color!,
                     )),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      refreshFsEntities();
+                    },
                     icon: Icon(
                       Icons.refresh,
                       weight: 0.6,
@@ -83,7 +91,7 @@ class _LlToolbarState extends State<LlToolbar> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                          color: Theme.of(context).canvasColor,
+                          color: Theme.of(context).dividerTheme.color!,
                           width: Theme.of(context).dividerTheme.thickness!),
                     ),
                     child: TextField(
@@ -160,23 +168,25 @@ class _LlToolbarState extends State<LlToolbar> {
     );
   }
 
+  refreshFsEntities() async {
+    String fsPath = _fsPathTextController.text.trim();
+    eventBus.fire(PathChangeEvent(path: fsPath));
+  }
+
   onFsPathInputDone() async {
-    // String fsPath = _fsPathTextController.text.trim();
-    // print("FsPath Input done: $fsPath");
-    // eventBus.fire(FsEntitiesRefreshEvent(path: fsPath));
-    // _fsPathFocusNode.unfocus();
+    String fsPath = _fsPathTextController.text.trim();
+    eventBus.fire(PathChangeEvent(path: fsPath));
   }
 
   onBackPath() async {
-    // var appConfig = await readAppConfig();
-    //
-    // if (appConfig.fsPathHistories.isNotEmpty){
-    //   appConfig.fsPathHistories.removeLast();
-    //   writeAppConfig(appConfig);
-    //   if (appConfig.fsPathHistories.isNotEmpty){
-    //     eventBus.fire(PathChangeEvent(path: appConfig.fsPathHistories.last));
-    //     _fsPathFocusNode.unfocus();
-    //   }
-    // }
+    var pathHistories = await _pathHistoryDb.read<PathHistories>();
+    if (pathHistories.histories.length > 1){
+      pathHistories.histories.removeLast();
+      _pathHistoryDb.write(pathHistories);
+      if (pathHistories.histories.isNotEmpty){
+        eventBus.fire(PathChangeEvent(path: pathHistories.histories.last));
+        _fsPathFocusNode.unfocus();
+      }
+    }
   }
 }

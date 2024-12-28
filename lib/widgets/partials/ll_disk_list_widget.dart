@@ -51,9 +51,9 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
           },
           child: Container(
             decoration: BoxDecoration(color: selectedColor,),
-            padding: const EdgeInsets.only(left: 8),
-            height: 20,
+            height: 30,
             child: Container(
+              height: 30,
               decoration: BoxDecoration(color: hoveredColor,),
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -65,6 +65,7 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
                 },
                 child: Row(
                     children: [
+                      SizedBox(width: 6,),
                       const Icon(Icons.storage, size: 16),
                       SizedBox(width: 4,),
                       Text(

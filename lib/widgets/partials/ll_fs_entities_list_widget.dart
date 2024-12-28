@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/path_model.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/utils/db.dart';
 import 'package:multi_column_list_view/multi_column_list_view.dart';
+import 'package:path/path.dart';
 
 class LlFsEntitiesListWidget extends StatefulWidget {
   const LlFsEntitiesListWidget({super.key});
@@ -18,6 +22,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
       MultiColumnListController();
   late Stream<FsEntity> _fsEntitiesStream;
   String _currentFsPath = '';
+  final _pathHistoryDb = Get.find<PathHistoryDb>();
 
   @override
   void initState() {
@@ -35,13 +40,18 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     });
   }
 
-  retrieveFsEntities() {
+  retrieveFsEntities() async{
     String requestFsPath = _currentFsPath;
     if (!requestFsPath.endsWith(Platform.pathSeparator)) {
       requestFsPath += Platform.pathSeparator;
     }
 
     var fsEntitiesStream = getFsEntities(rootPath: requestFsPath);
+
+    var pathHistories = await _pathHistoryDb.read<PathHistories>();
+    if (pathHistories.histories.isEmpty || pathHistories.histories.last != _currentFsPath){
+      await _pathHistoryDb.addHistory(_currentFsPath);
+    }
 
     setState(() {
       _fsEntitiesMultiColumnListController.rows.value = [];
@@ -152,6 +162,11 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
 
   onFsEntityRowDoubleTap(int index) {
     print("FileSystem Entity Row Double Tapped");
+    var fsEntity = _fsEntitiesMultiColumnListController.rows.value[index] as FsEntity;
+    if (fsEntity.isDir) {
+      var newPath = join(_currentFsPath, fsEntity.name);
+      eventBus.fire(PathChangeEvent(path: newPath));
+    }
   }
 
   onFsEntityRowContextMenu(TapDownDetails details, int index) {
