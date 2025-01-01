@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/app_states_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,7 +12,9 @@ import 'package:multi_column_list_view/multi_column_list_view.dart';
 import 'package:path/path.dart';
 
 class LlFsEntitiesListWidget extends StatefulWidget {
-  const LlFsEntitiesListWidget({super.key});
+  const LlFsEntitiesListWidget({super.key, required this.tabIndex});
+
+  final int tabIndex;
 
   @override
   State<LlFsEntitiesListWidget> createState() => _LlFsEntitiesListWidgetState();
@@ -23,6 +26,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   late Stream<FsEntity> _fsEntitiesStream;
   String _currentFsPath = '';
   final _pathHistoryDb = Get.find<PathHistoryDb>();
+  final _appStatesDb = Get.find<AppStatesDb>();
+  final _appStatesMemDb = Get.find<AppStatesMemDb>();
 
   @override
   void initState() {
@@ -30,13 +35,17 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     setupEvents();
   }
 
-  setupEvents() {
+  setupEvents() async{
+    var appStates = await _appStatesDb.read<AppStates>();
     eventBus.on<PathChangeEvent>().listen((evt) {
       print("Evt: $evt");
-      setState(() {
-        _currentFsPath = evt.path;
-      });
-      retrieveFsEntities();
+      print("_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex:  ${_appStatesMemDb.activatedFileBrowserTabIdx}  ${widget.tabIndex}");
+      if (_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex){
+        setState(() {
+          _currentFsPath = evt.path;
+        });
+        retrieveFsEntities();
+      }
     });
   }
 
@@ -171,5 +180,11 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
 
   onFsEntityRowContextMenu(TapDownDetails details, int index) {
     print("FileSystem Entity Row Context Menu Opened");
+  }
+
+  @override
+  void dispose() {
+    print("Tab: ${widget.tabIndex} disposed.");
+    super.dispose();
   }
 }

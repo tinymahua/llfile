@@ -58,7 +58,7 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 onHover: (_){
-                  print("Hover: ${disk.name}");
+                  // print("Hover: ${disk.name}");
                   setState(() {
                     _hoveredIndex = index;
                   });

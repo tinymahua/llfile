@@ -5,6 +5,7 @@ import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/events/path_events.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/utils/db.dart';
+import 'package:path/path.dart';
 import 'package:window_manager/window_manager.dart';
 
 class LlToolbar extends StatefulWidget {
@@ -32,6 +33,7 @@ class _LlToolbarState extends State<LlToolbar> {
       setState(() {
         _fsPathTextController.text = evt.path;
       });
+      eventBus.fire(UpdateTabEvent(label: basename(evt.path)));
     });
   }
 

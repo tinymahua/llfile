@@ -235,6 +235,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_colorful_tab:
+    dependency: "direct main"
+    description:
+      path: "../../flt_pkgs/flutter_colorful_tab"
+      relative: true
+    source: path
+    version: "0.1.1"
   flutter_driver:
     dependency: transitive
     description: flutter

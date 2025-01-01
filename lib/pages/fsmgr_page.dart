@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/widgets/areas/sidebar.dart';
+import 'package:llfile/widgets/areas/tabbar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
 import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
 import 'package:multi_split_view/multi_split_view.dart';
@@ -98,10 +99,12 @@ class _FsmgrPageState extends State<FsmgrPage> {
 
   Widget buildContentArea() {
     return Container(
+      padding: EdgeInsets.only(left: 4),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
-      child: const LlFsEntitiesListWidget(),
+      // child: const LlFsEntitiesListWidget(),
+      child: LlTabBar(),
     );
   }
 

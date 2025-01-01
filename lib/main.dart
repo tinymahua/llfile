@@ -25,6 +25,8 @@ Future<void> main() async {
   });
 
   Get.put(PathHistoryDb());
+  Get.put(AppStatesDb());
+  Get.put(AppStatesMemDb());
 
   await RustLib.init();
   runApp(const MyApp());

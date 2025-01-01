@@ -51,6 +51,8 @@ dependencies:
   get: ^4.6.6
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
+  flutter_colorful_tab:
+    path: ../../flt_pkgs/flutter_colorful_tab
 
 
 dev_dependencies:
