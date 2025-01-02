@@ -54,75 +54,86 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     return _tabController != null && _pageController != null
         ? Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TapOrDoubleTapButton(
-                    hoverColor: Theme.of(context).dividerTheme.color!,
-                    child: Icon(
-                      Icons.chevron_left,
-                      size: 18,
-                    ),
-                    onTap: () {
-                      clickTabsLeft(false);
-                    },
-                    onDoubleTap: () {
-                      clickTabsLeft(true);
-                    },
-                  ),
-                  Expanded(
-                    child: Container(
-                        padding: EdgeInsets.only(bottom: 3),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).appBarTheme.backgroundColor,
-                        ),
-                        child: ColorfulTabBar(
-                          indicatorHeight: 1,
-                          unselectedHeight: 24,
-                          selectedHeight: 24,
-                          tabs: _tabItems,
-                          controller: _tabController,
-                          alignment: TabAxisAlignment.start,
-                        )),
-                  ),
-                  TapOrDoubleTapButton(
-                    hoverColor: Theme.of(context).dividerTheme.color!,
-                    child: Icon(
-                      Icons.chevron_right,
-                      size: 18,
-                    ),
-                    onTap: () {
-                      clickTabsRight(false);
-                    },
-                    onDoubleTap: () {
-                      clickTabsRight(true);
-                    },
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Container(
+              Container(
+                decoration: BoxDecoration(color: Theme.of(context).appBarTheme.backgroundColor),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+
+                    Expanded(
+                      child: Container(
+                          padding: EdgeInsets.only(bottom: 3),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).appBarTheme.backgroundColor,
-                            // border: Border(bottom: BorderSide(color: Theme.of(context).dividerTheme.color!, width: 2))
+                            color: Theme.of(context).appBarTheme.backgroundColor,
                           ),
-                          child: TextButton(
-                              style: ButtonStyle(
-                                padding:
-                                    WidgetStatePropertyAll(EdgeInsets.all(2)),
-                              ),
-                              onPressed: () {
-                                addTab("新标签");
-                              },
-                              child: Icon(Icons.add)),
-                        ),
+                          child: ColorfulTabBar(
+                            tabShape: RoundedRectangleBorder(
+                              side: BorderSide(color: Theme.of(context).dividerTheme.color!),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(4.0),
+                                  topRight: Radius.circular(4.0),
+                                )
+                            ),
+                            indicatorHeight: 1,
+                            unselectedHeight: 24,
+                            selectedHeight: 24,
+                            tabs: _tabItems,
+                            controller: _tabController,
+                            alignment: TabAxisAlignment.start,
+                          )),
+                    ),
+                    TapOrDoubleTapButton(
+                      hoverColor: Theme.of(context).dividerTheme.color!,
+                      child: Icon(
+                        Icons.chevron_left,
+                        size: 21,
                       ),
-                    ],
-                  ),
-                ],
+                      onTap: () {
+                        clickTabsLeft(false);
+                      },
+                      onDoubleTap: () {
+                        clickTabsLeft(true);
+                      },
+                    ),
+                    TapOrDoubleTapButton(
+                      hoverColor: Theme.of(context).dividerTheme.color!,
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 21,
+                      ),
+                      onTap: () {
+                        clickTabsRight(false);
+                      },
+                      onDoubleTap: () {
+                        clickTabsRight(true);
+                      },
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  Theme.of(context).appBarTheme.backgroundColor,
+                              // border: Border(bottom: BorderSide(color: Theme.of(context).dividerTheme.color!, width: 2))
+                            ),
+                            child: TextButton(
+                                style: ButtonStyle(
+                                  padding:
+                                      WidgetStatePropertyAll(EdgeInsets.all(2)),
+                                ),
+                                onPressed: () {
+                                  addTab("新标签");
+                                },
+                                child: Icon(Icons.add)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               // Expanded(
               //     child: TabBarView(
@@ -144,9 +155,12 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   makeTabItem(String tabLabel) {
     return TabItem(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        unselectedColor: Theme.of(context).dividerTheme.color!,
+        color: Theme.of(context).dividerTheme.color!,
+        unselectedColor: Theme.of(context).appBarTheme.backgroundColor!,
         title: Container(
+          // decoration: BoxDecoration(
+          //   border: Border(left: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1))
+          // ),
           width: _tabWidth,
           child: Text(
             tabLabel,
@@ -202,15 +216,40 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   clickTabsLeft(bool doubleTap) {
     print("clickTabsLeft: $doubleTap");
-    _tabController!.index = 0;
+    if (doubleTap){
+      int firstIndex = 0;
+      _tabController!.index = firstIndex;
+      _pageController!.jumpToPage(firstIndex);
+      _appStatesMemDb.activatedFileBrowserTabIdx = firstIndex;
+    }else{
+      if (_tabController!.index >= 1){
+        int preIndex = _tabController!.index - 1;
+        _tabController!.index = preIndex;
+        _pageController!.jumpToPage(preIndex);
+        _appStatesMemDb.activatedFileBrowserTabIdx = preIndex;
+      }
+    }
+
+    Get.put(_appStatesMemDb);
   }
 
   clickTabsRight(bool doubleTap) {
     print("_tabController.tabs: ${_tabController!.length}");
     print("clickTabsRight: $doubleTap ${_tabItems.length - 1}");
-    _tabController!.index = _tabItems.length - 1;
-    _pageController!.jumpToPage(_tabItems.length - 1);
-    _appStatesMemDb.activatedFileBrowserTabIdx = _tabController!.index;
+    if (doubleTap){
+      int lastIndex = _tabItems.length - 1;
+      _tabController!.index = lastIndex;
+      _pageController!.jumpToPage(lastIndex);
+      _appStatesMemDb.activatedFileBrowserTabIdx = lastIndex;
+    }else{
+      if (_tabController!.index < _tabItems.length - 1){
+        int nextIndex = _tabController!.index + 1;
+        _tabController!.index = nextIndex;
+        _pageController!.jumpToPage(nextIndex);
+        _appStatesMemDb.activatedFileBrowserTabIdx = nextIndex;
+      }
+    }
+
     Get.put(_appStatesMemDb);
   }
 

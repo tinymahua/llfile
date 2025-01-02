@@ -63,6 +63,11 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
                     _hoveredIndex = index;
                   });
                 },
+                onExit: (_){
+                  setState(() {
+                    _hoveredIndex = -1;
+                  });
+                },
                 child: Row(
                     children: [
                       SizedBox(width: 6,),
