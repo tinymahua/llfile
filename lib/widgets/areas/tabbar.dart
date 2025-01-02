@@ -5,7 +5,6 @@ import 'package:flutter_colorful_tab/flutter_colorful_tab.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
-import 'package:llfile/models/app_states_model.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/common/keep_alive_wrapper.dart';
@@ -22,36 +21,25 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   List<TabItem> _tabItems = [];
   List<Widget> _tabViews = [];
   TabController? _tabController;
-  PageController? _pageController;
+  PageController _pageController = PageController(keepPage: true, initialPage: 0);
   double _tabWidth = 60;
-  AppStatesDb _appStatesDb = Get.find<AppStatesDb>();
   AppStatesMemDb _appStatesMemDb = Get.find<AppStatesMemDb>();
 
   @override
   void initState() {
     super.initState();
     setupEvents();
-
-    _pageController = PageController(keepPage: true, initialPage: 0);
-    _pageController!.addListener(() {
-      print("_pageController.index: ${_pageController!.page}");
-    });
   }
 
   setupEvents() async{
     eventBus.on<UpdateTabEvent>().listen((evt) {
       updateTab(evt.label);
     });
-
-    var appStates = await _appStatesDb.read<AppStates>();
-    if (appStates.activatedFileBrowserTabIdx >= _tabItems.length){
-      await _appStatesDb.setActivatedFileBrowserTabIdx(0);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _tabController != null && _pageController != null
+    return _tabController != null && _tabItems.isNotEmpty
         ? Column(
             children: [
               Container(
@@ -59,7 +47,6 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
                     Expanded(
                       child: Container(
                           padding: EdgeInsets.only(bottom: 3),
@@ -135,11 +122,6 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              // Expanded(
-              //     child: TabBarView(
-              //   children: _tabViews,
-              //   controller: _tabController,
-              // )),
               Expanded(
                 child: PageView(
                   controller: _pageController,
@@ -153,14 +135,28 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
         : Container();
   }
 
+  updateTab(String tabLabel) {
+    setState(() {
+      _tabItems[_tabController!.index] = makeTabItem(tabLabel);
+    });
+  }
+
+  switchTab(int index){
+    _tabController!.index = index;
+    switchPage(index);
+  }
+
+  switchPage(int index){
+    _pageController.jumpToPage(index);
+    _appStatesMemDb.activatedFileBrowserTabIdx = index;
+    Get.put(_appStatesMemDb);
+  }
+
   makeTabItem(String tabLabel) {
     return TabItem(
         color: Theme.of(context).dividerTheme.color!,
         unselectedColor: Theme.of(context).appBarTheme.backgroundColor!,
         title: Container(
-          // decoration: BoxDecoration(
-          //   border: Border(left: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1))
-          // ),
           width: _tabWidth,
           child: Text(
             tabLabel,
@@ -176,10 +172,8 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
         print("addTab done");
         t.cancel();
         setState(() {
-          _tabController!.index = _tabController!.length - 1;
-          _pageController!.jumpToPage(_tabController!.length - 1);
-          _appStatesMemDb.activatedFileBrowserTabIdx = _tabController!.index;
-          Get.put(_appStatesMemDb);
+          int newTabIdx = _tabController!.length - 1;
+          switchTab(newTabIdx);
         });
       }
     });
@@ -195,68 +189,40 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
       _tabController!.addListener(() {
         if (_tabController!.indexIsChanging) {
           print("indexIsChanging");
-          // print("ID ${_tabViews[0].tabIndex}");
-          _pageController!.jumpToPage(_tabController!.index);
-          _appStatesMemDb.activatedFileBrowserTabIdx = _tabController!.index;
-          Get.put(_appStatesMemDb);
+          switchPage(_tabController!.index);
         }
       });
-      
-
-      
     });
-  }
-
-  updateTab(String tabLabel) {
-    setState(() {
-      _tabItems[_tabController!.index] = makeTabItem(tabLabel);
-    });
-    _tabController!.index = _tabController!.index;
   }
 
   clickTabsLeft(bool doubleTap) {
-    print("clickTabsLeft: $doubleTap");
     if (doubleTap){
       int firstIndex = 0;
-      _tabController!.index = firstIndex;
-      _pageController!.jumpToPage(firstIndex);
-      _appStatesMemDb.activatedFileBrowserTabIdx = firstIndex;
+      switchTab(firstIndex);
     }else{
       if (_tabController!.index >= 1){
         int preIndex = _tabController!.index - 1;
-        _tabController!.index = preIndex;
-        _pageController!.jumpToPage(preIndex);
-        _appStatesMemDb.activatedFileBrowserTabIdx = preIndex;
+        switchTab(preIndex);
       }
     }
 
-    Get.put(_appStatesMemDb);
   }
 
   clickTabsRight(bool doubleTap) {
-    print("_tabController.tabs: ${_tabController!.length}");
-    print("clickTabsRight: $doubleTap ${_tabItems.length - 1}");
     if (doubleTap){
       int lastIndex = _tabItems.length - 1;
-      _tabController!.index = lastIndex;
-      _pageController!.jumpToPage(lastIndex);
-      _appStatesMemDb.activatedFileBrowserTabIdx = lastIndex;
+      switchTab(lastIndex);
     }else{
       if (_tabController!.index < _tabItems.length - 1){
         int nextIndex = _tabController!.index + 1;
-        _tabController!.index = nextIndex;
-        _pageController!.jumpToPage(nextIndex);
-        _appStatesMemDb.activatedFileBrowserTabIdx = nextIndex;
+        switchTab(nextIndex);
       }
     }
-
-    Get.put(_appStatesMemDb);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     addTab("新标签");
-    // makeAddTab();
   }
 }

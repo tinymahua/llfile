@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
-import 'package:llfile/models/app_states_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +25,6 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   late Stream<FsEntity> _fsEntitiesStream;
   String _currentFsPath = '';
   final _pathHistoryDb = Get.find<PathHistoryDb>();
-  final _appStatesDb = Get.find<AppStatesDb>();
   final _appStatesMemDb = Get.find<AppStatesMemDb>();
 
   @override
@@ -36,10 +34,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   }
 
   setupEvents() async{
-    var appStates = await _appStatesDb.read<AppStates>();
     eventBus.on<PathChangeEvent>().listen((evt) {
       print("Evt: $evt");
-      print("_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex:  ${_appStatesMemDb.activatedFileBrowserTabIdx}  ${widget.tabIndex}");
       if (_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex){
         setState(() {
           _currentFsPath = evt.path;

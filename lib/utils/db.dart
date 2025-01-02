@@ -92,40 +92,6 @@ class PathHistoryDb extends Db {
   }
 }
 
-class AppStatesDb extends Db {
-  static const String _dbName = "app_states.json";
-
-  AppStatesDb() : super._(_dbName);
-
-  @override
-  Future<String> initDb() async{
-    var dbPath = await getDbPath();
-
-    if (!File(dbPath).existsSync()){
-      await File(dbPath).create(recursive: true);
-      write(AppStates());
-    }
-    return dbPath;
-  }
-
-  @override
-  AppStates deserialize(Map<String, dynamic> json) {
-    return AppStates.fromJson(json);
-  }
-
-  @override
-  Map<String, dynamic> serialize(dynamic value) {
-    return value.toJson();
-  }
-
-  Future<int> setActivatedFileBrowserTabIdx(int idx)async{
-    var appStates = await read<AppStates>();
-    appStates.activatedFileBrowserTabIdx = idx;
-    await write(appStates);
-    return appStates.activatedFileBrowserTabIdx;
-  }
-}
-
 
 class AppStatesMemDb {
   int activatedFileBrowserTabIdx = 0;
