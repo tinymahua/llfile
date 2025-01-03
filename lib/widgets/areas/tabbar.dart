@@ -9,6 +9,7 @@ import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/common/keep_alive_wrapper.dart';
 import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LlTabBar extends StatefulWidget {
   const LlTabBar({super.key});
@@ -22,7 +23,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   List<Widget> _tabViews = [];
   TabController? _tabController;
   PageController _pageController = PageController(keepPage: true, initialPage: 0);
-  double _tabWidth = 60;
+  double _tabWidth = 80;
   AppStatesMemDb _appStatesMemDb = Get.find<AppStatesMemDb>();
 
   @override
@@ -178,7 +179,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
       }
     });
     setState(() {
-      _tabItems.add(makeTabItem("New Tab"));
+      _tabItems.add(makeTabItem(AppLocalizations.of(context)!.tabLabelBlank));
       _tabViews.add(KeepAliveWrapper(
         keepAlive: true,
         child: LlFsEntitiesListWidget(

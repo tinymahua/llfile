@@ -11,7 +11,13 @@
   },
   "fsEntitiesTableHeaderName": "名称",
   "fsEntitiesTableHeaderDate": "日期",
-  "fsEntitiesTableHeaderType": "类型"
+  "fsEntitiesTableHeaderType": "类型",
+
+  "tabLabelBlank": "新标签",
+
+  "contextMenuCopy": "复制",
+  "contextMenuCut": "剪切",
+  "contextMenuPaste": "粘贴"
 }
 
 

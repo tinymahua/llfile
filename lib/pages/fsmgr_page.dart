@@ -23,7 +23,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
   double _toolsSize = 48.0;
   double _statusSize = 24.0;
   double _sideSize = 200.0;
-  double _sideSizeMin = 28.0;
+  double _sideSizeMin = 40.0;
   double _sideSizeMax = 400.0;
   double _extraSize = 120;
   double _extraSizeMin = 100.0;

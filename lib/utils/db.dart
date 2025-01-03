@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:llfile/models/app_states_model.dart';
+import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
@@ -95,6 +96,8 @@ class PathHistoryDb extends Db {
 
 class AppStatesMemDb {
   int activatedFileBrowserTabIdx = 0;
+
+  OperateRecord? copyOrCutOperateRecord;
 
   AppStatesMemDb();
 }

@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/utils/db.dart';
+import 'package:llfile/widgets/common/context_menu_widget.dart';
 import 'package:multi_column_list_view/multi_column_list_view.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' hide context;
+import 'package:contextmenu/contextmenu.dart';
 
 class LlFsEntitiesListWidget extends StatefulWidget {
   const LlFsEntitiesListWidget({super.key, required this.tabIndex});
@@ -33,10 +36,10 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     setupEvents();
   }
 
-  setupEvents() async{
+  setupEvents() async {
     eventBus.on<PathChangeEvent>().listen((evt) {
       print("Evt: $evt");
-      if (_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex){
+      if (_appStatesMemDb.activatedFileBrowserTabIdx == widget.tabIndex) {
         setState(() {
           _currentFsPath = evt.path;
         });
@@ -45,7 +48,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     });
   }
 
-  retrieveFsEntities() async{
+  retrieveFsEntities() async {
     String requestFsPath = _currentFsPath;
     if (!requestFsPath.endsWith(Platform.pathSeparator)) {
       requestFsPath += Platform.pathSeparator;
@@ -54,7 +57,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     var fsEntitiesStream = getFsEntities(rootPath: requestFsPath);
 
     var pathHistories = await _pathHistoryDb.read<PathHistories>();
-    if (pathHistories.histories.isEmpty || pathHistories.histories.last != _currentFsPath){
+    if (pathHistories.histories.isEmpty ||
+        pathHistories.histories.last != _currentFsPath) {
       await _pathHistoryDb.addHistory(_currentFsPath);
     }
 
@@ -93,9 +97,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
           ext = fsEntity.name.split(".").toList().last;
         }
         return [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
@@ -116,39 +118,36 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                 ),
               ],
             ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              // width: multiColumnWidths[1],
-              // padding: EdgeInsets.only(left: 10),
-              child: Text(
-                fsEntity.dateCreated,
-                style: TextStyle(
-                  color: Theme.of(context).appBarTheme.foregroundColor,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 12.0,
-                  overflow: TextOverflow.ellipsis,
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [Expanded(
+          //     child: Container(
+                  Text(
+                    fsEntity.dateCreated,
+                    style: TextStyle(
+                      color: Theme.of(context).appBarTheme.foregroundColor,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 12.0,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+          //       ),
+          //   )],
+          // ),
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [Container(
+                Text(
+                  ext,
+                  style: TextStyle(
+                    color: Theme.of(context).appBarTheme.foregroundColor,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 12.0,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              // width: multiColumnWidths[2],
-              // padding: EdgeInsets.only(left: 10),
-              child: Text(
-                ext,
-                style: TextStyle(
-                  color: Theme.of(context).appBarTheme.foregroundColor,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 12.0,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          )
+          //     )],
+          // )
         ];
       },
       tappedRowColor: Colors.blue.withOpacity(0.2),
@@ -156,6 +155,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
       onRowTap: onFsEntityRowTap,
       onRowDoubleTap: onFsEntityRowDoubleTap,
       onRowContextMenu: onFsEntityRowContextMenu,
+      onListContextMenu: onFsEntityListContextMenu,
       columnWidths: multiColumnWidths,
       columnTitles: multiColumnTitles,
     );
@@ -167,15 +167,121 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
 
   onFsEntityRowDoubleTap(int index) {
     print("FileSystem Entity Row Double Tapped");
-    var fsEntity = _fsEntitiesMultiColumnListController.rows.value[index] as FsEntity;
+    var fsEntity =
+        _fsEntitiesMultiColumnListController.rows.value[index] as FsEntity;
     if (fsEntity.isDir) {
       var newPath = join(_currentFsPath, fsEntity.name);
       eventBus.fire(PathChangeEvent(path: newPath));
     }
   }
 
+  getContextMenuContextViews(FsEntity? fsEntity) {
+    var iconSize = 18.0;
+    var iconWeight = 8.0;
+    List<ContextMenuView> contextMenuViews = [];
+
+    if (fsEntity != null) {
+      var fsEntityPath = join(_currentFsPath, fsEntity.name);
+      contextMenuViews = [
+        ContextMenuView(
+            divider: Divider(
+              height: 1,
+            ),
+            menuSections: [
+              [
+                ContextMenuItem(
+                  onTap: () {
+                    onCopyOrCut(fsEntityPath);
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.copy_all_outlined,
+                    size: iconSize,
+                    weight: iconWeight,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.contextMenuCopy),
+                  shortcut: "",
+                ),
+                ContextMenuItem(
+                  onTap: () {
+                    onCopyOrCut(fsEntityPath, isCopy: false);
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.cut_outlined,
+                    size: iconSize,
+                    weight: iconWeight,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.contextMenuCut),
+                  shortcut: "",
+                ),
+              ],
+            ]),
+      ];
+    } else {
+      contextMenuViews = [
+        ContextMenuView(
+          menuSections: [
+            [
+              ContextMenuItem(
+                onTap: () {
+                  onPaste();
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.paste_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuPaste),
+                shortcut: "",
+              ),
+            ]
+          ],
+          divider: Divider(
+            height: 1,
+          ),
+        )
+      ];
+    }
+    return contextMenuViews;
+  }
+
   onFsEntityRowContextMenu(TapDownDetails details, int index) {
+    var fsEntity =
+        _fsEntitiesMultiColumnListController.rows.value[index] as FsEntity;
     print("FileSystem Entity Row Context Menu Opened");
+    showContextMenu(details.globalPosition, context, (BuildContext context) {
+      return getContextMenuContextViews(fsEntity);
+    }, 8.0, 240.0);
+  }
+
+  onFsEntityListContextMenu(TapDownDetails details) {
+    print("FileSystem Entity List Context Menu Opened");
+    showContextMenu(details.globalPosition, context, (BuildContext context) {
+      return getContextMenuContextViews(null);
+    }, 8.0, 240.0);
+  }
+
+  onCopyOrCut(String fsEntityPath, {bool isCopy = true}) async {
+    _appStatesMemDb.copyOrCutOperateRecord = OperateRecord(
+        type: isCopy ? OperateType.copy : OperateType.cut,
+        targetType: OperateTargetType.file,
+        targetPath: fsEntityPath);
+    Get.put(_appStatesMemDb);
+  }
+
+  onPaste(){
+    var copyOrCutOperateRecord = _appStatesMemDb.copyOrCutOperateRecord;
+    if(copyOrCutOperateRecord!=null){
+      print("Get operate object: ${copyOrCutOperateRecord.toJson()}");
+    }
+  }
+
+  onDelete() async {}
+
+  onDetail() async {
+    // TODO
   }
 
   @override

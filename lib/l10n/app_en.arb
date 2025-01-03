@@ -11,7 +11,13 @@
   },
   "fsEntitiesTableHeaderName": "Name",
   "fsEntitiesTableHeaderDate": "Date",
-  "fsEntitiesTableHeaderType": "Type"
+  "fsEntitiesTableHeaderType": "Type",
+
+  "tabLabelBlank": "New Tab",
+
+  "contextMenuCopy": "Copy",
+  "contextMenuCut": "Cut",
+  "contextMenuPaste": "Paste"
 }
 
 

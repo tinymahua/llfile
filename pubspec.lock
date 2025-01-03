@@ -14,6 +14,14 @@ packages:
     description: dart
     source: sdk
     version: "0.3.2"
+  after_layout:
+    dependency: transitive
+    description:
+      name: after_layout
+      sha256: "95a1cb2ca1464f44f14769329fbf15987d20ab6c88f8fc5d359bd362be625f29"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   analyzer:
     dependency: transitive
     description:
@@ -22,6 +30,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.7.0"
+  animations:
+    dependency: transitive
+    description:
+      name: animations
+      sha256: d3d6dcfb218225bbe68e87ccf6378bbb2e32a94900722c5f81611dad089911cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.11"
   args:
     dependency: transitive
     description:
@@ -158,6 +174,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  contextmenu:
+    dependency: "direct main"
+    description:
+      name: contextmenu
+      sha256: e0c7d60e2fc9f316f5b03f5fe2c0f977d65125345d1a1f77eea02be612e32d0c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   convert:
     dependency: transitive
     description:
@@ -468,11 +492,10 @@ packages:
   multi_column_list_view:
     dependency: "direct main"
     description:
-      name: multi_column_list_view
-      sha256: "4488065e698d103057f5cc75d01520b68e6e37fe3fa68b4daacf99032e01fdc3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
+      path: "../../flt_pkgs/multi_column_list_view"
+      relative: true
+    source: path
+    version: "0.0.3"
   multi_split_view:
     dependency: "direct main"
     description:
