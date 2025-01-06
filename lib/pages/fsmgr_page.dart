@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
+import 'package:llfile/tasks/tasks_widget.dart';
 import 'package:llfile/widgets/areas/sidebar.dart';
 import 'package:llfile/widgets/areas/tabbar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
-import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 
 class FsmgrPage extends StatefulWidget {
@@ -113,6 +113,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
+      child: LlTasksWidget(),
     );
   }
 

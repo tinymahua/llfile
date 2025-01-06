@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/fs_model.dart';
 import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
+import 'package:llfile/models/types.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/tasks/fs_tasks.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/context_menu_widget.dart';
 import 'package:multi_column_list_view/multi_column_list_view.dart';
@@ -29,6 +33,9 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   String _currentFsPath = '';
   final _pathHistoryDb = Get.find<PathHistoryDb>();
   final _appStatesMemDb = Get.find<AppStatesMemDb>();
+  final StreamController<FileDataProcessProgress>
+      _copyProgressStreamController =
+      StreamController<FileDataProcessProgress>();
 
   @override
   void initState() {
@@ -45,6 +52,10 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
         });
         retrieveFsEntities();
       }
+    });
+
+    _copyProgressStreamController.stream.listen((evt) {
+      print("copy progress evt: ${evt.toJson()}");
     });
   }
 
@@ -98,54 +109,44 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
         }
         return [
           Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  fsEntity.isDir ? Icons.folder : Icons.file_copy,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                Container(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text(
-                    fsEntity.name,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      overflow: TextOverflow.ellipsis,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [Expanded(
-          //     child: Container(
-                  Text(
-                    fsEntity.dateCreated,
-                    style: TextStyle(
-                      color: Theme.of(context).appBarTheme.foregroundColor,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 12.0,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-          //       ),
-          //   )],
-          // ),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [Container(
-                Text(
-                  ext,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                fsEntity.isDir ? Icons.folder : Icons.file_copy,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 4),
+                child: Text(
+                  fsEntity.name,
                   style: TextStyle(
-                    color: Theme.of(context).appBarTheme.foregroundColor,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    overflow: TextOverflow.ellipsis,
                     fontWeight: FontWeight.w900,
                     fontSize: 12.0,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+              ),
+            ],
+          ),
+          Text(
+            fsEntity.dateCreated,
+            style: TextStyle(
+              color: Theme.of(context).appBarTheme.foregroundColor,
+              fontWeight: FontWeight.w900,
+              fontSize: 12.0,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            ext,
+            style: TextStyle(
+              color: Theme.of(context).appBarTheme.foregroundColor,
+              fontWeight: FontWeight.w900,
+              fontSize: 12.0,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           //     )],
           // )
         ];
@@ -158,6 +159,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
       onListContextMenu: onFsEntityListContextMenu,
       columnWidths: multiColumnWidths,
       columnTitles: multiColumnTitles,
+      debug: true,
     );
   }
 
@@ -271,10 +273,17 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     Get.put(_appStatesMemDb);
   }
 
-  onPaste(){
+  onPaste() async {
     var copyOrCutOperateRecord = _appStatesMemDb.copyOrCutOperateRecord;
-    if(copyOrCutOperateRecord!=null){
+    if (copyOrCutOperateRecord != null) {
       print("Get operate object: ${copyOrCutOperateRecord.toJson()}");
+      if (copyOrCutOperateRecord.type == OperateType.copy) {
+        if (copyOrCutOperateRecord.targetType == OperateTargetType.file) {
+          String srcPath = copyOrCutOperateRecord.targetPath;
+          String destPath = join(_currentFsPath, basename(srcPath));
+          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath));
+        }
+      }
     }
   }
 

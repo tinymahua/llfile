@@ -1,18 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:llfile/models/types.dart';
 
 part 'operate_record_model.g.dart';
 
-
-enum OperateTargetType {
-  file,
-  dir,
-}
-
-enum OperateType {
-  copy,
-  cut,
-  delete,
-}
 
 @JsonSerializable()
 class OperateRecord {
