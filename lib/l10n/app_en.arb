@@ -17,7 +17,15 @@
 
   "contextMenuCopy": "Copy",
   "contextMenuCut": "Cut",
-  "contextMenuPaste": "Paste"
+  "contextMenuPaste": "Paste",
+
+  "taskListTitleLabel": "Tasks",
+  "taskStatusWaiting": "Waiting",
+  "taskStatusRunning": "Running",
+  "taskStatusPaused": "Paused",
+  "taskStatusDone": "Done",
+  "taskStatusFailed": "Failed",
+  "taskStatusTerminated": "Cancelled"
 }
 
 

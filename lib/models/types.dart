@@ -8,3 +8,13 @@ enum OperateType {
   cut,
   delete,
 }
+
+
+enum TaskStatus {
+  waiting,
+  running,
+  paused,
+  done,
+  failed,
+  terminated,
+}

@@ -16,27 +16,27 @@ sendFileDataProcessErrorProgress(
 }
 
 
-Future<void> llCopyFile(String src, String dest,
+Future<StreamSubscription<List<int>>?> llCopyFile(String src, String dest,
     {StreamController<FileDataProcessProgress>?
         progressStreamController}) async {
   if (!FileSystemEntity.isFileSync(src)) {
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: "Copy source isn't a regular file."));
-    return;
+    return null;
   }
   if (FileSystemEntity.isDirectorySync(dest)) {
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: "Copy source isn't a regular file."));
-    return;
+    return null;
   }
 
   File srcFile = File(src);
   if (!srcFile.existsSync()) {
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: "Copy source doesn't exist."));
-    return;
+    return null;
   }
   File destFile = File(dest);
   if (!destFile.parent.existsSync()) {
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: "Copy destination's parent directory doesn't exist."));
-    return;
+    return null;
   }
   try {
     int totalBytes = srcFile.lengthSync();
@@ -61,8 +61,9 @@ Future<void> llCopyFile(String src, String dest,
     inputSubscription.onError((e){
       throw e;
     });
+    return inputSubscription;
   } catch (e) {
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: e.toString()));
-    return;
+    return null;
   }
 }

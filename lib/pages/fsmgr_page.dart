@@ -25,9 +25,9 @@ class _FsmgrPageState extends State<FsmgrPage> {
   double _sideSize = 200.0;
   double _sideSizeMin = 40.0;
   double _sideSizeMax = 400.0;
-  double _extraSize = 120;
-  double _extraSizeMin = 100.0;
-  double _extraSizeMax = 240;
+  double _extraSize = 300;
+  double _extraSizeMin = 300.0;
+  double _extraSizeMax = 400;
 
   bool _sidebarFolded = false;
 
