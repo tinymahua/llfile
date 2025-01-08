@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/path_events.dart';
+import 'package:llfile/mixins/task_mixin.dart';
 import 'package:llfile/models/fs_model.dart';
 import 'package:llfile/models/types.dart';
 import 'package:llfile/tasks/base_task.dart';
@@ -10,17 +13,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CopyFileTaskWidget extends GeneralTask {
   const CopyFileTaskWidget(
-      {super.key, required this.srcPath, required this.destPath})
+      {super.key, required this.srcPath, required this.destPath, required this.isCut})
       : super(taskName: "CopyFile", taskLabel: "Copy");
 
   final String srcPath;
   final String destPath;
+  final bool isCut;
 
   @override
   State<CopyFileTaskWidget> createState() => _CopyFileTaskWidgetState();
 }
 
-class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
+class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget>
+    with TaskMixin {
   final StreamController<FileDataProcessProgress> _streamController =
       StreamController<FileDataProcessProgress>();
 
@@ -32,7 +37,8 @@ class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
   TaskStatus _taskStatus = TaskStatus.waiting;
 
   bool get canStart {
-    return _taskStatus == TaskStatus.waiting || _taskStatus == TaskStatus.paused;
+    return _taskStatus == TaskStatus.waiting ||
+        _taskStatus == TaskStatus.paused;
   }
 
   bool get canPause {
@@ -40,7 +46,9 @@ class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
   }
 
   bool get canCancel {
-    return _taskStatus == TaskStatus.waiting || _taskStatus == TaskStatus.running || _taskStatus == TaskStatus.paused;
+    return _taskStatus == TaskStatus.waiting ||
+        _taskStatus == TaskStatus.running ||
+        _taskStatus == TaskStatus.paused;
   }
 
   @override
@@ -51,19 +59,7 @@ class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
 
   setupEvents() async {
     _streamController.stream.listen((event) {
-      setState(() {
-        _newestProgress = event;
-      });
-      if (event.percent == 100){
-        setState(() {
-          _taskStatus = TaskStatus.done;
-        });
-      }
-      if (event.errorOccurred){
-        setState(() {
-          _taskStatus = TaskStatus.failed;
-        });
-      }
+      updateProgress(event);
     });
 
     var inputSubscription = await llCopyFile(widget.srcPath, widget.destPath,
@@ -74,71 +70,75 @@ class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
     });
   }
 
-  makeControlButtons(){
+  updateProgress(FileDataProcessProgress progress)async{
+    setState(() {
+      _newestProgress = progress;
+    });
+    if (progress.percent == 100) {
+      if (progress.done){
+        if (widget.isCut){
+          var delErr = await llDeleteFile(widget.srcPath);
+          if (delErr!=null){
+            print("delErr: ${delErr.desc}");
+          }
+        }
+      }
+      setState(() {
+        _taskStatus = TaskStatus.done;
+      });
+    }
+    if (progress.errorOccurred) {
+      setState(() {
+        _taskStatus = TaskStatus.failed;
+      });
+    }
+  }
+
+  makeControlButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton(
-            onPressed: canStart? () {
-              _inputSubscription!.resume();
-              setState(() {
-                _taskStatus = TaskStatus.running;
-              });
-            }: null,
+            onPressed: canStart
+                ? () {
+                    _inputSubscription!.resume();
+                    setState(() {
+                      _taskStatus = TaskStatus.running;
+                    });
+                  }
+                : null,
             icon: Icon(
               Icons.play_arrow_sharp,
               size: _iconSize,
             )),
         IconButton(
-            onPressed: canPause? () {
-              _inputSubscription!.pause();
-              setState(() {
-                _taskStatus = TaskStatus.paused;
-              });
-            }: null,
+            onPressed: canPause
+                ? () {
+                    _inputSubscription!.pause();
+                    setState(() {
+                      _taskStatus = TaskStatus.paused;
+                    });
+                  }
+                : null,
             icon: Icon(
               Icons.pause,
               size: _iconSize,
             )),
         IconButton(
-            onPressed: canCancel? () {
-              _inputSubscription!.cancel();
-              setState(() {
-                _taskStatus = TaskStatus.terminated;
-              });
-            }: null,
+            onPressed: canCancel
+                ? () {
+                    _inputSubscription!.cancel();
+                    setState(() {
+                      _taskStatus = TaskStatus.terminated;
+                    });
+                  }
+                : null,
             icon: Icon(
               Icons.cancel,
               size: _iconSize,
             ))
       ],
     );
-  }
-
-  Widget makeStatus(BuildContext context){
-    Widget w = Text("");
-    TextStyle textStyle = TextStyle(fontSize: 11);
-    if (_taskStatus == TaskStatus.running){
-      w = Text("${AppLocalizations.of(context)!.taskStatusRunning}", style: textStyle,);
-    }else if (_taskStatus == TaskStatus.paused){
-      w = Text("${AppLocalizations.of(context)!.taskStatusPaused}", style: textStyle,);
-    }else if (_taskStatus == TaskStatus.failed){
-      w = Text("${AppLocalizations.of(context)!.taskStatusFailed}", style: textStyle,);
-    }else if (_taskStatus == TaskStatus.done){
-      w = Text("${AppLocalizations.of(context)!.taskStatusDone}", style: textStyle,);
-    }else if (_taskStatus == TaskStatus.terminated){
-      w = Text("${AppLocalizations.of(context)!.taskStatusTerminated}", style: textStyle,);
-    }else if (_taskStatus == TaskStatus.waiting){
-      w = Text("${AppLocalizations.of(context)!.taskStatusWaiting}", style: textStyle,);
-    }
-    return Container(
-      height: 21,
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Theme.of(context).dividerTheme.color!,
-      ),
-      child: w,);
   }
 
   @override
@@ -175,9 +175,78 @@ class _CopyFileTaskWidgetState extends State<CopyFileTaskWidget> {
           ],
         ),
         Container(
-              child: makeControlButtons(),
+          child: makeControlButtons(),
+        ),
+        Row(
+          children: [makeStatus(context, _taskStatus)],
+        ),
+      ],
+    );
+  }
+}
+
+class DeleteFileTaskWidget extends GeneralTask {
+  final String path;
+
+  const DeleteFileTaskWidget(this.path, {super.key})
+      : super(taskName: "DeleteFile", taskLabel: "Delete");
+
+  @override
+  State<DeleteFileTaskWidget> createState() => _DeleteFileTaskWidgetState();
+}
+
+class _DeleteFileTaskWidgetState extends State<DeleteFileTaskWidget>
+    with TaskMixin {
+  TaskStatus _taskStatus = TaskStatus.waiting;
+
+  @override
+  void initState() {
+    super.initState();
+    setupEvents();
+  }
+
+  setupEvents() async {
+    setState(() {
+      _taskStatus = TaskStatus.running;
+    });
+    var deleteError = await llDeleteFile(widget.path);
+    if (deleteError != null) {
+      setState(() {
+        _taskStatus = TaskStatus.failed;
+      });
+    } else {
+      setState(() {
+        _taskStatus = TaskStatus.done;
+      });
+      eventBus.fire(PathChangeEvent(path: dirname(widget.path)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+                flex: 4,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    style: TextStyle(overflow: TextOverflow.ellipsis),
+                      "${AppLocalizations.of(context)!.contextMenuDelete} ${widget.path}"),
+                )),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [makeStatus(context, _taskStatus)],
+              ),
             ),
-        Row(children: [makeStatus(context)],),
+          ],
+        )
       ],
     );
   }

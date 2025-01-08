@@ -18,6 +18,8 @@
   "contextMenuCopy": "复制",
   "contextMenuCut": "剪切",
   "contextMenuPaste": "粘贴",
+  "contextMenuDelete": "删除",
+  "contextMenuRename": "重命名",
 
   "taskListTitleLabel": "任务",
   "taskStatusWaiting": "等待",

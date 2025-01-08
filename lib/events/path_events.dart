@@ -5,6 +5,7 @@ class PathChangeEvent {
 
 class UpdateTabEvent {
   String label;
+  String path;
 
-  UpdateTabEvent({required this.label});
+  UpdateTabEvent({required this.label, required this.path});
 }

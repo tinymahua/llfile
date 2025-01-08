@@ -44,29 +44,32 @@ class _ContextMenuItemState extends State<ContextMenuItem> {
           },
           child: GestureDetector(
             onTap: widget.onTap,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(width: 6,),
+                        widget.icon,
+                        SizedBox(
+                          width: 5,
+                        ),
+                        widget.title,
+                      ],
+                    ),
+                  ),
+                  Row(
                     children: [
+                      widget.shortcut != null ? Text(widget.shortcut!) : Container(),
                       SizedBox(width: 6,),
-                      widget.icon,
-                      SizedBox(
-                        width: 5,
-                      ),
-                      widget.title,
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    widget.shortcut != null ? Text(widget.shortcut!) : Container(),
-                    SizedBox(width: 6,),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           )),
     );
@@ -84,7 +87,10 @@ class ContextMenuView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).dividerTheme.color!, width: 1),
+      ),
+      padding: padding ?? const EdgeInsets.symmetric(vertical: 3),
       child: Column(
         children: List<Widget>.generate(
             menuSections.length,

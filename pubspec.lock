@@ -495,7 +495,7 @@ packages:
       path: "../../flt_pkgs/multi_column_list_view"
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   multi_split_view:
     dependency: "direct main"
     description:

@@ -21,6 +21,8 @@ class LlTabBar extends StatefulWidget {
 class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   List<TabItem> _tabItems = [];
   List<Widget> _tabViews = [];
+  List<GlobalKey> _tabViewKeys = [];
+  List<String> _tabCurrentPaths = [];
   TabController? _tabController;
   PageController _pageController = PageController(keepPage: true, initialPage: 0);
   double _tabWidth = 80;
@@ -34,7 +36,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   setupEvents() async{
     eventBus.on<UpdateTabEvent>().listen((evt) {
-      updateTab(evt.label);
+      updateTab(evt);
     });
   }
 
@@ -136,9 +138,10 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
         : Container();
   }
 
-  updateTab(String tabLabel) {
+  updateTab(UpdateTabEvent evt) {
     setState(() {
-      _tabItems[_tabController!.index] = makeTabItem(tabLabel);
+      _tabItems[_tabController!.index] = makeTabItem(evt.label);
+      _tabCurrentPaths[_tabController!.index] = evt.path;
     });
   }
 
@@ -149,6 +152,9 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   switchPage(int index){
     _pageController.jumpToPage(index);
+    if (_tabCurrentPaths[index].isNotEmpty){
+      eventBus.fire(PathChangeEvent(path: _tabCurrentPaths[index]));
+    }
     _appStatesMemDb.activatedFileBrowserTabIdx = index;
     Get.put(_appStatesMemDb);
   }
@@ -178,11 +184,15 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
         });
       }
     });
+    GlobalKey newViewKey = GlobalKey();
     setState(() {
       _tabItems.add(makeTabItem(AppLocalizations.of(context)!.tabLabelBlank));
+      _tabViewKeys.add(newViewKey);
+      _tabCurrentPaths.add("");
       _tabViews.add(KeepAliveWrapper(
         keepAlive: true,
         child: LlFsEntitiesListWidget(
+          key: newViewKey,
           tabIndex: oldTabsLength,
         ),
       ));

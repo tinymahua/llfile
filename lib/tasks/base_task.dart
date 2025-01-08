@@ -5,4 +5,5 @@ abstract class GeneralTask extends StatefulWidget{
 
   final String taskName;
   final String taskLabel;
+
 }

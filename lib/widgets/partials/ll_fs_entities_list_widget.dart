@@ -36,6 +36,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   final StreamController<FileDataProcessProgress>
       _copyProgressStreamController =
       StreamController<FileDataProcessProgress>();
+  TextEditingController _renameTextEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -218,6 +219,34 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                   shortcut: "",
                 ),
               ],
+              [
+                ContextMenuItem(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onRename(fsEntityPath);
+                  },
+                  icon: Icon(
+                    Icons.drive_file_rename_outline_rounded,
+                    size: iconSize,
+                    weight: iconWeight,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.contextMenuRename),
+                  shortcut: "",
+                ),
+                ContextMenuItem(
+                  onTap: () {
+                    onDelete(fsEntityPath);
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    size: iconSize,
+                    weight: iconWeight,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.contextMenuDelete),
+                  shortcut: "",
+                )
+              ]
             ]),
       ];
     } else {
@@ -255,7 +284,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     print("FileSystem Entity Row Context Menu Opened");
     showContextMenu(details.globalPosition, context, (BuildContext context) {
       return getContextMenuContextViews(fsEntity);
-    }, 8.0, 240.0);
+    }, 0.0, 240.0);
   }
 
   onFsEntityListContextMenu(TapDownDetails details) {
@@ -279,15 +308,64 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
       print("Get operate object: ${copyOrCutOperateRecord.toJson()}");
       if (copyOrCutOperateRecord.type == OperateType.copy) {
         if (copyOrCutOperateRecord.targetType == OperateTargetType.file) {
+          bool isCut = false;
           String srcPath = copyOrCutOperateRecord.targetPath;
           String destPath = join(_currentFsPath, basename(srcPath));
-          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath));
+          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath, isCut: isCut,));
+        }
+      }else if (copyOrCutOperateRecord.type == OperateType.cut){
+        if (copyOrCutOperateRecord.targetType == OperateTargetType.file) {
+          bool isCut = true;
+          String srcPath = copyOrCutOperateRecord.targetPath;
+          String destPath = join(_currentFsPath, basename(srcPath));
+          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath, isCut: isCut,));
         }
       }
     }
   }
 
-  onDelete() async {}
+  onDelete(String fsEntityPath) async {
+    if (FileSystemEntity.isFileSync(fsEntityPath)){
+      eventBus.fire(DeleteFileTaskWidget(fsEntityPath));
+    }
+  }
+
+  onRename(String fsEntityPath)async{
+    String oldName = basename(fsEntityPath);
+    setState(() {
+      _renameTextEditingController.text = oldName;
+    });
+    return showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text('Rename Item'),
+        content: Container(
+          child: TextField(controller: _renameTextEditingController,),
+        ),
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: const Text('Cancel')),
+          TextButton(onPressed: (){
+            if (_renameTextEditingController.text.trim() != oldName){
+              if (!newFsEntityNameValid(_renameTextEditingController.text.trim())){
+                return;
+              }
+              var newPath = join(dirname(fsEntityPath), _renameTextEditingController.text.trim());
+              if (FileSystemEntity.isFileSync(fsEntityPath)){
+                File(fsEntityPath).renameSync(newPath);
+              }else{
+                Directory(fsEntityPath).renameSync(newPath);
+              }
+
+            }
+            Navigator.of(context).pop();
+            eventBus.fire(PathChangeEvent(path: _currentFsPath));
+          }, child: const Text('OK'))
+        ],
+      );
+    });
+
+  }
 
   onDetail() async {
     // TODO
@@ -297,5 +375,15 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   void dispose() {
     print("Tab: ${widget.tabIndex} disposed.");
     super.dispose();
+  }
+
+  newFsEntityNameValid(String name){
+    if (name.isEmpty){
+      return false;
+    }
+    if (name.contains(RegExp(r'[/\\:*?"<>|]'))){
+      return false;
+    }
+    return true;
   }
 }

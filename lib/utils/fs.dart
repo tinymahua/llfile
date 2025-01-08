@@ -57,6 +57,16 @@ Future<StreamSubscription<List<int>>?> llCopyFile(String src, String dest,
     });
     inputSubscription.onDone((){
       outSink.close();
+      if (progressStreamController != null) {
+        progressStreamController.add(FileDataProcessProgress(
+            percent: processedBytes * 100 ~/ totalBytes,
+            totalBytes: totalBytes,
+            processedBytes: processedBytes,
+            time: DateTime.now(),
+          done: true,
+        )
+        );
+      }
     });
     inputSubscription.onError((e){
       throw e;
@@ -66,4 +76,21 @@ Future<StreamSubscription<List<int>>?> llCopyFile(String src, String dest,
     sendFileDataProcessErrorProgress(progressStreamController, FsError(path: src, desc: e.toString()));
     return null;
   }
+}
+
+
+Future<FsError?> llDeleteFile(String path) async {
+  if (!FileSystemEntity.isFileSync(path)) {
+    return FsError(path: path, desc: "Delete source isn't a regular file.");
+  }
+  File file = File(path);
+  if (!file.existsSync()) {
+    return FsError(path: path, desc: "Delete source doesn't exist.");
+  }
+  try {
+    await file.delete();
+  } catch (e) {
+    return FsError(path: path, desc: e.toString());
+  }
+  return null;
 }

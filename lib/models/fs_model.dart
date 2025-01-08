@@ -28,6 +28,7 @@ class FileDataProcessProgress{
   DateTime time;
   bool errorOccurred;
   FsError? error;
+  bool done = false;
 
   FileDataProcessProgress({
     required this.percent,
@@ -36,6 +37,7 @@ class FileDataProcessProgress{
     required this.time,
     this.errorOccurred = false,
     this.error,
+    this.done = false,
   });
 
   factory FileDataProcessProgress.fromJson(Map<String, dynamic> json) => _$FileDataProcessProgressFromJson(json);

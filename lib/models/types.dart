@@ -17,4 +17,5 @@ enum TaskStatus {
   done,
   failed,
   terminated,
+  warned,
 }

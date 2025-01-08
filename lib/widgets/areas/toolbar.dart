@@ -33,7 +33,7 @@ class _LlToolbarState extends State<LlToolbar> {
       setState(() {
         _fsPathTextController.text = evt.path;
       });
-      eventBus.fire(UpdateTabEvent(label: basename(evt.path)));
+      eventBus.fire(UpdateTabEvent(label: basename(evt.path), path: evt.path));
     });
   }
 

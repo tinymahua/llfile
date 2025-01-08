@@ -18,6 +18,8 @@
   "contextMenuCopy": "Copy",
   "contextMenuCut": "Cut",
   "contextMenuPaste": "Paste",
+  "contextMenuDelete": "Delete",
+  "contextMenuRename": "Rename",
 
   "taskListTitleLabel": "Tasks",
   "taskStatusWaiting": "Waiting",
