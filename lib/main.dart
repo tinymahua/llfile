@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/pages/fsmgr_page.dart';
-import 'package:llfile/src/rust/api/simple.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
@@ -26,8 +25,6 @@ Future<void> main() async {
 
   Get.put(PathHistoryDb());
   Get.put(AppStatesMemDb());
-  // var appConfigDb = AppConfigDb();
-  // await appConfigDb.read();
   Get.put(AppConfigDb());
 
   await RustLib.init();

@@ -65,7 +65,6 @@ abstract class Db {
 
 class AppConfigDb extends Db {
   static const String _dbName = 'app_config.json';
-
   AppConfigDb(): super._(_dbName);
 
   @override
@@ -91,8 +90,6 @@ class AppConfigDb extends Db {
       final inputStream = InputFileStream(zipsaveAs);
       final archive = ZipDecoder().decodeStream(inputStream);
       await extractArchiveToDisk(archive, extractToDir);
-
-      // Directory(extractToDir)
       Map<String, FileIcon> fileIcons = {};
       var iconFiles = await Directory(join(extractToDir, 'file-ext-icons')).list().toList();
       for (var iconFile in iconFiles){
@@ -105,10 +102,8 @@ class AppConfigDb extends Db {
           );
         }
       }
-
       write(AppConfig(fileIcons: fileIcons));
     }
-
     return dbPath;
   }
 
