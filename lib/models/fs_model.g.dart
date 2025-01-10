@@ -6,6 +6,16 @@ part of 'fs_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+FileIcon _$FileIconFromJson(Map<String, dynamic> json) => FileIcon(
+      extName: json['ext_name'] as String,
+      resource: json['resource'] as String,
+    );
+
+Map<String, dynamic> _$FileIconToJson(FileIcon instance) => <String, dynamic>{
+      'ext_name': instance.extName,
+      'resource': instance.resource,
+    };
+
 FsError _$FsErrorFromJson(Map<String, dynamic> json) => FsError(
       path: json['path'] as String,
       desc: json['desc'] as String,
@@ -23,6 +33,11 @@ FileDataProcessProgress _$FileDataProcessProgressFromJson(
       totalBytes: (json['totalBytes'] as num).toInt(),
       processedBytes: (json['processedBytes'] as num).toInt(),
       time: DateTime.parse(json['time'] as String),
+      errorOccurred: json['errorOccurred'] as bool? ?? false,
+      error: json['error'] == null
+          ? null
+          : FsError.fromJson(json['error'] as Map<String, dynamic>),
+      done: json['done'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$FileDataProcessProgressToJson(
@@ -32,4 +47,7 @@ Map<String, dynamic> _$FileDataProcessProgressToJson(
       'totalBytes': instance.totalBytes,
       'processedBytes': instance.processedBytes,
       'time': instance.time.toIso8601String(),
+      'errorOccurred': instance.errorOccurred,
+      'error': instance.error,
+      'done': instance.done,
     };

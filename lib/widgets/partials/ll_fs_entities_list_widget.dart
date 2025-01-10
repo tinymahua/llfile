@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/fs_model.dart';
 import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
@@ -33,9 +34,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   String _currentFsPath = '';
   final _pathHistoryDb = Get.find<PathHistoryDb>();
   final _appStatesMemDb = Get.find<AppStatesMemDb>();
-  final StreamController<FileDataProcessProgress>
-      _copyProgressStreamController =
-      StreamController<FileDataProcessProgress>();
+  final _appConfigDb = Get.find<AppConfigDb>();
+  AppConfig? _appConfig;
   TextEditingController _renameTextEditingController = TextEditingController();
 
   @override
@@ -55,9 +55,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
       }
     });
 
-    _copyProgressStreamController.stream.listen((evt) {
-      print("copy progress evt: ${evt.toJson()}");
-    });
+    _appConfig = await _appConfigDb.read<AppConfig>();
   }
 
   retrieveFsEntities() async {
@@ -86,6 +84,37 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     });
   }
 
+  Widget _buildFileIcon(FsEntity fsEntity) {
+    String iconResource = '';
+    if (_appConfig != null) {
+      var fIcon =
+          _appConfig!.fileIcons[fsEntity.name.split('.').last.toLowerCase()];
+      if (fIcon != null) {
+        iconResource = fIcon.resource;
+      }
+    }
+
+    return iconResource.isNotEmpty
+        ? ImageIcon(
+            FileImage(File(iconResource)),
+            color: Theme.of(context).colorScheme.primary,
+            size: 16,
+          )
+        : Icon(
+            Icons.file_copy,
+            color: Theme.of(context).colorScheme.primary,
+            size: 16,
+          );
+  }
+
+  Widget _buildDirIcon(FsEntity fsEntity) {
+    return Icon(
+      Icons.folder,
+      size: 20,
+      color: Theme.of(context).colorScheme.primary,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<double> multiColumnWidths = [
@@ -108,14 +137,14 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
         if (!fsEntity.isDir && fsEntity.name.contains(".")) {
           ext = fsEntity.name.split(".").toList().last;
         }
+
         return [
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                fsEntity.isDir ? Icons.folder : Icons.file_copy,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              fsEntity.isDir
+                  ? _buildDirIcon(fsEntity)
+                  : _buildFileIcon(fsEntity),
               Container(
                 padding: EdgeInsets.only(left: 4),
                 child: Text(
@@ -123,8 +152,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 12.0,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.0,
                   ),
                 ),
               ),
@@ -311,60 +340,76 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
           bool isCut = false;
           String srcPath = copyOrCutOperateRecord.targetPath;
           String destPath = join(_currentFsPath, basename(srcPath));
-          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath, isCut: isCut,));
+          eventBus.fire(CopyFileTaskWidget(
+            srcPath: srcPath,
+            destPath: destPath,
+            isCut: isCut,
+          ));
         }
-      }else if (copyOrCutOperateRecord.type == OperateType.cut){
+      } else if (copyOrCutOperateRecord.type == OperateType.cut) {
         if (copyOrCutOperateRecord.targetType == OperateTargetType.file) {
           bool isCut = true;
           String srcPath = copyOrCutOperateRecord.targetPath;
           String destPath = join(_currentFsPath, basename(srcPath));
-          eventBus.fire(CopyFileTaskWidget(srcPath: srcPath, destPath: destPath, isCut: isCut,));
+          eventBus.fire(CopyFileTaskWidget(
+            srcPath: srcPath,
+            destPath: destPath,
+            isCut: isCut,
+          ));
         }
       }
     }
   }
 
   onDelete(String fsEntityPath) async {
-    if (FileSystemEntity.isFileSync(fsEntityPath)){
+    if (FileSystemEntity.isFileSync(fsEntityPath)) {
       eventBus.fire(DeleteFileTaskWidget(fsEntityPath));
     }
   }
 
-  onRename(String fsEntityPath)async{
+  onRename(String fsEntityPath) async {
     String oldName = basename(fsEntityPath);
     setState(() {
       _renameTextEditingController.text = oldName;
     });
-    return showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        title: const Text('Rename Item'),
-        content: Container(
-          child: TextField(controller: _renameTextEditingController,),
-        ),
-        actions: [
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-          }, child: const Text('Cancel')),
-          TextButton(onPressed: (){
-            if (_renameTextEditingController.text.trim() != oldName){
-              if (!newFsEntityNameValid(_renameTextEditingController.text.trim())){
-                return;
-              }
-              var newPath = join(dirname(fsEntityPath), _renameTextEditingController.text.trim());
-              if (FileSystemEntity.isFileSync(fsEntityPath)){
-                File(fsEntityPath).renameSync(newPath);
-              }else{
-                Directory(fsEntityPath).renameSync(newPath);
-              }
-
-            }
-            Navigator.of(context).pop();
-            eventBus.fire(PathChangeEvent(path: _currentFsPath));
-          }, child: const Text('OK'))
-        ],
-      );
-    });
-
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Rename Item'),
+            content: Container(
+              child: TextField(
+                controller: _renameTextEditingController,
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel')),
+              TextButton(
+                  onPressed: () {
+                    if (_renameTextEditingController.text.trim() != oldName) {
+                      if (!newFsEntityNameValid(
+                          _renameTextEditingController.text.trim())) {
+                        return;
+                      }
+                      var newPath = join(dirname(fsEntityPath),
+                          _renameTextEditingController.text.trim());
+                      if (FileSystemEntity.isFileSync(fsEntityPath)) {
+                        File(fsEntityPath).renameSync(newPath);
+                      } else {
+                        Directory(fsEntityPath).renameSync(newPath);
+                      }
+                    }
+                    Navigator.of(context).pop();
+                    eventBus.fire(PathChangeEvent(path: _currentFsPath));
+                  },
+                  child: const Text('OK'))
+            ],
+          );
+        });
   }
 
   onDetail() async {
@@ -377,11 +422,11 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     super.dispose();
   }
 
-  newFsEntityNameValid(String name){
-    if (name.isEmpty){
+  newFsEntityNameValid(String name) {
+    if (name.isEmpty) {
       return false;
     }
-    if (name.contains(RegExp(r'[/\\:*?"<>|]'))){
+    if (name.contains(RegExp(r'[/\\:*?"<>|]'))) {
       return false;
     }
     return true;

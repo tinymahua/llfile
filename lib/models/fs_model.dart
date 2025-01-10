@@ -1,7 +1,23 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:llfile/models/types.dart';
 
 part 'fs_model.g.dart';
+
+@JsonSerializable()
+class FileIcon {
+
+  @JsonKey(name: 'ext_name')
+  String extName;
+  String resource;
+
+  FileIcon({
+    required this.extName,
+    required this.resource,
+  });
+
+  factory FileIcon.fromJson(Map<String, dynamic> json) => _$FileIconFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileIconToJson(this);
+}
 
 
 @JsonSerializable()

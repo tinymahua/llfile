@@ -2,6 +2,22 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:llfile/models/fs_model.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+
+Future<String> getAppTempDir()async{
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  var sysTempDir = await getTemporaryDirectory();
+  return join(sysTempDir.path, packageInfo.packageName,);
+}
+
+Future<String> getAppDocDir()async{
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  var sysDocDir = await getApplicationDocumentsDirectory();
+  return join(sysDocDir.path, packageInfo.packageName,);
+}
+
 
 sendFileDataProcessErrorProgress(
     StreamController<FileDataProcessProgress>?
