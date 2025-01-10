@@ -20,6 +20,10 @@
   "contextMenuPaste": "Paste",
   "contextMenuDelete": "Delete",
   "contextMenuRename": "Rename",
+  "contextMenuNewFolder": "New folder",
+
+  "cancelLabel": "Cancel",
+  "okLabel": "OK",
 
   "taskListTitleLabel": "Tasks",
   "taskStatusWaiting": "Waiting",

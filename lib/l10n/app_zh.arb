@@ -20,6 +20,10 @@
   "contextMenuPaste": "粘贴",
   "contextMenuDelete": "删除",
   "contextMenuRename": "重命名",
+  "contextMenuNewFolder": "新建文件夹",
+
+  "cancelLabel": "取消",
+  "okLabel": "确定",
 
   "taskListTitleLabel": "任务",
   "taskStatusWaiting": "等待",

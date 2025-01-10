@@ -37,6 +37,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   final _appConfigDb = Get.find<AppConfigDb>();
   AppConfig? _appConfig;
   TextEditingController _renameTextEditingController = TextEditingController();
+  TextEditingController _newFolderTextEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -296,6 +297,19 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                 title: Text(AppLocalizations.of(context)!.contextMenuPaste),
                 shortcut: "",
               ),
+              ContextMenuItem(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onNewDir();
+                },
+                icon: Icon(
+                  Icons.create_new_folder_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuNewFolder),
+                shortcut: "",
+              ),
             ]
           ],
           divider: Divider(
@@ -361,6 +375,45 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     }
   }
 
+  onNewDir()async{
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.contextMenuNewFolder),
+            content: Container(
+              child: TextField(
+                controller: _newFolderTextEditingController,
+              ),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.cancelLabel)),
+              TextButton(
+                  onPressed: () {
+                    String newFolderName = _newFolderTextEditingController.text.trim();
+                    if (newFolderName.isNotEmpty) {
+                      if (!newFsEntityNameValid(newFolderName)) {
+                        return;
+                      }
+                      var newDirPath = join(_currentFsPath, newFolderName);
+                      if (!Directory(newDirPath).existsSync()) {
+                        Directory(newDirPath).createSync();
+                      }
+                    }
+                    Navigator.of(context).pop();
+                    eventBus.fire(PathChangeEvent(path: _currentFsPath));
+                  },
+                  child: Text(AppLocalizations.of(context)!.okLabel))
+            ],
+          );
+        });
+
+  }
+
   onDelete(String fsEntityPath) async {
     if (FileSystemEntity.isFileSync(fsEntityPath)) {
       eventBus.fire(DeleteFileTaskWidget(fsEntityPath));
@@ -376,7 +429,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Rename Item'),
+            title: Text(AppLocalizations.of(context)!.contextMenuRename),
             content: Container(
               child: TextField(
                 controller: _renameTextEditingController,
@@ -387,7 +440,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Cancel')),
+                  child: Text(AppLocalizations.of(context)!.cancelLabel)),
               TextButton(
                   onPressed: () {
                     if (_renameTextEditingController.text.trim() != oldName) {
@@ -406,7 +459,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                     Navigator.of(context).pop();
                     eventBus.fire(PathChangeEvent(path: _currentFsPath));
                   },
-                  child: const Text('OK'))
+                  child: Text(AppLocalizations.of(context)!.okLabel))
             ],
           );
         });
