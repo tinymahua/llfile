@@ -13,25 +13,25 @@ class TapOrDoubleTapButton extends StatefulWidget {
 }
 
 class _TapOrDoubleTapButtonState extends State<TapOrDoubleTapButton> {
-  // int _lastClickMilliseconds = -1;
+  int _lastClickMilliseconds = -1;
   bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // int currMills = DateTime.now().millisecondsSinceEpoch;
-        // if ((currMills - _lastClickMilliseconds) < 500) {
-        //   widget.onDoubleTap?.call();
-        // } else {
-        //   _lastClickMilliseconds = currMills;
-        //   widget.onTap?.call();
-        // }
-        widget.onTap?.call();
+        int currMills = DateTime.now().millisecondsSinceEpoch;
+        if ((currMills - _lastClickMilliseconds) < 300) {
+          widget.onDoubleTap?.call();
+        } else {
+          _lastClickMilliseconds = currMills;
+          widget.onTap?.call();
+        }
+        // widget.onTap?.call();
       },
-      onDoubleTap: (){
-        widget.onDoubleTap?.call();
-      },
+      // onDoubleTap: (){
+      //   widget.onDoubleTap?.call();
+      // },
       child: Container(
         decoration: BoxDecoration(color: _isHovered ? widget.hoverColor : Colors.transparent),
         child: MouseRegion(

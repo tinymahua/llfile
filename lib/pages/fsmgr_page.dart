@@ -81,9 +81,9 @@ class _FsmgrPageState extends State<FsmgrPage> {
     });
 
     eventBus.on<ToggleTaskCenterSwitchEvent>().listen((evt) {
-      print("evt: ${evt.fold}");
+      print("evt: ${evt}");
       setState(() {
-        _taskCenterFoled = evt.fold;
+        _taskCenterFoled = !_taskCenterFoled;
       });
       setState(() {
         _middleMultiSplitViewController.areas[2].size = _taskCenterFoled ? 0 : _extraSize;
@@ -128,7 +128,8 @@ class _FsmgrPageState extends State<FsmgrPage> {
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Row(children: [
-        Expanded(child: LlTasksWidget(taskCenterFolded: _taskCenterFoled,)),
+        Expanded(
+            child: LlTasksWidget()),
         Container(
             decoration: BoxDecoration(
                 border: Border(

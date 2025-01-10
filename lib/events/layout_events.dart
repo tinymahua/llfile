@@ -4,6 +4,5 @@ class ToggleSidebarSwitchEvent{
 
 
 class ToggleTaskCenterSwitchEvent{
-  bool fold;
-  ToggleTaskCenterSwitchEvent({required this.fold});
+  ToggleTaskCenterSwitchEvent();
 }

@@ -53,7 +53,7 @@ class _LlAddonBarState extends State<LlAddonBar> {
     setState(() {
       _taskCenterFoled = !_taskCenterFoled;
     });
-    eventBus.fire(ToggleTaskCenterSwitchEvent(fold: _taskCenterFoled));
+    eventBus.fire(ToggleTaskCenterSwitchEvent());
   }
 
 }
