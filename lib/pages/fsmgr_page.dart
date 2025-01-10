@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/tasks/tasks_widget.dart';
+import 'package:llfile/widgets/areas/addonbar.dart';
 import 'package:llfile/widgets/areas/sidebar.dart';
 import 'package:llfile/widgets/areas/tabbar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
@@ -26,10 +27,11 @@ class _FsmgrPageState extends State<FsmgrPage> {
   double _sideSizeMin = 40.0;
   double _sideSizeMax = 400.0;
   double _extraSize = 300;
-  double _extraSizeMin = 300.0;
+  double _extraSizeMin = 30;
   double _extraSizeMax = 400;
 
   bool _sidebarFolded = false;
+  bool _taskCenterFoled = false;
 
   @override
   void initState() {
@@ -74,7 +76,17 @@ class _FsmgrPageState extends State<FsmgrPage> {
       });
       setState(() {
         _middleMultiSplitViewController.areas[0].size =
-        _sidebarFolded ? _sideSizeMin : _sideSize;
+            _sidebarFolded ? _sideSizeMin : _sideSize;
+      });
+    });
+
+    eventBus.on<ToggleTaskCenterSwitchEvent>().listen((evt) {
+      print("evt: ${evt.fold}");
+      setState(() {
+        _taskCenterFoled = evt.fold;
+      });
+      setState(() {
+        _middleMultiSplitViewController.areas[2].size = _taskCenterFoled ? 0 : _extraSize;
       });
     });
   }
@@ -93,7 +105,9 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      child: LlSidebar(sidebarFolded: _sidebarFolded,),
+      child: LlSidebar(
+        sidebarFolded: _sidebarFolded,
+      ),
     );
   }
 
@@ -113,7 +127,17 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
       ),
-      child: LlTasksWidget(),
+      child: Row(children: [
+        Expanded(child: LlTasksWidget(taskCenterFolded: _taskCenterFoled,)),
+        Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    left: BorderSide(
+                        color: Theme.of(context).dividerTheme.color!,
+                        width: 1))),
+            width: 30,
+            child: LlAddonBar())
+      ]),
     );
   }
 
@@ -186,7 +210,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
+        appBar: null,
         body: Container(color: Colors.transparent, child: buildLayout()));
   }
 }

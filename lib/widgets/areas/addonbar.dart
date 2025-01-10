@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/widgets/common/buttons.dart';
 
 class LlAddonBar extends StatefulWidget {
@@ -9,7 +11,8 @@ class LlAddonBar extends StatefulWidget {
 }
 
 class _LlAddonBarState extends State<LlAddonBar> {
-  double _iconSize = 14;
+  double _iconSize = 20;
+  bool _taskCenterFoled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +22,26 @@ class _LlAddonBarState extends State<LlAddonBar> {
           child: TapOrDoubleTapButton(
             hoverColor: Theme.of(context).dividerTheme.color!,
             child: Icon(
-              Icons.terminal,
-              size: 24,
+              Icons.task_alt,
+              size: _iconSize,
             ),
             onTap: () {
-              openTerminal();
+              toggleTaskCenterSwitch();
+            },
+          ),
+        ),
+        SizedBox(height: 4,),
+        Divider(height: 1, color: Theme.of(context).dividerTheme.color!,),
+        SizedBox(height: 4,),
+        MouseRegion(
+          child: TapOrDoubleTapButton(
+            hoverColor: Theme.of(context).dividerTheme.color!,
+            child: Icon(
+              Icons.note_alt_outlined,
+              size: _iconSize,
+            ),
+            onTap: () {
+
             },
           ),
         ),
@@ -31,9 +49,11 @@ class _LlAddonBarState extends State<LlAddonBar> {
     );
   }
 
-  openTerminal() {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-      return Scaffold(appBar: AppBar(title: Text('Terminal')), body: Container(),);
-    }));
+  toggleTaskCenterSwitch() {
+    setState(() {
+      _taskCenterFoled = !_taskCenterFoled;
+    });
+    eventBus.fire(ToggleTaskCenterSwitchEvent(fold: _taskCenterFoled));
   }
+
 }

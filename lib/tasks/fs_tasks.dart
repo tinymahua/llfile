@@ -189,7 +189,7 @@ class DeleteFileTaskWidget extends GeneralTask {
   final String path;
 
   const DeleteFileTaskWidget(this.path, {super.key})
-      : super(taskName: "DeleteFile", taskLabel: "Delete");
+      : super(taskName: "DeleteFile", taskLabel: "Delete",);
 
   @override
   State<DeleteFileTaskWidget> createState() => _DeleteFileTaskWidgetState();
@@ -224,6 +224,7 @@ class _DeleteFileTaskWidgetState extends State<DeleteFileTaskWidget>
 
   @override
   Widget build(BuildContext context) {
+    print("_status: ${_taskStatus}");
     return Column(
       children: [
         Row(
