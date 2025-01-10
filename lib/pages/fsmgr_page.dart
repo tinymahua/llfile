@@ -93,7 +93,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      child: const LlSidebar(),
+      child: LlSidebar(sidebarFolded: _sidebarFolded,),
     );
   }
 

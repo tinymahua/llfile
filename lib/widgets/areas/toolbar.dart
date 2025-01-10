@@ -170,6 +170,8 @@ class _LlToolbarState extends State<LlToolbar> {
     );
   }
 
+
+
   refreshFsEntities() async {
     String fsPath = _fsPathTextController.text.trim();
     eventBus.fire(PathChangeEvent(path: fsPath));
