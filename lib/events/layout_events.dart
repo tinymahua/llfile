@@ -3,6 +3,6 @@ class ToggleSidebarSwitchEvent{
 }
 
 
-class ToggleTaskCenterSwitchEvent{
-  ToggleTaskCenterSwitchEvent();
+class ToggleExtraContentSwitchEvent{
+  ToggleExtraContentSwitchEvent();
 }

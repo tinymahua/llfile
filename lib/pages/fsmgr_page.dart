@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
-import 'package:llfile/tasks/tasks_widget.dart';
 import 'package:llfile/widgets/areas/addonbar.dart';
+import 'package:llfile/widgets/areas/extra_content.dart';
 import 'package:llfile/widgets/areas/sidebar.dart';
 import 'package:llfile/widgets/areas/tabbar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
@@ -80,7 +80,7 @@ class _FsmgrPageState extends State<FsmgrPage> {
       });
     });
 
-    eventBus.on<ToggleTaskCenterSwitchEvent>().listen((evt) {
+    eventBus.on<ToggleExtraContentSwitchEvent>().listen((evt) {
       print("evt: ${evt}");
       setState(() {
         _taskCenterFoled = !_taskCenterFoled;
@@ -129,7 +129,9 @@ class _FsmgrPageState extends State<FsmgrPage> {
       ),
       child: Row(children: [
         Expanded(
-            child: LlTasksWidget()),
+            // child: LlTasksWidget()
+          child: ExtraContentWidget(),
+        ),
         Container(
             decoration: BoxDecoration(
                 border: Border(

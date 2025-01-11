@@ -196,6 +196,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
 
   onFsEntityRowTap(int index) {
     print("FileSystem Entity Row Tapped");
+    eventBus.fire(PreviewFsEntityEvent(fsPath: _currentFsPath, fsEntity: _fsEntitiesMultiColumnListController.rows.value[index]));
   }
 
   onFsEntityRowDoubleTap(int index) {

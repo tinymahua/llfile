@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
-import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/tasks/base_task.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,8 +14,6 @@ class _LlTasksWidgetState extends State<LlTasksWidget> {
 
   List<GeneralTask> tasks = [];
 
-  bool _taskCenterFolded = false;
-
   @override
   void initState() {
     super.initState();
@@ -26,12 +23,6 @@ class _LlTasksWidgetState extends State<LlTasksWidget> {
   setupEvents(){
     eventBus.on<GeneralTask>().listen((evt){
       setState(() {tasks.add(evt);});
-    });
-
-    eventBus.on<ToggleTaskCenterSwitchEvent>().listen((evt){
-      setState(() {
-        _taskCenterFolded = !_taskCenterFolded;
-      });
     });
   }
 
@@ -43,7 +34,7 @@ class _LlTasksWidgetState extends State<LlTasksWidget> {
           Row(
             children: [
               Expanded(child: Text(
-                _taskCenterFolded? '': AppLocalizations.of(context)!.taskListTitleLabel, style: TextStyle(overflow: TextOverflow.clip, ), softWrap: false,)
+                AppLocalizations.of(context)!.taskListTitleLabel, style: TextStyle(overflow: TextOverflow.clip, ), softWrap: false,)
               ),
             ],
           ),

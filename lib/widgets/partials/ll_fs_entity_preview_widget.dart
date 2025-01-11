@@ -43,6 +43,12 @@ class _LlFsEntityPreviewWidgetState extends State<LlFsEntityPreviewWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Container(
+          height: 40,
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text("Preview")]),
+        ),
         _buildPreview(),
       ],
     );

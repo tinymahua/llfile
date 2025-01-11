@@ -79,9 +79,8 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.sidebarFolded? _buildFolded(context): Column(
+  Widget _buildUnfolded(BuildContext context){
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List<Widget>.generate(_disks.length, (index) {
         DiskPartition disk = _disks[index];
@@ -121,27 +120,32 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
                   });
                 },
                 child: Row(
-                    children: [
-                      SizedBox(width: 6,),
-                      const Icon(Icons.storage, size: 16),
-                      SizedBox(width: 4,),
-                      Text(
-                        "${disk.name.isNotEmpty ? disk.name : "新加卷"}(${disk.mountPoint})",
-                        style: TextStyle(
-                            decoration: TextDecoration.none,
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurface),
-                      ),
-                    ],
-                  ),
+                  children: [
+                    SizedBox(width: 6,),
+                    const Icon(Icons.storage, size: 16),
+                    SizedBox(width: 4,),
+                    Text(
+                      "${disk.name.isNotEmpty ? disk.name : "新加卷"}(${disk.mountPoint})",
+                      style: TextStyle(
+                          decoration: TextDecoration.none,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         );
       }),
     );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return widget.sidebarFolded? _buildFolded(context): _buildUnfolded(context);
   }
 }
 

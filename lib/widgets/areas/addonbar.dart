@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:llfile/events/addon_events.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/widgets/common/buttons.dart';
@@ -13,7 +14,7 @@ class LlAddonBar extends StatefulWidget {
 
 class _LlAddonBarState extends State<LlAddonBar> {
   double _iconSize = 20;
-  bool _taskCenterFoled = false;
+  bool _extraContentFolded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +24,38 @@ class _LlAddonBarState extends State<LlAddonBar> {
           child: TapOrDoubleTapButton(
             hoverColor: Theme.of(context).dividerTheme.color!,
             child: Icon(
+              _extraContentFolded? Icons.keyboard_double_arrow_left: Icons.keyboard_double_arrow_right,
+              size: _iconSize,
+            ),
+            onTap: () {
+              toggleExtraContentSwitch();
+            },
+          ),
+        ),
+        SizedBox(height: 4,),
+        Divider(height: 1, color: Theme.of(context).dividerTheme.color!,),
+        MouseRegion(
+          child: TapOrDoubleTapButton(
+            hoverColor: Theme.of(context).dividerTheme.color!,
+            child: Icon(
               Icons.task_alt,
               size: _iconSize,
             ),
             onTap: () {
-              toggleTaskCenterSwitch();
+              switchAddon(0);
+            },
+          ),
+        ),
+        SizedBox(height: 4,),
+        MouseRegion(
+          child: TapOrDoubleTapButton(
+            hoverColor: Theme.of(context).dividerTheme.color!,
+            child: Icon(
+              Icons.preview_outlined,
+              size: _iconSize,
+            ),
+            onTap: () {
+              switchAddon(1);
             },
           ),
         ),
@@ -52,11 +80,14 @@ class _LlAddonBarState extends State<LlAddonBar> {
     );
   }
 
-  toggleTaskCenterSwitch() {
-    setState(() {
-      _taskCenterFoled = !_taskCenterFoled;
-    });
-    eventBus.fire(ToggleTaskCenterSwitchEvent());
+  switchAddon(int index){
+    eventBus.fire(SwitchAddonEvent(index));
   }
 
+  toggleExtraContentSwitch() {
+    setState(() {
+      _extraContentFolded = !_extraContentFolded;
+    });
+    eventBus.fire(ToggleExtraContentSwitchEvent());
+  }
 }
