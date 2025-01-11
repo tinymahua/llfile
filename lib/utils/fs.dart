@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:llfile/models/fs_model.dart';
+import 'package:llfile/models/types.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -109,4 +110,9 @@ Future<FsError?> llDeleteFile(String path) async {
     return FsError(path: path, desc: e.toString());
   }
   return null;
+}
+
+bool isImage(String filePath) {
+  var ext = extension(filePath).replaceAll('.', "").toLowerCase();
+  return imageExtensions.contains(ext);
 }

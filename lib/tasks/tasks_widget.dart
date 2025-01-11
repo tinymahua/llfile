@@ -40,7 +40,13 @@ class _LlTasksWidgetState extends State<LlTasksWidget> {
     return Container(
       child: Column(
         children: [
-          Text(_taskCenterFolded? '': AppLocalizations.of(context)!.taskListTitleLabel),
+          Row(
+            children: [
+              Expanded(child: Text(
+                _taskCenterFolded? '': AppLocalizations.of(context)!.taskListTitleLabel, style: TextStyle(overflow: TextOverflow.clip, ), softWrap: false,)
+              ),
+            ],
+          ),
           Expanded(child: Container(
             decoration: BoxDecoration(
               border: Border(top: BorderSide(color: Theme.of(context).dividerTheme.color!)),
