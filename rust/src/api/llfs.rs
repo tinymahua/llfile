@@ -16,32 +16,6 @@ pub struct FsEntity {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 pub fn get_fs_entities(s: StreamSink<FsEntity>, root_path: String) -> Result<()> {
     if let Ok(entries) = fs::read_dir(root_path) {
         for entry in entries {

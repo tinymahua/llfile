@@ -174,9 +174,19 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
       pushDividers: _pushDividers,
       dividerBuilder:
           (axis, index, resizable, dragging, highlighted, themeData) {
-        return Container(
+        Widget d = Container(
           color: Theme.of(context).dividerTheme.color!,
         );
+        if (index == 0 && _sideSizeMax == 0){
+          d = Container();
+        }
+        if (index == 2 && _extraSizeMax == 0){
+          d = Container();
+        }
+        if (_sideSizeMax == 0 && _extraSizeMax == 0){
+          d = Container();
+        }
+        return d;
       },
       axis: Axis.horizontal,
       builder: (BuildContext context, Area area) {
@@ -238,6 +248,13 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: null,
-        body: Container(color: Colors.transparent, child: buildLayout()));
+        body: Container(
+          // clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              // border: Border.all(color: Colors.red),
+              // borderRadius: BorderRadius.all(Radius.elliptical(10, 6)),
+                color: Colors.transparent
+            ),
+            child: buildLayout()));
   }
 }
