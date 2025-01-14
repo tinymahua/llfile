@@ -28,6 +28,8 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   double _tabWidth = 80;
   AppStatesMemDb _appStatesMemDb = Get.find<AppStatesMemDb>();
 
+  bool _initDone = false;
+
   @override
   void initState() {
     super.initState();
@@ -234,6 +236,11 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    addTab("新标签");
+    if (!_initDone){
+      addTab("新标签");
+      setState(() {
+        _initDone = true;
+      });
+    }
   }
 }

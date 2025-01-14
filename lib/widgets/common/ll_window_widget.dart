@@ -13,7 +13,13 @@ class LlWindowWidget extends StatefulWidget {
       this.sideSizeMax = 400.0,
       this.extraSize = 300.0,
       this.extraSizeMin = 30.0,
-      this.extraSizeMax = 400.0});
+      this.extraSizeMax = 400.0,
+        this.toolbar,
+        this.sidebar,
+        this.statusBar,
+        required this.content,
+        this.extra,
+      });
 
   bool isHome = true;
 
@@ -29,7 +35,7 @@ class LlWindowWidget extends StatefulWidget {
   Widget? toolbar;
   Widget? sidebar;
   Widget? statusBar;
-  Widget? content;
+  Widget content;
   Widget? extra;
 
   @override
@@ -113,8 +119,9 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
           color: Theme.of(context).appBarTheme.backgroundColor,
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            widget.toolbar??Container(),
             Row(
               children: [
                 IconButton(
@@ -249,10 +256,7 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
     return Scaffold(
         appBar: null,
         body: Container(
-          // clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              // border: Border.all(color: Colors.red),
-              // borderRadius: BorderRadius.all(Radius.elliptical(10, 6)),
+            decoration: const BoxDecoration(
                 color: Colors.transparent
             ),
             child: buildLayout()));

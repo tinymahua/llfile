@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/fs_model.dart';
@@ -102,7 +103,7 @@ class AppConfigDb extends Db {
           );
         }
       }
-      write(AppConfig(fileIcons: fileIcons));
+      write(AppConfig(fileIcons: fileIcons, appearance: AppearanceConfig(themeMode: ThemeMode.light)));
     }
     return dbPath;
   }

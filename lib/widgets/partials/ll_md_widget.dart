@@ -11,6 +11,6 @@ class LlMdWidget extends StatefulWidget {
 class _LlMdWidgetState extends State<LlMdWidget> {
   @override
   Widget build(BuildContext context) {
-    return LlWindowWidget(isHome: false,);
+    return LlWindowWidget(isHome: false, content: Container(),);
   }
 }

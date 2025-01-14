@@ -11,6 +11,15 @@ class LlTerminalWidget extends StatefulWidget {
 class _LlTerminalWidgetState extends State<LlTerminalWidget> {
   @override
   Widget build(BuildContext context) {
-    return LlWindowWidget(isHome: false, sideSize: 0, sideSizeMax: 0, sideSizeMin: 0, extraSize: 0, extraSizeMax: 0, extraSizeMin: 0,);
+    return LlWindowWidget(
+      isHome: false,
+      sideSize: 0,
+      sideSizeMax: 0,
+      sideSizeMin: 0,
+      extraSize: 0,
+      extraSizeMax: 0,
+      extraSizeMin: 0,
+      content: const Center(),
+    );
   }
 }

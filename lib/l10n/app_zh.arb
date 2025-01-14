@@ -31,7 +31,9 @@
   "taskStatusPaused": "已暂停",
   "taskStatusDone": "已完成",
   "taskStatusFailed": "已失败",
-  "taskStatusTerminated": "已取消"
+  "taskStatusTerminated": "已取消",
+
+  "settingsTitle": "设置"
 }
 
 

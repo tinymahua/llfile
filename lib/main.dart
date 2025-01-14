@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/ui_events.dart';
+import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,8 +34,37 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  ThemeMode _themeMode = ThemeMode.light;
+  final AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    setupEvents();
+  }
+
+  setupEvents()async{
+    var appConfig = await _appConfigDb.read<AppConfig>();
+    setState(() {
+      _themeMode = appConfig.appearance.themeMode;
+    });
+
+    eventBus.on<ThemeChangedEvent>().listen((evt){
+      setState(() {
+        _themeMode = evt.themeMode;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +77,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: LlFileThemeData.lightTheme,
       darkTheme: LlFileThemeData.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: _themeMode,
       // home: ThemeTestWidget(),
       builder: (context, child) => virtualWindowFrameBuilder(context, child),
       home: GestureDetector(

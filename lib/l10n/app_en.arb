@@ -31,7 +31,9 @@
   "taskStatusPaused": "Paused",
   "taskStatusDone": "Done",
   "taskStatusFailed": "Failed",
-  "taskStatusTerminated": "Cancelled"
+  "taskStatusTerminated": "Cancelled",
+
+  "settingsTitle": "Settings"
 }
 
 

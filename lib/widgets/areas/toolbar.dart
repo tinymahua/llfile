@@ -3,7 +3,10 @@ import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/events/ui_events.dart';
+import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/path_model.dart';
+import 'package:llfile/pages/settings_page.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:path/path.dart';
 import 'package:window_manager/window_manager.dart';
@@ -22,13 +25,21 @@ class _LlToolbarState extends State<LlToolbar> {
   final FocusNode _fsPathFocusNode = FocusNode();
   final PathHistoryDb _pathHistoryDb = Get.find<PathHistoryDb>();
 
+  final AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
+  AppConfig? _appConfig;
+
   @override
   void initState() {
     super.initState();
     setupEvents();
   }
 
-  setupEvents(){
+  setupEvents()async{
+    var appConfig = await _appConfigDb.read<AppConfig>();
+    setState(() {
+      _appConfig = appConfig;
+    });
+
     eventBus.on<PathChangeEvent>().listen((evt){
       setState(() {
         _fsPathTextController.text = evt.path;
@@ -43,6 +54,7 @@ class _LlToolbarState extends State<LlToolbar> {
 
   @override
   Widget build(BuildContext context) {
+    print("_appConfig!.appearance.themeMode:  ${_appConfig != null ? _appConfig!.appearance.toJson(): ""}");
     return Container(
       // 这里可以设置工具栏的高度等样式属性
       height: 50,
@@ -120,6 +132,41 @@ class _LlToolbarState extends State<LlToolbar> {
           ),
           SizedBox(width: 30),
           // 放置最小化、最大化、关闭按钮的Row
+
+          Row(children: [
+            IconButton(
+              alignment: Alignment.center,
+              icon: Icon(
+                _appConfig != null && _appConfig!.appearance.themeMode == ThemeMode.light ? Icons.dark_mode :Icons.light_mode,
+                size: Theme.of(context).appBarTheme.iconTheme!.size,
+                color: Theme.of(context).appBarTheme.iconTheme!.color!,
+              ),
+              onPressed: () {
+                if (_appConfig != null){
+                  setState(() {
+                    _appConfig!.appearance.themeMode = _appConfig!.appearance.themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+                  });
+                  _appConfigDb.write(_appConfig!);
+                  Get.put(_appConfigDb);
+                  eventBus.fire(ThemeChangedEvent(_appConfig!.appearance.themeMode));
+                }
+              },
+            ),
+            IconButton(
+              alignment: Alignment.center,
+              icon: Icon(
+                Icons.settings,
+                size: Theme.of(context).appBarTheme.iconTheme!.size,
+                color: Theme.of(context).appBarTheme.iconTheme!.color!,
+              ),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                  return SettingsPage();
+                }));
+              },
+            ),
+          ],),
+          VerticalDivider(width: 1,),
           Row(
             children: [
               IconButton(
