@@ -45,6 +45,7 @@ class _MyAppState extends State<MyApp> {
 
   ThemeMode _themeMode = ThemeMode.light;
   final AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
+  LanguageConfig? _languageConfig;
 
   @override
   void initState() {
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
     var appConfig = await _appConfigDb.read<AppConfig>();
     setState(() {
       _themeMode = appConfig.appearance.themeMode;
+      _languageConfig = appConfig.preferences.language;
     });
 
     eventBus.on<ThemeChangedEvent>().listen((evt){
@@ -72,7 +74,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: const Locale('en'),
+      locale: _languageConfig != null ? Locale(_languageConfig!.languageCode, _languageConfig!.countryCode) :const Locale('en', 'US'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: LlFileThemeData.lightTheme,

@@ -33,7 +33,19 @@
   "taskStatusFailed": "Failed",
   "taskStatusTerminated": "Cancelled",
 
-  "settingsTitle": "Settings"
+  "settingsTitle": "Settings",
+  "settingsPreferences": "Preferences",
+  "settingsLanguage": "Language",
+  "settingsLanguageLanguageCode": "语言",
+  "settingsLanguageCountryCode": "区域",
+  "settingsConfigurationSaveLocation": "Configuration Save Location",
+  "settingsFileDirectoryOptions": "File & Directory Options",
+  "settingsKeymap": "Keymap",
+  "settingsExtensions": "Extensions",
+  "settingsAdvancedSettings": "Advanced Settings",
+  "settingsOk": "OK",
+  "settingsCancel": "Cancel",
+  "settingsApply": "Apply"
 }
 
 

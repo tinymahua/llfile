@@ -8,7 +8,7 @@ class LlFileThemeData {
   static Color lightOnSurfaceColor = Colors.black87;
   static Color lightCanvasColor = const Color(0xfff9f9f9);
   static Color lightOnCanvasColor = Colors.black26;
-  static Color lightPrimaryColor = Colors.blueAccent;
+  static Color lightPrimaryColor = Colors.blueAccent[700]!;
   static Color lightOnPrimaryColor = Colors.white;
   static Color lightError = Colors.red;
   static Color lightOnError = Colors.white;
@@ -20,7 +20,7 @@ class LlFileThemeData {
   static Color darkOnSurfaceColor = Colors.white;
   static Color darkCanvasColor = const Color(0xff212121);
   static Color darkOnCanvasColor = Colors.white54;
-  static Color darkPrimaryColor = Colors.yellow[200]!;
+  static Color darkPrimaryColor = Colors.blueAccent[700]!;
   static Color darkOnPrimaryColor = Colors.black;
   static Color darkError = Colors.red;
   static Color darkOnError = Colors.white;

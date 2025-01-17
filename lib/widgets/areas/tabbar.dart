@@ -34,6 +34,9 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     setupEvents();
+    // if (mounted){
+    //   addTab();
+    // }
   }
 
   setupEvents() async{
@@ -117,7 +120,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
                                       WidgetStatePropertyAll(EdgeInsets.all(2)),
                                 ),
                                 onPressed: () {
-                                  addTab("新标签");
+                                  addTab();
                                 },
                                 child: Icon(Icons.add)),
                           ),
@@ -142,7 +145,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   updateTab(UpdateTabEvent evt) {
     setState(() {
-      _tabItems[_tabController!.index] = makeTabItem(evt.label);
+      _tabItems[_tabController!.index] = makeTabItem();
       _tabCurrentPaths[_tabController!.index] = evt.path;
     });
   }
@@ -161,22 +164,22 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     Get.put(_appStatesMemDb);
   }
 
-  makeTabItem(String tabLabel) {
+  makeTabItem() {
     return TabItem(
         color: Theme.of(context).dividerTheme.color!,
         unselectedColor: Theme.of(context).appBarTheme.backgroundColor!,
         title: Container(
           width: _tabWidth,
           child: Text(
-            tabLabel,
+            AppLocalizations.of(context)!.tabLabelBlank,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
         ));
   }
 
-  addTab(String tabLabel) {
+  addTab() {
     int oldTabsLength = _tabItems.length;
-    Timer.periodic(Duration(milliseconds: 100), (t) {
+    Timer.periodic(const Duration(milliseconds: 100), (t) {
       if (_tabController!.length == _tabItems.length) {
         print("addTab done");
         t.cancel();
@@ -188,7 +191,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     });
     GlobalKey newViewKey = GlobalKey();
     setState(() {
-      _tabItems.add(makeTabItem(AppLocalizations.of(context)!.tabLabelBlank));
+      _tabItems.add(makeTabItem());
       _tabViewKeys.add(newViewKey);
       _tabCurrentPaths.add("");
       _tabViews.add(KeepAliveWrapper(
@@ -233,14 +236,16 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_initDone){
-      addTab("新标签");
-      setState(() {
-        _initDone = true;
-      });
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // if (!_initDone){
+  //   //   addTab(AppLocalizations.of(context)!.tabLabelBlank);
+  //   //   setState(() {
+  //   //     _initDone = true;
+  //   //   });
+  //   // }
+  // }
 }
+
+

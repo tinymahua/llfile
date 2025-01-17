@@ -33,7 +33,19 @@
   "taskStatusFailed": "已失败",
   "taskStatusTerminated": "已取消",
 
-  "settingsTitle": "设置"
+  "settingsTitle": "设置",
+  "settingsPreferences": "个人偏好",
+  "settingsLanguage": "语言",
+  "settingsLanguageLanguageCode": "Language",
+  "settingsLanguageCountryCode": "Area",
+  "settingsConfigurationSaveLocation": "配置保存位置",
+  "settingsFileDirectoryOptions": "文件目录选项",
+  "settingsKeymap": "快捷键",
+  "settingsExtensions": "扩展",
+  "settingsAdvancedSettings": "高级设置",
+  "settingsOk": "确定",
+  "settingsCancel": "取消",
+  "settingsApply": "应用"
 }
 
 

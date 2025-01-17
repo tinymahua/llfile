@@ -53,8 +53,10 @@ dependencies:
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
   flutter_colorful_tab: ^0.1.1
+  dynamic_tabbar: ^1.0.9
   contextmenu: ^3.0.0
   archive: ^4.0.2
+  flutter_fancy_tree_view: ^1.6.0
 
 dev_dependencies:
   flutter_test:

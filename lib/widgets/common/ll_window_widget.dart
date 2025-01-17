@@ -59,9 +59,6 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
 
   bool _pushDividers = false;
 
-  bool _sidebarFolded = false;
-  bool _taskCenterFoled = false;
-
   @override
   void initState() {
     super.initState();
@@ -217,9 +214,10 @@ class _LlWindowWidgetState extends State<LlWindowWidget> {
 
   Widget buildStatusArea() {
     return Container(
-        decoration: BoxDecoration(
+      decoration: BoxDecoration(
       color: Theme.of(context).bottomAppBarTheme.color,
-    ));
+    ),
+      child: widget.statusBar);
   }
 
   Widget buildLayout() {

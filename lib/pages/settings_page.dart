@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/settings_events.dart';
 import 'package:llfile/models/app_config_model.dart';
+import 'package:llfile/modules/settings/settings_content.dart';
+import 'package:llfile/modules/settings/side_nav.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/ll_window_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,35 +17,136 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
-  AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
-  AppConfig? _appConfig;
-
   @override
   void initState() {
     super.initState();
     setupEvents();
   }
 
-  setupEvents()async{
-    _appConfig = await _appConfigDb.read<AppConfig>();
-  }
+  setupEvents() async {}
 
   @override
   Widget build(BuildContext context) {
+    final List<LlNavTreeNode> navItems = [
+      LlNavTreeNode(
+          key: ValueKey(100),
+          title: AppLocalizations.of(context)!.settingsPreferences,
+          children: [
+            LlNavTreeNode(
+                key: ValueKey(101),
+                title: AppLocalizations.of(context)!.settingsLanguage,
+                onTap: () {
+                  switchSettingsPage(0);
+                }),
+            LlNavTreeNode(
+                key: ValueKey(102),
+                title: AppLocalizations.of(context)!
+                    .settingsConfigurationSaveLocation,
+                onTap: () {
+                  switchSettingsPage(1);
+                }),
+            LlNavTreeNode(
+                key: ValueKey(103),
+                title:
+                    AppLocalizations.of(context)!.settingsFileDirectoryOptions,
+                onTap: () {
+                  switchSettingsPage(2);
+                }),
+            LlNavTreeNode(
+                key: ValueKey(104),
+                title: AppLocalizations.of(context)!.settingsKeymap,
+                onTap: () {
+                  switchSettingsPage(3);
+                }),
+          ]),
+      LlNavTreeNode(
+          key: ValueKey(200),
+          title: AppLocalizations.of(context)!.settingsExtensions),
+      LlNavTreeNode(
+          key: ValueKey(300),
+          title: AppLocalizations.of(context)!.settingsAdvancedSettings),
+    ];
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.75,
-      decoration: const BoxDecoration(
-      ),
+      decoration: const BoxDecoration(),
       child: LlWindowWidget(
+        statusSize: 80,
         isHome: false,
         toolbar: Row(
           children: [
-            SizedBox(width: 4,),
-            Text(AppLocalizations.of(context)!.settingsTitle)],
+            SizedBox(
+              width: 4,
+            ),
+            Text(AppLocalizations.of(context)!.settingsTitle)
+          ],
         ),
-        content: const Center(child: Text("Settings Page")),
+        sidebar: LlSettingsSideNavWidget(
+          navItems: navItems,
+        ),
+        content: const LlSettingsContentWidget(),
+        statusBar: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.primary),
+                      foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.onSurface),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5)))),
+                    ),
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context)!.settingsOk)),
+                SizedBox(
+                  width: 5,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.onSurface),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).dividerTheme.color!),
+                          borderRadius: BorderRadius.all(Radius.circular(5)))),
+                    ),
+                    onPressed: () {},
+                    child: Text(
+                      AppLocalizations.of(context)!.settingsCancel,
+                      style: TextStyle(
+                          color: Theme.of(context).appBarTheme.foregroundColor),
+                    )),
+                SizedBox(
+                  width: 5,
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.onSurface),
+                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).dividerTheme.color!),
+                          borderRadius: BorderRadius.all(Radius.circular(5)))),
+                    ),
+                    onPressed: () {},
+                    child: Text(
+                      AppLocalizations.of(context)!.settingsApply,
+                      style: TextStyle(
+                          color: Theme.of(context).dividerTheme.color!),
+                    ))
+              ],
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  switchSettingsPage(int index) {
+    eventBus.fire(SettingsChangeContentEvent(index: index));
   }
 }
