@@ -57,6 +57,8 @@ dependencies:
   contextmenu: ^3.0.0
   archive: ^4.0.2
   flutter_fancy_tree_view: ^1.6.0
+  xterm: ^4.0.0
+  flutter_pty: ^0.4.2
 
 dev_dependencies:
   flutter_test:

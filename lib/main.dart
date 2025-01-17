@@ -84,8 +84,10 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) => virtualWindowFrameBuilder(context, child),
       home: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onPanStart: (details) {
-          windowManager.startDragging();
+        onPanStart: (details)async {
+          if (!await windowManager.isMaximized()){
+            windowManager.startDragging();
+          }
         },
         child: FsmgrPage(),
       ),
