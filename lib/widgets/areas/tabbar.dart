@@ -28,22 +28,20 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
   double _tabWidth = 80;
   AppStatesMemDb _appStatesMemDb = Get.find<AppStatesMemDb>();
 
-  bool _initDone = false;
 
   @override
   void initState() {
     super.initState();
     setupEvents();
-    // if (mounted){
-    //   addTab();
-    // }
   }
 
   setupEvents() async{
     eventBus.on<UpdateTabEvent>().listen((evt) {
       updateTab(evt);
     });
+    Future.delayed(Duration(milliseconds: 500), (){addTab();});
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +143,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
 
   updateTab(UpdateTabEvent evt) {
     setState(() {
-      _tabItems[_tabController!.index] = makeTabItem();
+      _tabItems[_tabController!.index] = makeTabItem(evt.label);
       _tabCurrentPaths[_tabController!.index] = evt.path;
     });
   }
@@ -164,14 +162,14 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     Get.put(_appStatesMemDb);
   }
 
-  makeTabItem() {
+  makeTabItem(String? tabLabel) {
     return TabItem(
         color: Theme.of(context).dividerTheme.color!,
         unselectedColor: Theme.of(context).appBarTheme.backgroundColor!,
         title: Container(
           width: _tabWidth,
           child: Text(
-            AppLocalizations.of(context)!.tabLabelBlank,
+            tabLabel?? AppLocalizations.of(context)!.tabLabelBlank,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
         ));
@@ -191,7 +189,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     });
     GlobalKey newViewKey = GlobalKey();
     setState(() {
-      _tabItems.add(makeTabItem());
+      _tabItems.add(makeTabItem(null));
       _tabViewKeys.add(newViewKey);
       _tabCurrentPaths.add("");
       _tabViews.add(KeepAliveWrapper(
@@ -236,16 +234,6 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     }
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   // if (!_initDone){
-  //   //   addTab(AppLocalizations.of(context)!.tabLabelBlank);
-  //   //   setState(() {
-  //   //     _initDone = true;
-  //   //   });
-  //   // }
-  // }
 }
 
 
