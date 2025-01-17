@@ -98,7 +98,7 @@ class _LlLanguageSettingState extends State<LlLanguageSetting> {
                             langLocales.length, (index) {
                           return DropdownMenuItem(
                               value: langLocales[index],
-                              child: Text(langLocales[index].langLabel));
+                              child: Text(langLocales[index].langLabel, locale: Localizations.localeOf(context),));
                         }),
                         onChanged: (v) {
                           print("${v}");

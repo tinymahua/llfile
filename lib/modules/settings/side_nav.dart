@@ -5,13 +5,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LlNavTreeNode {
   const LlNavTreeNode({
     this.key,
-    required this.title,
+    required this.titleWidget,
     this.children = const <LlNavTreeNode>[],
     this.onTap,
   });
 
   final Key? key;
-  final String title;
+  final Widget titleWidget;
   final List<LlNavTreeNode> children;
   final GestureTapCallback? onTap;
 }
@@ -92,8 +92,7 @@ class _LlSettingsSideNavWidgetState extends State<LlSettingsSideNavWidget> {
                                 color: Colors.transparent,
                                 child: icon,
                               ),
-                              Text("${entry.node.title}",
-                                style: TextStyle(fontWeight: textWeight),),
+                              entry.node.titleWidget,
                             ],
                           ),
                         ),

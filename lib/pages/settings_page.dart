@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/settings_events.dart';
-import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/modules/settings/settings_content.dart';
 import 'package:llfile/modules/settings/side_nav.dart';
-import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/ll_window_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,41 +27,43 @@ class _SettingsPageState extends State<SettingsPage> {
     final List<LlNavTreeNode> navItems = [
       LlNavTreeNode(
           key: ValueKey(100),
-          title: AppLocalizations.of(context)!.settingsPreferences,
+          titleWidget: Text(AppLocalizations.of(context)!.settingsPreferences),
           children: [
             LlNavTreeNode(
                 key: ValueKey(101),
-                title: AppLocalizations.of(context)!.settingsLanguage,
+                titleWidget:
+                    Text(AppLocalizations.of(context)!.settingsLanguage),
                 onTap: () {
                   switchSettingsPage(0);
                 }),
             LlNavTreeNode(
                 key: ValueKey(102),
-                title: AppLocalizations.of(context)!
-                    .settingsConfigurationSaveLocation,
+                titleWidget: Text(AppLocalizations.of(context)!
+                    .settingsConfigurationSaveLocation),
                 onTap: () {
                   switchSettingsPage(1);
                 }),
             LlNavTreeNode(
                 key: ValueKey(103),
-                title:
-                    AppLocalizations.of(context)!.settingsFileDirectoryOptions,
+                titleWidget: Text(
+                    AppLocalizations.of(context)!.settingsFileDirectoryOptions),
                 onTap: () {
                   switchSettingsPage(2);
                 }),
             LlNavTreeNode(
                 key: ValueKey(104),
-                title: AppLocalizations.of(context)!.settingsKeymap,
+                titleWidget: Text(AppLocalizations.of(context)!.settingsKeymap),
                 onTap: () {
                   switchSettingsPage(3);
                 }),
           ]),
       LlNavTreeNode(
           key: ValueKey(200),
-          title: AppLocalizations.of(context)!.settingsExtensions),
+          titleWidget: Text(AppLocalizations.of(context)!.settingsExtensions)),
       LlNavTreeNode(
           key: ValueKey(300),
-          title: AppLocalizations.of(context)!.settingsAdvancedSettings),
+          titleWidget:
+              Text(AppLocalizations.of(context)!.settingsAdvancedSettings)),
     ];
 
     return Container(
