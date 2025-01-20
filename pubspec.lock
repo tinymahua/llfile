@@ -532,9 +532,10 @@ packages:
   multi_column_list_view:
     dependency: "direct main"
     description:
-      path: "../../flt_pkgs/multi_column_list_view"
-      relative: true
-    source: path
+      name: multi_column_list_view
+      sha256: "22a88096e170ff1c7ac155f76ee6751979fa6b6bf7c75a1e56bcb6296ebb30fa"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.0.8"
   multi_split_view:
     dependency: "direct main"
