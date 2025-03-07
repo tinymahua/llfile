@@ -137,6 +137,7 @@ Map<String, dynamic> _$AdvancedSettingsConfigToJson(
 
 SandbarAuthInfo _$SandbarAuthInfoFromJson(Map<String, dynamic> json) =>
     SandbarAuthInfo(
+      json['id'] as String,
       json['email'] as String,
       json['accessToken'] as String,
       json['passwordHash'] as String,
@@ -147,6 +148,7 @@ SandbarAuthInfo _$SandbarAuthInfoFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SandbarAuthInfoToJson(SandbarAuthInfo instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'email': instance.email,
       'accessToken': instance.accessToken,
       'passwordHash': instance.passwordHash,

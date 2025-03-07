@@ -139,8 +139,9 @@ class AdvancedSettingsConfig {
 
 @JsonSerializable()
 class SandbarAuthInfo {
-  SandbarAuthInfo(this.email, this.accessToken, this.passwordHash, this.serverPublicKey, this.cbPublicKey, this.cbPrivateKey);
+  SandbarAuthInfo(this.id, this.email, this.accessToken, this.passwordHash, this.serverPublicKey, this.cbPublicKey, this.cbPrivateKey);
 
+  String id;
   String email;
   String accessToken;
   String passwordHash;

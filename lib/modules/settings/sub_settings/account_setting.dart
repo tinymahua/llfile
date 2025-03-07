@@ -40,6 +40,14 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
         });
       }
     });
+    eventBus.on<SbcLoginSuccessEvent>().listen((evt)async{
+      if (mounted){
+        var _readAppConfig = await _appConfigDb.read<AppConfig>();
+        setState(() {
+          _appConfig = _readAppConfig;
+        });
+      }
+    });
   }
 
   Widget _buildLoggedInContent() {

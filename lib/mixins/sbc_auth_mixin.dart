@@ -19,6 +19,7 @@ mixin SbcAuthMixin {
         palAesKeyBytes: fernetKey,
         encryptedBytes: base64Url.decode(resp.accessTokenEncrypted!));
     return SandbarAuthInfo(
+        resp.uid!,
         resp.email!,
         utf8.decode(accessToken),
         base64Url.encode(passwdAesKey),

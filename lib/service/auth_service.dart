@@ -12,7 +12,7 @@ class SbcAuthService extends BaseSbcService {
       return null;
   }
 
-  Future<SbcLoginResponse?> _login(SbcLoginRequest req)async{
+  Future<SbcLoginResponse?> login(SbcLoginRequest req)async{
       var respJson = await callApi(ApiMethods.post, '/paluser/auth/login', dataReq: req);
       if (respJson != null){
           return SbcLoginResponse.fromJson(respJson);
