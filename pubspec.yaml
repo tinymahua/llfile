@@ -58,6 +58,8 @@ dependencies:
   flutter_fancy_tree_view: ^1.6.0
   xterm: ^4.0.0
   flutter_pty: ^0.4.2
+  dio: ^5.8.0+1
+  pretty_json: ^2.0.0
 
 dev_dependencies:
   flutter_test:

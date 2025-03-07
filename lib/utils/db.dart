@@ -39,6 +39,7 @@ abstract class Db {
     }
 
     var content = await file.readAsString();
+    // print("Got content: ${content}");
     Map<String, dynamic> json = jsonDecode(content);
     return deserialize(json);
   }
@@ -114,7 +115,9 @@ class AppConfigDb extends Db {
               keymap: KeymapConfig(keyItems: [])
           ),
         extensions: ExtensionsConfig(),
-        advancedSettings: AdvancedSettingsConfig()
+        advancedSettings: AdvancedSettingsConfig(),
+        accountSettings: AccountSettingsConfig(),
+        sbcApiHost: "",
       ));
     }
     return dbPath;

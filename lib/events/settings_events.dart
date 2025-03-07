@@ -3,3 +3,8 @@ class SettingsChangeContentEvent {
 
   SettingsChangeContentEvent({required this.index});
 }
+
+
+class SettingsSaveEvent {
+  SettingsSaveEvent();
+}

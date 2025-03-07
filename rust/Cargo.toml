@@ -4,10 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["cdylib", "staticlib", "rlib"]
 
 [dependencies]
 anyhow = "1.0.92"
 chrono = "0.4.39"
 flutter_rust_bridge = "=2.5.1"
 sysinfo = { version = "0.33.0" }
+palcrypto-rs = { version = "0.2.5" }
+base64 = { version = "0.22.1" }
+
+
+[[bin]]
+name = "dotest"
+path = "src/bin/dotest.rs"

@@ -181,10 +181,11 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
       if (_tabController!.length == _tabItems.length) {
         print("addTab done");
         t.cancel();
-        setState(() {
-          int newTabIdx = _tabController!.length - 1;
-          switchTab(newTabIdx);
-        });
+        // setState(() {
+        //
+        // });
+        int newTabIdx = _tabController!.length - 1;
+        switchTab(newTabIdx);
       }
     });
     GlobalKey newViewKey = GlobalKey();

@@ -135,6 +135,41 @@ Map<String, dynamic> _$AdvancedSettingsConfigToJson(
         AdvancedSettingsConfig instance) =>
     <String, dynamic>{};
 
+SandbarAuthInfo _$SandbarAuthInfoFromJson(Map<String, dynamic> json) =>
+    SandbarAuthInfo(
+      json['email'] as String,
+      json['accessToken'] as String,
+      json['passwordHash'] as String,
+      json['serverPublicKey'] as String,
+      json['cbPublicKey'] as String,
+      json['cbPrivateKey'] as String,
+    );
+
+Map<String, dynamic> _$SandbarAuthInfoToJson(SandbarAuthInfo instance) =>
+    <String, dynamic>{
+      'email': instance.email,
+      'accessToken': instance.accessToken,
+      'passwordHash': instance.passwordHash,
+      'serverPublicKey': instance.serverPublicKey,
+      'cbPublicKey': instance.cbPublicKey,
+      'cbPrivateKey': instance.cbPrivateKey,
+    };
+
+AccountSettingsConfig _$AccountSettingsConfigFromJson(
+        Map<String, dynamic> json) =>
+    AccountSettingsConfig(
+      sandbarAuthInfo: json['sandbarAuthInfo'] == null
+          ? null
+          : SandbarAuthInfo.fromJson(
+              json['sandbarAuthInfo'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$AccountSettingsConfigToJson(
+        AccountSettingsConfig instance) =>
+    <String, dynamic>{
+      'sandbarAuthInfo': instance.sandbarAuthInfo,
+    };
+
 AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       fileIcons: (json['file_icons'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, FileIcon.fromJson(e as Map<String, dynamic>)),
@@ -147,6 +182,9 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
           ExtensionsConfig.fromJson(json['extensions'] as Map<String, dynamic>),
       advancedSettings: AdvancedSettingsConfig.fromJson(
           json['advancedSettings'] as Map<String, dynamic>),
+      accountSettings: AccountSettingsConfig.fromJson(
+          json['accountSettings'] as Map<String, dynamic>),
+      sbcApiHost: json['sbcApiHost'] as String,
     );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -155,4 +193,6 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'preferences': instance.preferences,
       'extensions': instance.extensions,
       'advancedSettings': instance.advancedSettings,
+      'accountSettings': instance.accountSettings,
+      'sbcApiHost': instance.sbcApiHost,
     };

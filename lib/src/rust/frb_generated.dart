@@ -5,6 +5,7 @@
 
 import 'api/lldisk.dart';
 import 'api/llfs.dart';
+import 'api/sandbar.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -70,7 +71,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.5.1';
 
   @override
-  int get rustContentHash => 554053826;
+  int get rustContentHash => 1866773956;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -84,6 +85,33 @@ abstract class RustLibApi extends BaseApi {
   List<DiskPartition> crateApiLldiskGetDiskPartitions();
 
   Stream<FsEntity> crateApiLlfsGetFsEntities({required String rootPath});
+
+  Future<Uint8List> crateApiSandbarAesDecrypt(
+      {required List<int> palAesKeyBytes,
+      required List<int> encryptedBytes,
+      BigInt? nonceLen});
+
+  Future<Uint8List> crateApiSandbarAesEncrypt(
+      {required List<int> palAesKeyBytes, required List<int> plainBytes});
+
+  Future<Uint8List> crateApiSandbarArgon2PwdHash({required List<int> password});
+
+  Future<Uint8List> crateApiSandbarCbDecrypt(
+      {required List<int> peerPalCryptoPublicKeyBytes,
+      required List<int> myPalCryptoSecretKeyBytes,
+      required List<int> encryptedBytes,
+      BigInt? nonceLen});
+
+  Future<Uint8List> crateApiSandbarCbEncrypt(
+      {required List<int> peerPalCryptoPublicKeyBytes,
+      required List<int> myPalCryptoSecretKeyBytes,
+      required List<int> plainBytes});
+
+  Future<Uint8List> crateApiSandbarGenerateAesKey();
+
+  Future<SandbarAuth> crateApiSandbarGenerateAuth({required String password});
+
+  Future<CbKeyPair> crateApiSandbarGenerateCbKeyPair();
 
   String crateApiSimpleGreet({required String name});
 
@@ -149,12 +177,244 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Uint8List> crateApiSandbarAesDecrypt(
+      {required List<int> palAesKeyBytes,
+      required List<int> encryptedBytes,
+      BigInt? nonceLen}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(palAesKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(encryptedBytes, serializer);
+        sse_encode_opt_box_autoadd_usize(nonceLen, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarAesDecryptConstMeta,
+      argValues: [palAesKeyBytes, encryptedBytes, nonceLen],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarAesDecryptConstMeta => const TaskConstMeta(
+        debugName: "aes_decrypt",
+        argNames: ["palAesKeyBytes", "encryptedBytes", "nonceLen"],
+      );
+
+  @override
+  Future<Uint8List> crateApiSandbarAesEncrypt(
+      {required List<int> palAesKeyBytes, required List<int> plainBytes}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(palAesKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(plainBytes, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarAesEncryptConstMeta,
+      argValues: [palAesKeyBytes, plainBytes],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarAesEncryptConstMeta => const TaskConstMeta(
+        debugName: "aes_encrypt",
+        argNames: ["palAesKeyBytes", "plainBytes"],
+      );
+
+  @override
+  Future<Uint8List> crateApiSandbarArgon2PwdHash(
+      {required List<int> password}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(password, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarArgon2PwdHashConstMeta,
+      argValues: [password],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarArgon2PwdHashConstMeta =>
+      const TaskConstMeta(
+        debugName: "argon2_pwd_hash",
+        argNames: ["password"],
+      );
+
+  @override
+  Future<Uint8List> crateApiSandbarCbDecrypt(
+      {required List<int> peerPalCryptoPublicKeyBytes,
+      required List<int> myPalCryptoSecretKeyBytes,
+      required List<int> encryptedBytes,
+      BigInt? nonceLen}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(peerPalCryptoPublicKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(myPalCryptoSecretKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(encryptedBytes, serializer);
+        sse_encode_opt_box_autoadd_usize(nonceLen, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarCbDecryptConstMeta,
+      argValues: [
+        peerPalCryptoPublicKeyBytes,
+        myPalCryptoSecretKeyBytes,
+        encryptedBytes,
+        nonceLen
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarCbDecryptConstMeta => const TaskConstMeta(
+        debugName: "cb_decrypt",
+        argNames: [
+          "peerPalCryptoPublicKeyBytes",
+          "myPalCryptoSecretKeyBytes",
+          "encryptedBytes",
+          "nonceLen"
+        ],
+      );
+
+  @override
+  Future<Uint8List> crateApiSandbarCbEncrypt(
+      {required List<int> peerPalCryptoPublicKeyBytes,
+      required List<int> myPalCryptoSecretKeyBytes,
+      required List<int> plainBytes}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(peerPalCryptoPublicKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(myPalCryptoSecretKeyBytes, serializer);
+        sse_encode_list_prim_u_8_loose(plainBytes, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarCbEncryptConstMeta,
+      argValues: [
+        peerPalCryptoPublicKeyBytes,
+        myPalCryptoSecretKeyBytes,
+        plainBytes
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarCbEncryptConstMeta => const TaskConstMeta(
+        debugName: "cb_encrypt",
+        argNames: [
+          "peerPalCryptoPublicKeyBytes",
+          "myPalCryptoSecretKeyBytes",
+          "plainBytes"
+        ],
+      );
+
+  @override
+  Future<Uint8List> crateApiSandbarGenerateAesKey() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarGenerateAesKeyConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarGenerateAesKeyConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_aes_key",
+        argNames: [],
+      );
+
+  @override
+  Future<SandbarAuth> crateApiSandbarGenerateAuth({required String password}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(password, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_sandbar_auth,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarGenerateAuthConstMeta,
+      argValues: [password],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarGenerateAuthConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_auth",
+        argNames: ["password"],
+      );
+
+  @override
+  Future<CbKeyPair> crateApiSandbarGenerateCbKeyPair() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_cb_key_pair,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarGenerateCbKeyPairConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarGenerateCbKeyPairConstMeta =>
+      const TaskConstMeta(
+        debugName: "generate_cb_key_pair",
+        argNames: [],
+      );
+
+  @override
   String crateApiSimpleGreet({required String name}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -177,7 +437,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 12, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -219,6 +479,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  BigInt dco_decode_box_autoadd_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_usize(raw);
+  }
+
+  @protected
+  CbKeyPair dco_decode_cb_key_pair(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return CbKeyPair(
+      publicKeyBytesB64: dco_decode_String(arr[0]),
+      privateKeyBytesB64: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
   DiskPartition dco_decode_disk_partition(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -250,9 +528,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as List<int>;
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_usize(raw);
+  }
+
+  @protected
+  SandbarAuth dco_decode_sandbar_auth(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return SandbarAuth(
+      masterKeyBytesB64: dco_decode_String(arr[0]),
+      masterKeyEncryptedBytesB64: dco_decode_String(arr[1]),
+      publicKeyBytesB64: dco_decode_String(arr[2]),
+      privateKeyBytesB64: dco_decode_String(arr[3]),
+      privateKeyEncryptedBytesB64: dco_decode_String(arr[4]),
+    );
   }
 
   @protected
@@ -265,6 +570,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void dco_decode_unit(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return;
+  }
+
+  @protected
+  BigInt dco_decode_usize(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -292,6 +603,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  BigInt sse_decode_box_autoadd_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_usize(deserializer));
+  }
+
+  @protected
+  CbKeyPair sse_decode_cb_key_pair(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_publicKeyBytesB64 = sse_decode_String(deserializer);
+    var var_privateKeyBytesB64 = sse_decode_String(deserializer);
+    return CbKeyPair(
+        publicKeyBytesB64: var_publicKeyBytesB64,
+        privateKeyBytesB64: var_privateKeyBytesB64);
   }
 
   @protected
@@ -326,10 +653,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var len_ = sse_decode_i_32(deserializer);
+    return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_usize(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  SandbarAuth sse_decode_sandbar_auth(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_masterKeyBytesB64 = sse_decode_String(deserializer);
+    var var_masterKeyEncryptedBytesB64 = sse_decode_String(deserializer);
+    var var_publicKeyBytesB64 = sse_decode_String(deserializer);
+    var var_privateKeyBytesB64 = sse_decode_String(deserializer);
+    var var_privateKeyEncryptedBytesB64 = sse_decode_String(deserializer);
+    return SandbarAuth(
+        masterKeyBytesB64: var_masterKeyBytesB64,
+        masterKeyEncryptedBytesB64: var_masterKeyEncryptedBytesB64,
+        publicKeyBytesB64: var_publicKeyBytesB64,
+        privateKeyBytesB64: var_privateKeyBytesB64,
+        privateKeyEncryptedBytesB64: var_privateKeyEncryptedBytesB64);
   }
 
   @protected
@@ -341,6 +702,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_decode_unit(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  BigInt sse_decode_usize(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -382,6 +749,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(self, serializer);
+  }
+
+  @protected
+  void sse_encode_cb_key_pair(CbKeyPair self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.publicKeyBytesB64, serializer);
+    sse_encode_String(self.privateKeyBytesB64, serializer);
+  }
+
+  @protected
   void sse_encode_disk_partition(DiskPartition self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.name, serializer);
@@ -407,11 +787,41 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_prim_u_8_loose(
+      List<int> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    serializer.buffer
+        .putUint8List(self is Uint8List ? self : Uint8List.fromList(self));
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_usize(
+      BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_usize(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_sandbar_auth(SandbarAuth self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.masterKeyBytesB64, serializer);
+    sse_encode_String(self.masterKeyEncryptedBytesB64, serializer);
+    sse_encode_String(self.publicKeyBytesB64, serializer);
+    sse_encode_String(self.privateKeyBytesB64, serializer);
+    sse_encode_String(self.privateKeyEncryptedBytesB64, serializer);
   }
 
   @protected
@@ -423,6 +833,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_unit(void self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+  }
+
+  @protected
+  void sse_encode_usize(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected

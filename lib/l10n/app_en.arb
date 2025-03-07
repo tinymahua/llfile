@@ -43,9 +43,25 @@
   "settingsKeymap": "Keymap",
   "settingsExtensions": "Extensions",
   "settingsAdvancedSettings": "Advanced Settings",
+  "settingsAccountSettings": "Account Settings",
   "settingsOk": "OK",
   "settingsCancel": "Cancel",
-  "settingsApply": "Apply"
+  "settingsApply": "Apply",
+  "settingsSbcApiHostLabel": "Sbc Api Host",
+
+  "loggedInLabel": "Logged In",
+  "loginButtonLabel": "Login",
+  "registerButtonLabel": "Register",
+
+  "registerFormLabel": "Register",
+  "registerFormEmailLabel": "Email",
+  "registerFormPasswordLabel": "Password",
+  "registerFormSubmitLabel": "Register",
+
+  "loginFormLabel": "Login",
+  "loginFormEmailLabel": "Email",
+  "loginFormPasswordLabel": "Password",
+  "loginFormSubmitLabel": "Login"
 }
 
 

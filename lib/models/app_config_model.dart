@@ -138,6 +138,33 @@ class AdvancedSettingsConfig {
 }
 
 @JsonSerializable()
+class SandbarAuthInfo {
+  SandbarAuthInfo(this.email, this.accessToken, this.passwordHash, this.serverPublicKey, this.cbPublicKey, this.cbPrivateKey);
+
+  String email;
+  String accessToken;
+  String passwordHash;
+  String serverPublicKey;
+  String cbPublicKey;
+  String cbPrivateKey;
+  
+  factory SandbarAuthInfo.fromJson(Map<String, dynamic> json) => _$SandbarAuthInfoFromJson(json);
+  
+  Map<String, dynamic> toJson() => _$SandbarAuthInfoToJson(this);
+}
+
+@JsonSerializable()
+class AccountSettingsConfig {
+  AccountSettingsConfig({this.sandbarAuthInfo});
+
+  SandbarAuthInfo? sandbarAuthInfo;
+  
+  factory AccountSettingsConfig.fromJson(Map<String, dynamic> json) => _$AccountSettingsConfigFromJson(json);
+  
+  Map<String, dynamic> toJson() => _$AccountSettingsConfigToJson(this);
+}
+
+@JsonSerializable()
 class AppConfig {
   @JsonKey(name: 'file_icons')
   Map<String, FileIcon> fileIcons;
@@ -146,6 +173,8 @@ class AppConfig {
   PreferencesConfig preferences;
   ExtensionsConfig extensions;
   AdvancedSettingsConfig advancedSettings;
+  AccountSettingsConfig accountSettings;
+  String sbcApiHost;
 
   AppConfig({
     required this.fileIcons,
@@ -153,6 +182,8 @@ class AppConfig {
     required this.preferences,
     required this.extensions,
     required this.advancedSettings,
+    required this.accountSettings,
+    required this.sbcApiHost,
   });
 
   factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);

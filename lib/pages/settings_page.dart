@@ -59,11 +59,35 @@ class _SettingsPageState extends State<SettingsPage> {
           ]),
       LlNavTreeNode(
           key: ValueKey(200),
-          titleWidget: Text(AppLocalizations.of(context)!.settingsExtensions)),
+          titleWidget: Text(AppLocalizations.of(context)!.settingsExtensions),
+          onTap: () {
+          switchSettingsPage(4);
+          }
+      ),
       LlNavTreeNode(
           key: ValueKey(300),
           titleWidget:
-              Text(AppLocalizations.of(context)!.settingsAdvancedSettings)),
+              Text(AppLocalizations.of(context)!.settingsAdvancedSettings),
+    onTap: () {
+    switchSettingsPage(5);
+    }
+      ),
+      LlNavTreeNode(
+          key: ValueKey(400),
+          titleWidget:
+          Text(AppLocalizations.of(context)!.settingsAccountSettings),
+          onTap: () {
+            switchSettingsPage(6);
+          }
+      ),
+      LlNavTreeNode(
+          key: ValueKey(500),
+          titleWidget:
+          Text(AppLocalizations.of(context)!.settingsSbcApiHostLabel),
+          onTap: () {
+            switchSettingsPage(7);
+          }
+      )
     ];
 
     return Container(
@@ -99,7 +123,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      eventBus.fire(SettingsSaveEvent());
+                    },
                     child: Text(AppLocalizations.of(context)!.settingsOk)),
                 SizedBox(
                   width: 5,
@@ -113,7 +139,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               color: Theme.of(context).dividerTheme.color!),
                           borderRadius: BorderRadius.all(Radius.circular(5)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+
+                    },
                     child: Text(
                       AppLocalizations.of(context)!.settingsCancel,
                       style: TextStyle(
@@ -131,7 +159,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               color: Theme.of(context).dividerTheme.color!),
                           borderRadius: BorderRadius.all(Radius.circular(5)))),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+
+                    },
                     child: Text(
                       AppLocalizations.of(context)!.settingsApply,
                       style: TextStyle(
@@ -148,4 +178,5 @@ class _SettingsPageState extends State<SettingsPage> {
   switchSettingsPage(int index) {
     eventBus.fire(SettingsChangeContentEvent(index: index));
   }
+
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/settings_events.dart';
+import 'package:llfile/modules/settings/sub_settings/account_setting.dart';
 import 'package:llfile/modules/settings/sub_settings/language_setting.dart';
+import 'package:llfile/modules/settings/sub_settings/sbc_api_host_setting.dart';
 
 class LlSettingsContentWidget extends StatefulWidget {
   const LlSettingsContentWidget({super.key});
@@ -18,7 +20,19 @@ class _LlSettingsContentWidgetState extends State<LlSettingsContentWidget> {
   void initState() {
     super.initState();
     _pages.addAll([
+      // Preferences
       LlLanguageSetting(),
+      LlLanguageSetting(),
+      LlLanguageSetting(),
+      LlLanguageSetting(),
+      // Extends
+      LlLanguageSetting(),
+      // Advanced
+      LlLanguageSetting(),
+      // Account
+      LlAccountSetting(),
+      // SbcApiHost
+      SbcApiHostSetting(),
     ]);
 
     setupEvents();

@@ -1,4 +1,3 @@
-use std::fmt::Debug;
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
 use flutter_rust_bridge::frb;

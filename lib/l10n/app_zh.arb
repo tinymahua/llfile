@@ -43,9 +43,25 @@
   "settingsKeymap": "快捷键",
   "settingsExtensions": "扩展",
   "settingsAdvancedSettings": "高级设置",
+  "settingsAccountSettings": "账户",
   "settingsOk": "确定",
   "settingsCancel": "取消",
-  "settingsApply": "应用"
+  "settingsApply": "应用",
+  "settingsSbcApiHostLabel": "Sbc API 地址",
+
+  "loggedInLabel": "已登录",
+  "loginButtonLabel": "登录",
+  "registerButtonLabel": "注册",
+
+  "registerFormLabel": "注册",
+  "registerFormEmailLabel": "邮箱",
+  "registerFormPasswordLabel": "密码",
+  "registerFormSubmitLabel": "注册",
+
+  "loginFormLabel": "登录",
+  "loginFormEmailLabel": "邮箱",
+  "loginFormPasswordLabel": "密码",
+  "loginFormSubmitLabel": "登录"
 }
 
 
