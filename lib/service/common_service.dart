@@ -2,15 +2,36 @@ import 'package:get/get.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/common_model.dart';
 import 'package:llfile/utils/db.dart';
-import 'package:llfile/utils/dio_utils.dart';
 import 'dart:async';
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:pretty_json/pretty_json.dart';
-
+import 'package:dio/dio.dart';
 
 const String SBC_PROD_API_HOST = '';
 const String SBC_TEST_API_HOST = '';
 const String SBC_API_HOST = '';
+
+
+Dio getDio(){
+  final dio = Dio();
+  dio.interceptors.add(InterceptorsWrapper(
+      onError: (DioException error, ErrorInterceptorHandler handler){
+        print("dioInterceptors: \n\t${error}");
+        return handler.resolve(error.response!);
+      }
+  ));
+  return dio;
+}
+
+Map<String, dynamic> makeHeader({String? accessToken}){
+  Map<String, dynamic> header = {};
+  if (accessToken != null){
+    header['Authorization'] = 'JWT $accessToken';
+  }
+
+  return header;
+}
+
 
 Future<Map<String, dynamic>> getSbcAuthedHeader()async{
   final AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
@@ -46,17 +67,6 @@ final dio_lib.Dio dio = getDio();
 
 
 class BaseSbcService{
-
-  // // final String apiHost = SBC_API_HOST;
-  //
-  // String get apiHost(){
-  //   if (SBC_API_HOST.isNotEmpty){
-  //     return SBC_API_HOST;
-  //   }else{
-  //     AppConfigDb _appConfigDb = AppConfigDb();
-  //     AppConfig appConfig = await _appConfigDb.read<AppConfig>();
-  //   }
-  // }
 
   BaseSbcService();
 
