@@ -23,6 +23,8 @@ Dio getDio(){
   return dio;
 }
 
+final dio_lib.Dio dio = getDio();
+
 Map<String, dynamic> makeHeader({String? accessToken}){
   Map<String, dynamic> header = {};
   if (accessToken != null){
@@ -63,7 +65,7 @@ enum ApiMethods {
   delete,
 }
 
-final dio_lib.Dio dio = getDio();
+
 
 
 class BaseSbcService{
