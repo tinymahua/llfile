@@ -1,10 +1,11 @@
+import 'package:dio_util/dio_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:llfile/models/common_model.dart';
 
 part 'sbc_auth_model.g.dart';
 
 @JsonSerializable()
-class SbcRegisterRequest extends BaseEmptyModel{
+class SbcRegisterRequest extends BaseRequest{
   SbcRegisterRequest(this.email, this.assistEmail, this.masterKeyEncrypted, this.privateKeyEncrypted, this.publicKey);
 
   @JsonKey(name: 'email')
@@ -62,7 +63,7 @@ class SbcRegisterResponse extends BaseEmptyModel{
 
 
 @JsonSerializable()
-class SbcLoginRequest extends BaseEmptyModel{
+class SbcLoginRequest extends BaseRequest{
   SbcLoginRequest(this.email);
 
   @JsonKey(name: 'email')

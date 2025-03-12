@@ -230,6 +230,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.8.0+1"
+  dio_util:
+    dependency: "direct main"
+    description:
+      path: "../../flt_pkgs/dio_util"
+      relative: true
+    source: path
+    version: "0.0.1"
   dio_web_adapter:
     dependency: transitive
     description:

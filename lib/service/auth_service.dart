@@ -1,7 +1,8 @@
 import 'package:llfile/models/sbc_auth_model.dart';
 import 'package:llfile/service/common_service.dart';
+import 'package:dio_util/dio_util.dart';
 
-class SbcAuthService extends BaseSbcService {
+class SbcAuthService extends SbcBaseService {
   SbcAuthService();
 
   Future<SbcRegisterResponse?> register(SbcRegisterRequest req)async{
