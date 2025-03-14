@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/fs_model.dart';
+import 'package:llfile/models/markdown_model.dart';
 import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/utils/fs.dart';
@@ -168,6 +169,51 @@ class PathHistoryDb extends Db {
     return path;
   }
 }
+
+class MdConfigDb extends Db {
+  static const String _dbName = "md_config.json";
+
+  MdConfigDb() : super._(_dbName);
+
+  @override
+  Future<String> initDb() async {
+    var dbPath = await getDbPath();
+
+    if (!File(dbPath).existsSync()) {
+      await File(dbPath).create(recursive: true);
+
+      var docDir = await getAppDocDir();
+      var mdDataFsPath = join(docDir, 'md_data.json');
+      await write(MdConfig(mdDataFsPath: mdDataFsPath, theme: ''));
+
+      if (!File(mdDataFsPath).existsSync()) {
+        await File(mdDataFsPath).create(recursive: true);
+        await File(mdDataFsPath).writeAsString(jsonEncode({"collections": []}));
+      }
+    }
+
+    return dbPath;
+  }
+
+  @override
+  MdConfig deserialize(Map<String, dynamic> json) {
+    return MdConfig.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic> serialize(dynamic value) {
+    return value.toJson();
+  }
+
+  Future<void> createMdCollection(String name, List<MdDocument> documents, List<MdCollect> subCollects)async{
+    var mdConfig = await read<MdConfig>();
+    var mdData = await File(mdConfig.mdDataFsPath).readAsString();
+    var mdDataMap = jsonDecode(mdData);
+    mdDataMap["collections"].add(MdCollect(name: name, documents: documents, subCollects: subCollects));
+    await File(mdConfig.mdDataFsPath).writeAsString(jsonEncode(mdDataMap));
+  }
+}
+
 
 class AppStatesMemDb {
   int activatedFileBrowserTabIdx = 0;

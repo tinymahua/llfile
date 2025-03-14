@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LlNavTreeNode {
   const LlNavTreeNode({
@@ -15,6 +14,7 @@ class LlNavTreeNode {
   final List<LlNavTreeNode> children;
   final GestureTapCallback? onTap;
 }
+
 
 class LlSettingsSideNavWidget extends StatefulWidget {
   const LlSettingsSideNavWidget({super.key, required this.navItems});

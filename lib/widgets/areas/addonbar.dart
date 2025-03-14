@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:llfile/events/addon_events.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/layout_events.dart';
-import 'package:llfile/src/rust/api/llfs.dart';
 import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/partials/ll_md_widget.dart';
 import 'package:llfile/widgets/partials/ll_terminal_widget.dart';

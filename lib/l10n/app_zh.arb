@@ -61,7 +61,13 @@
   "loginFormLabel": "登录",
   "loginFormEmailLabel": "邮箱",
   "loginFormPasswordLabel": "密码",
-  "loginFormSubmitLabel": "登录"
+  "loginFormSubmitLabel": "登录",
+
+
+  "markdownEditLabel": "编辑",
+  "markdownPreviewLabel": "预览",
+  "markdownDataEmptyText": "无内容",
+  "markdownNewCollectButtonLabel": "创建新集合"
 }
 
 

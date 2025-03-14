@@ -61,7 +61,12 @@
   "loginFormLabel": "Login",
   "loginFormEmailLabel": "Email",
   "loginFormPasswordLabel": "Password",
-  "loginFormSubmitLabel": "Login"
+  "loginFormSubmitLabel": "Login",
+
+  "markdownEditLabel": "Edit",
+  "markdownPreviewLabel": "Preview",
+  "markdownDataEmptyText": "No contents",
+  "markdownNewCollectButtonLabel": "Create new collection"
 }
 
 

@@ -46,6 +46,8 @@ class _LlToolbarState extends State<LlToolbar> {
       });
       eventBus.fire(UpdateTabEvent(label: basename(evt.path), path: evt.path));
     });
+
+    // maximizeWindow();
   }
 
   toggleSidebarSwitch() {
@@ -186,19 +188,7 @@ class _LlToolbarState extends State<LlToolbar> {
                   size: Theme.of(context).appBarTheme.iconTheme!.size,
                   color: Theme.of(context).appBarTheme.iconTheme!.color!,
                 ),
-                onPressed: _isMaximized
-                    ? () {
-                        windowManager.restore();
-                        setState(() {
-                          _isMaximized = false;
-                        });
-                      }
-                    : () {
-                        windowManager.maximize();
-                        setState(() {
-                          _isMaximized = true;
-                        });
-                      },
+                onPressed: maximizeWindow,
               ),
               IconButton(
                 icon: Icon(
@@ -217,7 +207,19 @@ class _LlToolbarState extends State<LlToolbar> {
     );
   }
 
-
+  maximizeWindow(){
+    if (_isMaximized){
+      windowManager.restore();
+      setState(() {
+        _isMaximized = false;
+      });
+    }else{
+      windowManager.maximize();
+      setState(() {
+        _isMaximized = true;
+      });
+    }
+  }
 
   refreshFsEntities() async {
     String fsPath = _fsPathTextController.text.trim();

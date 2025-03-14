@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/ui_events.dart';
 import 'package:llfile/models/app_config_model.dart';
+import 'package:llfile/models/markdown_model.dart';
 import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/service/auth_service.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
@@ -36,6 +37,10 @@ Future<void> main() async {
   Get.put(AppConfigDb());
 
   Get.put(SbcAuthService());
+
+  var mdConfigDb = MdConfigDb();
+  await mdConfigDb.read<MdConfig>();
+  Get.put(MdConfigDb());
 
   await RustLib.init();
   runApp(const MyApp());

@@ -130,6 +130,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     ];
 
     return MultiColumnListView(
+      optimizeListRender: true,
       controller: _fsEntitiesMultiColumnListController,
       rowCellsBuilder: (BuildContext context, int rowIndex) {
         FsEntity fsEntity = _fsEntitiesMultiColumnListController
