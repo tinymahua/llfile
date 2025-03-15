@@ -14,6 +14,7 @@ import 'package:llfile/utils/fs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class Db {
   Db._(this.dbName);
@@ -172,6 +173,7 @@ class PathHistoryDb extends Db {
 
 class MdConfigDb extends Db {
   static const String _dbName = "md_config.json";
+  static const String mdRootKey = "md_objects";
 
   MdConfigDb() : super._(_dbName);
 
@@ -184,11 +186,11 @@ class MdConfigDb extends Db {
 
       var docDir = await getAppDocDir();
       var mdDataFsPath = join(docDir, 'md_data.json');
-      await write(MdConfig(mdDataFsPath: mdDataFsPath, theme: ''));
+      await write(MdConfig(mdDataFsPath: mdDataFsPath, theme: '', expandedObjectIds: []));
 
       if (!File(mdDataFsPath).existsSync()) {
         await File(mdDataFsPath).create(recursive: true);
-        await File(mdDataFsPath).writeAsString(jsonEncode({"collections": []}));
+        await File(mdDataFsPath).writeAsString(jsonEncode({mdRootKey: []}));
       }
     }
 
@@ -205,12 +207,37 @@ class MdConfigDb extends Db {
     return value.toJson();
   }
 
-  Future<void> createMdCollection(String name, List<MdDocument> documents, List<MdCollect> subCollects)async{
+  Future<void> createMdObject(String parentMdObjectId, MdObjectType type, Map<String, dynamic> mdObjectData)async{
     var mdConfig = await read<MdConfig>();
     var mdData = await File(mdConfig.mdDataFsPath).readAsString();
     var mdDataMap = jsonDecode(mdData);
-    mdDataMap["collections"].add(MdCollect(name: name, documents: documents, subCollects: subCollects));
+
+    if (parentMdObjectId.isNotEmpty && mdDataMap[mdRootKey].indexWhere((element) => element['id'] == parentMdObjectId) < 0){
+      throw Exception('parentMdObjectId not found');
+    }
+
+    mdDataMap[mdRootKey].add(MdObject(
+        id: mdObjectData['id'],
+        type: type,
+        data: mdObjectData,
+        parentObjectId: parentMdObjectId).toJson());
     await File(mdConfig.mdDataFsPath).writeAsString(jsonEncode(mdDataMap));
+  }
+
+  expandMdObject(String mdObjectId) async{
+    var mdConfig = await read<MdConfig>();
+    if (!mdConfig.expandedObjectIds.contains(mdObjectId)){
+      mdConfig.expandedObjectIds.add(mdObjectId);
+    }
+    await write(mdConfig);
+  }
+
+  collapseMdObject(String mdObjectId) async{
+    var mdConfig = await read<MdConfig>();
+    if (mdConfig.expandedObjectIds.contains(mdObjectId)){
+      mdConfig.expandedObjectIds.remove(mdObjectId);
+    }
+    await write(mdConfig);
   }
 }
 

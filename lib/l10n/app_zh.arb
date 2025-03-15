@@ -67,7 +67,9 @@
   "markdownEditLabel": "编辑",
   "markdownPreviewLabel": "预览",
   "markdownDataEmptyText": "无内容",
-  "markdownNewCollectButtonLabel": "创建新集合"
+  "markdownNewCollectButtonLabel": "创建新集合",
+  "markdownNewSubCollectButtonLabel": "创建子集合",
+  "markdownNewDocumentButtonLabel": "创建新文档"
 }
 
 
