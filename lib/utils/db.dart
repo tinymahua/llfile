@@ -207,7 +207,7 @@ class MdConfigDb extends Db {
     return value.toJson();
   }
 
-  Future<void> createMdObject(String parentMdObjectId, MdObjectType type, Map<String, dynamic> mdObjectData)async{
+  Future<MdObject> createMdObject(String parentMdObjectId, MdObjectType type, Map<String, dynamic> mdObjectData)async{
     var mdConfig = await read<MdConfig>();
     var mdData = await File(mdConfig.mdDataFsPath).readAsString();
     var mdDataMap = jsonDecode(mdData);
@@ -216,12 +216,16 @@ class MdConfigDb extends Db {
       throw Exception('parentMdObjectId not found');
     }
 
-    mdDataMap[mdRootKey].add(MdObject(
+    MdObject newMdObject = MdObject(
         id: mdObjectData['id'],
         type: type,
         data: mdObjectData,
-        parentObjectId: parentMdObjectId).toJson());
+        parentObjectId: parentMdObjectId);
+
+    mdDataMap[mdRootKey].add(newMdObject.toJson());
     await File(mdConfig.mdDataFsPath).writeAsString(jsonEncode(mdDataMap));
+
+    return newMdObject;
   }
 
   expandMdObject(String mdObjectId) async{

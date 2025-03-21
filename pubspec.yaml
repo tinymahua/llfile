@@ -18,6 +18,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
 
+
+
 environment:
   sdk: ^3.5.3
 
@@ -48,11 +50,12 @@ dependencies:
     path: ../../flt_pkgs/multi_column_list_view
   package_info_plus: ^8.0.1
   path_provider: ^2.1.5
-  path: 1.9.0
+  path: 1.9.1
   get: ^4.6.6
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
-  flutter_colorful_tab: ^0.1.1
+  flutter_colorful_tab:
+    path: ../../flt_pkgs/flutter_colorful_tab
   dynamic_tabbar: ^1.0.9
   contextmenu: ^3.0.0
   archive: ^4.0.2
@@ -69,6 +72,7 @@ dependencies:
   highlight: ^0.7.0
   flutter_highlight: ^0.7.0
   uuid: ^4.5.1
+  animated_tree_view: ^2.3.0
 
 dev_dependencies:
   flutter_test:
