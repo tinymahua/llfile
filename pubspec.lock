@@ -28,10 +28,9 @@ packages:
   animated_tree_view:
     dependency: "direct main"
     description:
-      name: animated_tree_view
-      sha256: ed982be7fa2cf51b62bb76e95b6a0f423cde12f1da8745a1da938e82a7baacf2
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "../flt_pkgs/animated_tree_view_keep"
+      relative: true
+    source: path
     version: "2.3.0"
   animations:
     dependency: transitive
@@ -252,7 +251,7 @@ packages:
   dio_util:
     dependency: "direct main"
     description:
-      path: "../../flt_pkgs/dio_util"
+      path: "../flt_pkgs/flutter_dio_util"
       relative: true
     source: path
     version: "0.0.1"
@@ -328,7 +327,7 @@ packages:
   flutter_colorful_tab:
     dependency: "direct main"
     description:
-      path: "../../flt_pkgs/flutter_colorful_tab"
+      path: "../flt_pkgs/flutter_colorful_tab_keep"
       relative: true
     source: path
     version: "0.1.1"
@@ -613,7 +612,7 @@ packages:
   multi_column_list_view:
     dependency: "direct main"
     description:
-      path: "../../flt_pkgs/multi_column_list_view"
+      path: "../flt_pkgs/flutter_multi_column_list_view"
       relative: true
     source: path
     version: "0.0.9"

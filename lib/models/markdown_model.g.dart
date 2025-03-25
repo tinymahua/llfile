@@ -54,6 +54,7 @@ Map<String, dynamic> _$MdDataToJson(MdData instance) => <String, dynamic>{
 
 MdConfig _$MdConfigFromJson(Map<String, dynamic> json) => MdConfig(
       mdDataFsPath: json['mdDataFsPath'] as String,
+      mdDocsRootPath: json['mdDocsRootPath'] as String,
       theme: json['theme'] as String,
       expandedObjectIds: (json['expandedObjectIds'] as List<dynamic>)
           .map((e) => e as String)
@@ -62,6 +63,7 @@ MdConfig _$MdConfigFromJson(Map<String, dynamic> json) => MdConfig(
 
 Map<String, dynamic> _$MdConfigToJson(MdConfig instance) => <String, dynamic>{
       'mdDataFsPath': instance.mdDataFsPath,
+      'mdDocsRootPath': instance.mdDocsRootPath,
       'theme': instance.theme,
       'expandedObjectIds': instance.expandedObjectIds,
     };

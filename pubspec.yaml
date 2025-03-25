@@ -47,7 +47,7 @@ dependencies:
   event_bus: ^2.0.1
   multi_split_view: ^3.6.0
   multi_column_list_view: 
-    path: ../../flt_pkgs/multi_column_list_view
+    path: ../flt_pkgs/flutter_multi_column_list_view
   package_info_plus: ^8.0.1
   path_provider: ^2.1.5
   path: 1.9.1
@@ -55,7 +55,7 @@ dependencies:
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
   flutter_colorful_tab:
-    path: ../../flt_pkgs/flutter_colorful_tab
+    path: ../flt_pkgs/flutter_colorful_tab_keep
   dynamic_tabbar: ^1.0.9
   contextmenu: ^3.0.0
   archive: ^4.0.2
@@ -65,14 +65,15 @@ dependencies:
   dio: ^5.8.0+1
   pretty_json: ^2.0.0
   dio_util:
-    path: ../../flt_pkgs/dio_util
+    path: ../flt_pkgs/flutter_dio_util
   flutter_markdown: ^0.7.6+2
   code_text_field: ^1.1.0
   linked_scroll_controller: ^0.2.0
   highlight: ^0.7.0
   flutter_highlight: ^0.7.0
   uuid: ^4.5.1
-  animated_tree_view: ^2.3.0
+  animated_tree_view:
+    path: ../flt_pkgs/animated_tree_view_keep
 
 dev_dependencies:
   flutter_test:

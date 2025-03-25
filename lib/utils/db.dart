@@ -174,8 +174,14 @@ class PathHistoryDb extends Db {
 class MdConfigDb extends Db {
   static const String _dbName = "md_config.json";
   static const String mdRootKey = "md_objects";
+  static const String mdDefaultDocsRoot = "md_docs";
 
   MdConfigDb() : super._(_dbName);
+
+  // Future<String> getMdDocsRoot()async{
+  //   var docDir = await getAppDocDir();
+  //   return join(docDir, mdDefaultDocsRoot);
+  // }
 
   @override
   Future<String> initDb() async {
@@ -186,7 +192,10 @@ class MdConfigDb extends Db {
 
       var docDir = await getAppDocDir();
       var mdDataFsPath = join(docDir, 'md_data.json');
-      await write(MdConfig(mdDataFsPath: mdDataFsPath, theme: '', expandedObjectIds: []));
+      await write(MdConfig(
+          mdDataFsPath: mdDataFsPath,
+          mdDocsRootPath: join(docDir, mdDefaultDocsRoot),
+          theme: '', expandedObjectIds: []));
 
       if (!File(mdDataFsPath).existsSync()) {
         await File(mdDataFsPath).create(recursive: true);
@@ -224,6 +233,17 @@ class MdConfigDb extends Db {
 
     mdDataMap[mdRootKey].add(newMdObject.toJson());
     await File(mdConfig.mdDataFsPath).writeAsString(jsonEncode(mdDataMap));
+
+    if (type == MdObjectType.document){
+      var mdDocument = MdDocument.fromJson(mdObjectData);
+      var docPath = mdDocument.fsPath;
+      var docDir = dirname(docPath);
+      if (!Directory(docDir).existsSync()){
+        Directory(docDir).createSync(recursive: true);
+      }
+      var docFile = File(docPath);
+      await docFile.writeAsString("");
+    }
 
     return newMdObject;
   }

@@ -111,11 +111,13 @@ class MdData {
 @JsonSerializable()
 class MdConfig {
   final String mdDataFsPath;
+  final String mdDocsRootPath;
   final String theme;
   List<String> expandedObjectIds;
 
   MdConfig({
     required this.mdDataFsPath,
+    required this.mdDocsRootPath,
     required this.theme,
     required this.expandedObjectIds,
   });
