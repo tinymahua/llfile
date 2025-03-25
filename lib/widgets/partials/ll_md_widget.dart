@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:code_text_field/code_text_field.dart';
 import 'package:contextmenu/contextmenu.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fui;
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/kimbie.light.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -17,7 +18,7 @@ import 'package:highlight/languages/markdown.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
-import 'package:animated_tree_view/animated_tree_view.dart';
+
 
 
 class LlMdWidget extends StatefulWidget {
@@ -45,16 +46,14 @@ class _LlMdWidgetState extends State<LlMdWidget> {
   MdConfig? _mdConfig;
 
   List<MdObject> _mdObjects = [];
-  String _treeHoveredMdObjectId = "-------";
-
-  TreeViewController<MdObject, IndexedTreeNode<MdObject>>? _mdNavTreeController;
-  IndexedTreeNode<MdObject> _mdNavTree = IndexedTreeNode.root(data: MdObject(
-      id: "", type: MdObjectType.collection, data: {}, parentObjectId: ""));
-
 
   final TextEditingController _newMdObjectTextController = TextEditingController();
   FocusNode _newMdObjectTextFocus = FocusNode();
   final TextEditingController _newMdObjectLocationController = TextEditingController();
+
+
+  ValueNotifier<int> _mdTreeItemsNotifier = ValueNotifier<int>(0);
+  List<fui.TreeViewItem> _mdNavTreeItems = [];
 
   @override
   void initState() {
@@ -73,6 +72,7 @@ class _LlMdWidgetState extends State<LlMdWidget> {
     });
 
     await loadMdObjects(_mdConfig!.mdDataFsPath);
+    _mdTreeItemsNotifier.value ++;
   }
 
   loadMdObjects(String dataFsPath) async {
@@ -86,26 +86,41 @@ class _LlMdWidgetState extends State<LlMdWidget> {
       _mdObjects = mdObjects;
     });
 
-    IndexedTreeNode<MdObject> loadedMdNavTree = await generateNavTree(null, _mdNavTree);
+    List<fui.TreeViewItem> loadedMdNavTreeItems = await generateTreeViewItems(null);
     setState(() {
-      _mdNavTree = loadedMdNavTree;
+      _mdNavTreeItems = loadedMdNavTreeItems;
     });
 
   }
 
+  Future<List<fui.TreeViewItem>> generateTreeViewItems(MdObject? parentMdObject)async{
 
-  Future<IndexedTreeNode<MdObject>> generateNavTree(MdObject? parentMdObject, IndexedTreeNode<MdObject> parentTreeNode) async {
-    List<MdObject> rootMdObjects =
-    _mdObjects.where(
+    List<fui.TreeViewItem> loadedTreeItems = [];
+
+    List<MdObject> rootMdObjects = _mdObjects.where(
             (element) => parentMdObject == null ? element.parentObjectId.isEmpty: element.parentObjectId == parentMdObject.id).toList();
 
     for (var i=0; i<rootMdObjects.length; i++){
       MdObject currentMdObject = rootMdObjects[i];
-      IndexedTreeNode<MdObject> currentTreeNode = IndexedTreeNode(key: currentMdObject.id, data: currentMdObject);
-      parentTreeNode.add(currentTreeNode);
-      await generateNavTree(currentMdObject, currentTreeNode);
+      var currentMdTreeItem = await generateTreeViewItem(currentMdObject);
+      loadedTreeItems.add(currentMdTreeItem);
     }
-    return parentTreeNode;
+    return loadedTreeItems;
+  }
+
+  Future<fui.TreeViewItem> generateTreeViewItem(MdObject mdObject)async{
+    List<fui.TreeViewItem> myChildren = [];
+
+    List<MdObject> mySubObjects = _mdObjects.where(
+            (element) => element.parentObjectId == mdObject.id).toList();
+    for (var j=0; j<mySubObjects.length; j++ ){
+      myChildren.add(await generateTreeViewItem(mySubObjects[j]));
+    }
+    return fui.TreeViewItem(
+      content: Text("${mdObject.objectName}"),
+      value: mdObject,
+      children: myChildren,
+    );
   }
 
 
@@ -132,66 +147,34 @@ class _LlMdWidgetState extends State<LlMdWidget> {
           SizedBox(
             height: 4,
           ),
-          Expanded(
-              child: Container(
-                // color: Colors.teal,
-                child: TreeView.indexed(
-                  onTreeReady: (controller){
-                    _mdNavTreeController = controller;
+          SizedBox(height: 10,),
+          _mdNavTreeItems.isNotEmpty ? Expanded(child: fui.FluentTheme(
+            data: fui.FluentThemeData(),
+            child: ValueListenableBuilder<int>(
+              valueListenable: _mdTreeItemsNotifier,
+              builder: (context, value, _){
+                print("value: ${value}");
+                print("_mdNavTreeItems: ${_mdNavTreeItems}");
+                return fui.TreeView(
+                  key: Key("${value}"),
+                  selectionMode: fui.TreeViewSelectionMode.none,
+                  shrinkWrap: true,
+                  items: _mdNavTreeItems,
+                  // onItemInvoked: (item) async => debugPrint('onItemInvoked: \$item'),
+                  onItemInvoked: (item, reason) async{
+                    print("item click");
+                    tapMdTreeNode(context, item);
                   },
-                    expansionIndicatorBuilder: (context,  node){
-                      var mdObject = node.data! as MdObject;
-                        return mdObject.type == MdObjectType.collection ? ChevronIndicator.rightDown(
-                          alignment: Alignment.centerLeft,
-                          tree: node,
-                          color: Colors.blue[700],
-                          // padding: const EdgeInsets.only(right: 20),
-                        ): NoExpansionIndicator(tree: node);
-                    },
-                    builder: (context, node){
-                      var title = node.level == 0 ? "Markdown Home" : node.data!.objectName;
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: _treeHoveredMdObjectId == node.data!.id
-                                  ? Theme.of(context).dividerTheme.color
-                                  : Colors.transparent,
-                            ),
-                            child: MouseRegion(
-                                onHover: (event) {
-                                  setState(() {
-                                    _treeHoveredMdObjectId = node.data!.id;
-                                  });
-                                },
-                                onExit: (event) {
-                                  setState(() {
-                                    _treeHoveredMdObjectId = "---------";
-                                  });
-                                },
-                              child: Container(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 20),
-                                    child: GestureDetector(
-                                      onSecondaryTapDown: (details){
-                                        openMdTreeNodeContextMenu(context, details, node.data!, node);
-                                      },
-                                      child: Text(title),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )],
-                      );
-                    }, tree: _mdNavTree) ,
-              )
-          )
+                  onSelectionChanged: (selectedItems) async => debugPrint(
+                      'onSelectionChanged: \${selectedItems.map((i) => i.value)}'),
+                  onSecondaryTap: (item, details) async {
+                    debugPrint('onSecondaryTap $item at ${details.globalPosition}');
+                    openMdTreeNodeContextMenu(context, details, item.value, item);
+                  },
+                );
+              },
+            ),
+          )): Container()
         ],
       ),
     );
@@ -272,14 +255,22 @@ class _LlMdWidgetState extends State<LlMdWidget> {
     );
   }
 
+  tapMdTreeNode(BuildContext context, fui.TreeViewItem item) async {
+    MdObject mdObject = item.value as MdObject;
+    if (mdObject.type == MdObjectType.collection) {
+      item.expanded = !item.expanded;
+      _mdTreeItemsNotifier.value++;
+    }
+  }
+
   openMdTreeNodeContextMenu(
-      BuildContext context, TapDownDetails details, MdObject mdObject, IndexedTreeNode<MdObject> currentNode) {
+      BuildContext context, TapDownDetails details, MdObject mdObject, fui.TreeViewItem currentItem) {
     showContextMenu(details.globalPosition, context, (BuildContext context) {
-      return getMdTreeNodeContextMenuViews(context, mdObject, currentNode);
+      return getMdTreeNodeContextMenuViews(context, mdObject, currentItem);
     }, 0.0, 240.0);
   }
 
-  List<Widget> getMdTreeNodeContextMenuViews(BuildContext context, MdObject mdObject, IndexedTreeNode<MdObject> currentNode) {
+  List<Widget> getMdTreeNodeContextMenuViews(BuildContext context, MdObject mdObject, fui.TreeViewItem currentItem) {
     List<ContextMenuView> contextMenuViews = [];
     contextMenuViews = [
       ContextMenuView(
@@ -288,9 +279,8 @@ class _LlMdWidgetState extends State<LlMdWidget> {
             ContextMenuItem(
                 onTap: () async {
                   Navigator.of(context).pop();
-                  await onNewMdCollection(context, currentNode);
-
-                  // reloadMdData(_mdConfig!.mdDataFsPath);
+                  await onNewMdCollection(context, currentItem);
+                  _newMdObjectTextController.clear();
                 },
                 icon: Container(),
                 title: Text(AppLocalizations.of(context)!
@@ -298,7 +288,8 @@ class _LlMdWidgetState extends State<LlMdWidget> {
             ContextMenuItem(
                 onTap: () async {
                   Navigator.of(context).pop();
-                  await onNewMdDocument(context, currentNode);
+                  await onNewMdDocument(context, currentItem);
+                  _newMdObjectTextController.clear();
                   // reloadMdData(_mdConfig!.mdDataFsPath);
                 },
                 icon: Container(),
@@ -306,19 +297,16 @@ class _LlMdWidgetState extends State<LlMdWidget> {
                     .markdownNewDocumentButtonLabel)),
           ]
         ],
-        divider: Divider(
-          height: 1,
-        ),
       )
     ];
     return contextMenuViews;
   }
 
-  onNewMdCollection(BuildContext context, IndexedTreeNode<MdObject> currentNode) async {
+  onNewMdCollection(BuildContext context, fui.TreeViewItem currentItem) async {
     var dialogTitle =
         AppLocalizations.of(context)!.markdownNewSubCollectButtonLabel;
 
-    var currentMdObject = currentNode.data!;
+    var currentMdObject = currentItem.value as MdObject;
     _newMdObjectTextFocus.requestFocus();
     return showDialog(
         context: context,
@@ -360,13 +348,12 @@ class _LlMdWidgetState extends State<LlMdWidget> {
                                 parentObjectId: currentMdObject.id)
                                 .toJson());
 
-                        currentNode.add(IndexedTreeNode(key: "${newMdObject.id}", data: newMdObject, parent: currentNode));
-                        if (!currentNode.isExpanded){
-                          _mdNavTreeController!.expandAllChildren(currentNode);
+                        currentItem.children.add(fui.TreeViewItem(content: Text("${newMdObject.objectName}"), value: newMdObject, children: []));
+                        if (!currentItem.expanded){
+                          currentItem.expanded = true;
                         }
-                        setState(() {
-                          _newMdObjectTextController.clear();
-                        });
+                        _mdTreeItemsNotifier.value++;
+
                         Navigator.of(context).pop();
                       }
                     },
@@ -377,11 +364,11 @@ class _LlMdWidgetState extends State<LlMdWidget> {
         });
   }
 
-  onNewMdDocument(BuildContext context, IndexedTreeNode<MdObject> currentNode) async {
+  onNewMdDocument(BuildContext context, fui.TreeViewItem currentItem) async {
     var dialogTitle =
         AppLocalizations.of(context)!.markdownNewDocumentButtonLabel;
 
-    var currentMdObject = currentNode.data!;
+    var currentMdObject = currentItem.value as MdObject;
     _newMdObjectTextFocus.requestFocus();
     return showDialog(
         context: context,
@@ -460,13 +447,11 @@ class _LlMdWidgetState extends State<LlMdWidget> {
                               parentObjectId: currentMdObject.id)
                               .toJson());
 
-                      currentNode.add(IndexedTreeNode(key: "${newMdObject.id}", data: newMdObject, parent: currentNode));
-                      if (!currentNode.isExpanded){
-                        _mdNavTreeController!.expandAllChildren(currentNode);
+                      currentItem.children.add(fui.TreeViewItem(content: Text("${newMdObject.objectName}"), value: newMdObject));
+                      if (!currentItem.expanded){
+                        currentItem.expanded = true;
                       }
-                      setState(() {
-                        _newMdObjectTextController.clear();
-                      });
+                      _mdTreeItemsNotifier.value++;
                       Navigator.of(context).pop();
                     }
 

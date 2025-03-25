@@ -74,6 +74,7 @@ dependencies:
   uuid: ^4.5.1
   animated_tree_view:
     path: ../flt_pkgs/animated_tree_view_keep
+  fluent_ui: ^4.11.2
 
 dev_dependencies:
   flutter_test:
