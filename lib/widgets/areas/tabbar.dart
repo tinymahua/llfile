@@ -62,10 +62,10 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
                           child: ColorfulTabBar(
                             tabShape: RoundedRectangleBorder(
                               side: BorderSide(color: Theme.of(context).dividerTheme.color!),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(4.0),
-                                  topRight: Radius.circular(4.0),
-                                )
+                                // borderRadius: BorderRadius.only(
+                                //   topLeft: Radius.circular(4.0),
+                                //   topRight: Radius.circular(4.0),
+                                // )
                             ),
                             indicatorHeight: 1,
                             unselectedHeight: 24,

@@ -25,13 +25,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.3.0"
-  animated_tree_view:
-    dependency: "direct main"
-    description:
-      path: "../flt_pkgs/animated_tree_view_keep"
-      relative: true
-    source: path
-    version: "2.3.0"
   animations:
     dependency: transitive
     description:
@@ -232,14 +225,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1"
-  diffutil_dart:
-    dependency: transitive
-    description:
-      name: diffutil_dart
-      sha256: "5e74883aedf87f3b703cb85e815bdc1ed9208b33501556e4a8a5572af9845c81"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.1"
   dio:
     dependency: "direct main"
     description:
@@ -863,14 +848,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.5.0"
-  scroll_to_index:
-    dependency: transitive
-    description:
-      name: scroll_to_index
-      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.0.1"
   shelf:
     dependency: transitive
     description:

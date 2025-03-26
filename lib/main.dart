@@ -1,3 +1,4 @@
+import 'package:fluent_ui/fluent_ui.dart' as fui;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
@@ -84,11 +85,19 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final virtualWindowFrameBuilder = VirtualWindowFrameInit();
 
+    List<LocalizationsDelegate<dynamic>> localizationsDelegates = [];
+    localizationsDelegates.addAll(AppLocalizations.localizationsDelegates);
+    localizationsDelegates.addAll(fui.FluentLocalizations.localizationsDelegates);
+
+    List<Locale> supportedLocales = [];
+    supportedLocales.addAll(AppLocalizations.supportedLocales);
+    supportedLocales.addAll(fui.FluentLocalizations.supportedLocales);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       locale: _languageConfig != null ? Locale(_languageConfig!.languageCode, _languageConfig!.countryCode) :const Locale('en', 'US'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: localizationsDelegates,
+      supportedLocales: supportedLocales,
       theme: LlFileThemeData.lightTheme,
       darkTheme: LlFileThemeData.darkTheme,
       themeMode: _themeMode,
