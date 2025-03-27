@@ -10,6 +10,78 @@ import 'package:llfile/widgets/common/ll_window_widget.dart';
 import 'package:llfile/widgets/partials/md_components/ll_md_nav.dart';
 import 'package:llfile/widgets/partials/md_components/ll_md_object.dart';
 
+enum LlMdOperateType {
+  edit,
+  preview,
+}
+
+
+class LlMdObjectHeader extends StatefulWidget {
+  LlMdObjectHeader({super.key, required this.mdObject, required this.llMdOperateType});
+
+  MdObject mdObject;
+
+
+  LlMdOperateType llMdOperateType;
+
+  @override
+  State<LlMdObjectHeader> createState() => _LlMdObjectHeaderState();
+}
+
+class _LlMdObjectHeaderState extends State<LlMdObjectHeader> {
+
+  LlMdOperateType llMdOperateType = LlMdOperateType.preview;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  setupEvents()async{
+    setState(() {
+      llMdOperateType = widget.llMdOperateType;
+    });
+  }
+
+  Widget makeOperateTypeButton(BuildContext context){
+    Widget w = Container(
+    );
+    switch (llMdOperateType){
+      case LlMdOperateType.edit:
+        w = IconButton(onPressed: (){
+          changeMdObjectOperateType(LlMdOperateType.preview);
+        }, icon: Icon(Icons.menu_book_outlined));
+        break;
+      case LlMdOperateType.preview:
+        w = IconButton(onPressed: (){
+          changeMdObjectOperateType(LlMdOperateType.edit);
+        }, icon: Icon(Icons.edit));
+        break;
+    }
+    return w;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(),
+        Text("${widget.mdObject.objectName}"),
+        Container(child: fui.Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: makeOperateTypeButton(context),
+        ),),
+      ],);
+  }
+
+  changeMdObjectOperateType(LlMdOperateType type){
+    setState(() {
+      llMdOperateType = type;
+    });
+    eventBus.fire(SwitchMdObjectOperateTypeEvent(mdObject: widget.mdObject, llMdOperateType: type));
+  }
+}
 
 
 ///
@@ -37,6 +109,12 @@ class LlMdObjectTabWidgetState extends LlTabState {
   void initState() {
     super.initState();
     _flyoutController = fui.FlyoutController();
+
+    setupEvents();
+  }
+
+  setupEvents()async{
+
   }
 
   void _showMenu(Offset position) {
@@ -148,15 +226,23 @@ class _LlMdWidgetState extends State<LlMdWidget> {
   /// Creates a tab for the given index
   LlMdObjectTabWidget generateMdObjectTab(
       int index, String tabTitleText, MdObject mdObject) {
+
+    var mdObjectContentView = mdObject.type == MdObjectType.collection
+        ? LlMdCollectionView(
+      mdCollection: MdCollection.fromJson(mdObject.data),
+    )
+        : LlMdDocView(
+      mdDocument: MdDocument.fromJson(mdObject.data),
+    );
+
+    var mdObjectHeader = LlMdObjectHeader(mdObject: mdObject, llMdOperateType: LlMdOperateType.preview,);
+
     LlMdObjectTabWidget newTab = LlMdObjectTabWidget(
       mdObject: mdObject,
-        body: mdObject.type == MdObjectType.collection
-            ? LlMdCollectionView(
-                mdCollection: MdCollection.fromJson(mdObject.data),
-              )
-            : LlMdDocView(
-                mdDocument: MdDocument.fromJson(mdObject.data),
-              ),
+        body: Column(children: [
+          mdObjectHeader,
+          Expanded(child: mdObjectContentView),
+        ],),
         text: Text(tabTitleText));
     return newTab;
   }
