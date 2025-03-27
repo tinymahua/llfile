@@ -24,15 +24,6 @@ enum LlTabWidthBehavior {
 }
 
 
-/// The data that is passed to the [Tab] widget.
-///
-/// This is used to determine the state of the tab, such as if it's selected,
-/// if it's reorderable, and more.
-///
-/// See also:
-///
-///   * [Tab], the widget that uses this data.
-///   * [TabView], the widget that uses the [Tab] widget.
 class TabData extends InheritedWidget {
   const TabData({
     super.key,

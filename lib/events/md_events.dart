@@ -1,7 +1,7 @@
 import 'package:llfile/models/markdown_model.dart';
 
-class OpenMdDocEvent {
-  final MdDocument mdDocument;
+class OpenMdObjectEvent {
+  final MdObject mdObject;
 
-  OpenMdDocEvent({required this.mdDocument});
+  OpenMdObjectEvent({required this.mdObject});
 }
