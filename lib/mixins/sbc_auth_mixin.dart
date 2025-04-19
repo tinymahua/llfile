@@ -10,6 +10,8 @@ mixin SbcAuthMixin {
     print("pak: ${passwdAesKey.length}");
     var masterKey = await aesDecrypt(palAesKeyBytes: passwdAesKey, encryptedBytes: base64Url.decode(resp.masterKeyEncrypted!));
     var privateKey = await aesDecrypt(palAesKeyBytes: masterKey, encryptedBytes: base64Url.decode(resp.privateKeyEncrypted!));
+    print("decrypted privateKey: ${privateKey}");
+    print("Server pk: ${base64Url.decode(resp.serverPublicKey!)}");
     var fernetKey = await cbDecrypt(
         peerPalCryptoPublicKeyBytes: base64Url.decode(resp.serverPublicKey!),
         myPalCryptoSecretKeyBytes: privateKey,

@@ -57,17 +57,40 @@ Future<String> getSbcApiHost()async{
 }
 
 
-// enum ApiMethods {
-//   get,
-//   post,
-//   put,
-//   delete,
-// }
 
+// Like a json annotation class
+class SbcErrorResponse {
+  SbcErrorResponse({required this.eid, required this.eval, this.extraInfo});
 
+  String eid;
+  String eval;
+  dynamic extraInfo;
+
+  // declare some custom fields
+
+  factory SbcErrorResponse.fromJson(Map<String, dynamic> json) {
+    return SbcErrorResponse(eid: json['eid'], eval: json['eval'], extraInfo: json['extra_info']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'eid': eid,
+      'eval': eval,
+      'extra_info': extraInfo,
+    };
+    return data;
+  }
+}
 
 class SbcBaseService extends DioUtil {
   SbcBaseService(): super();
+
+  @override
+  void handleException(Map<String, dynamic> exceptionRespData) {
+    var resp = SbcErrorResponse.fromJson(exceptionRespData['error']);
+    print('Got error resp： ${resp.toJson()}');
+
+  }
 
   @override
   Future<Map<String, dynamic>?> makeHeaders()async {
