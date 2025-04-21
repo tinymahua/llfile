@@ -69,7 +69,12 @@
   "markdownDataEmptyText": "无内容",
   "markdownNewCollectButtonLabel": "创建新集合",
   "markdownNewSubCollectButtonLabel": "创建子集合",
-  "markdownNewDocumentButtonLabel": "创建新文档"
+  "markdownNewDocumentButtonLabel": "创建新文档",
+
+  "sbcDevicesNumLabel": "已注册设备数量",
+  "sbcCurrentDeviceLabel": "本设备",
+  "sbcCurrentDeviceUnregistered": "未注册",
+  "sbcRegisterNewDeviceLabel": "注册新设备"
 }
 
 

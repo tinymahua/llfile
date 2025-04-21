@@ -34,6 +34,9 @@ SbcRegisterResponse _$SbcRegisterResponseFromJson(Map<String, dynamic> json) =>
       json['master_key_encrypted'] as String?,
       json['fernet_key_encrypted'] as String?,
       json['server_public_key'] as String?,
+      (json['peer_devices'] as List<dynamic>)
+          .map((e) => SbcDevice.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$SbcRegisterResponseToJson(
@@ -47,6 +50,7 @@ Map<String, dynamic> _$SbcRegisterResponseToJson(
       'master_key_encrypted': instance.masterKeyEncrypted,
       'fernet_key_encrypted': instance.fernetKeyEncrypted,
       'server_public_key': instance.serverPublicKey,
+      'peer_devices': instance.devices,
     };
 
 SbcLoginRequest _$SbcLoginRequestFromJson(Map<String, dynamic> json) =>

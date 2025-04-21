@@ -68,7 +68,12 @@
   "markdownDataEmptyText": "No contents",
   "markdownNewCollectButtonLabel": "Create new collection",
   "markdownNewSubCollectButtonLabel": "Create sub collection",
-  "markdownNewDocumentButtonLabel": "Create new document"
+  "markdownNewDocumentButtonLabel": "Create new document",
+
+  "sbcDevicesNumLabel": "Registered devices num",
+  "sbcCurrentDeviceLabel": "Current",
+  "sbcCurrentDeviceUnregistered": "Unregistered",
+  "sbcRegisterNewDeviceLabel": "Register new device"
 }
 
 

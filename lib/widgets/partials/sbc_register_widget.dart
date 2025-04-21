@@ -6,7 +6,7 @@ import 'package:llfile/events/sbc_auth_events.dart';
 import 'package:llfile/mixins/sbc_auth_mixin.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/sbc_auth_model.dart';
-import 'package:llfile/service/auth_service.dart';
+import 'package:llfile/service/sbc_auth_service.dart';
 import 'package:llfile/src/rust/api/sandbar.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:pretty_json/pretty_json.dart';

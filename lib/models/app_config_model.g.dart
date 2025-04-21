@@ -164,12 +164,17 @@ AccountSettingsConfig _$AccountSettingsConfigFromJson(
           ? null
           : SandbarAuthInfo.fromJson(
               json['sandbarAuthInfo'] as Map<String, dynamic>),
+      sandbarDevices: (json['sandbarDevices'] as List<dynamic>?)
+              ?.map((e) => SbcDevice.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$AccountSettingsConfigToJson(
         AccountSettingsConfig instance) =>
     <String, dynamic>{
       'sandbarAuthInfo': instance.sandbarAuthInfo,
+      'sandbarDevices': instance.sandbarDevices,
     };
 
 AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(

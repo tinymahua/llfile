@@ -1,6 +1,7 @@
 import 'package:dio_util/dio_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:llfile/models/common_model.dart';
+import 'package:llfile/models/sbc_object_model.dart';
 
 part 'sbc_auth_model.g.dart';
 
@@ -30,7 +31,10 @@ class SbcRegisterRequest extends BaseRequest{
 
 @JsonSerializable()
 class SbcRegisterResponse extends BaseEmptyModel{
-  SbcRegisterResponse(this.uid, this.email, this.publicKey, this.accessTokenEncrypted, this.privateKeyEncrypted, this.masterKeyEncrypted, this.fernetKeyEncrypted, this.serverPublicKey);
+  SbcRegisterResponse(
+      this.uid, this.email, this.publicKey, this.accessTokenEncrypted,
+      this.privateKeyEncrypted, this.masterKeyEncrypted,
+      this.fernetKeyEncrypted, this.serverPublicKey, this.devices);
 
   @JsonKey(name: 'uid')
   String? uid;
@@ -55,6 +59,9 @@ class SbcRegisterResponse extends BaseEmptyModel{
 
   @JsonKey(name: 'server_public_key')
   String? serverPublicKey;
+
+  @JsonKey(name: 'peer_devices')
+  List<SbcDevice> devices;
 
   factory SbcRegisterResponse.fromJson(Map<String, dynamic> json) => _$SbcRegisterResponseFromJson(json);
   

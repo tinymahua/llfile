@@ -6,7 +6,8 @@ import 'package:llfile/events/ui_events.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/markdown_model.dart';
 import 'package:llfile/pages/fsmgr_page.dart';
-import 'package:llfile/service/auth_service.dart';
+import 'package:llfile/service/sbc_auth_service.dart';
+import 'package:llfile/service/sbc_device_service.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
@@ -38,6 +39,7 @@ Future<void> main() async {
   Get.put(AppConfigDb());
 
   Get.put(SbcAuthService());
+  Get.put(SbcDeviceService());
 
   var mdConfigDb = MdConfigDb();
   await mdConfigDb.read<MdConfig>();

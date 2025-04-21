@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:llfile/models/fs_model.dart';
+import 'package:llfile/models/sbc_object_model.dart';
 
 part 'app_config_model.g.dart';
 
@@ -156,9 +157,11 @@ class SandbarAuthInfo {
 
 @JsonSerializable()
 class AccountSettingsConfig {
-  AccountSettingsConfig({this.sandbarAuthInfo});
+  AccountSettingsConfig({this.sandbarAuthInfo, this.sandbarDevices = const []});
 
   SandbarAuthInfo? sandbarAuthInfo;
+
+  List<SbcDevice> sandbarDevices = [];
   
   factory AccountSettingsConfig.fromJson(Map<String, dynamic> json) => _$AccountSettingsConfigFromJson(json);
   
