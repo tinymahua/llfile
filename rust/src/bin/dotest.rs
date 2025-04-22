@@ -2,7 +2,7 @@ use rust_lib_llfile::api::sandbar::generate_auth;
 
 fn main() {
     let auth = generate_auth(String::from("123456")).unwrap();
-    println!("auth: {:?}", auth.master_key_bytes_b64);
+    // println!("auth: {:?}", auth.master_key_bytes_b32);
 }
 
 // use anyhow::Result;

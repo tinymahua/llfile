@@ -96,7 +96,7 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
                   Text(_appConfig!.accountSettings.sandbarDevices.length.toString()),
                 ],
               ),
-              Row(children: [
+              if (_currentDeviceInfo!=null) Row(children: [
                 Text("${AppLocalizations.of(context)!.sbcCurrentDeviceLabel}ID: ${_currentDeviceInfo!.cbPublicKey}"),
                 // Text("${AppLocalizations.of(context)!.sbcCurrentDeviceLabel}"),
               ],),

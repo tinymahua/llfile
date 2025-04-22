@@ -39,12 +39,14 @@ pub fn generate_aes_key() -> Result<Vec<u8>> {
 
 
 pub fn aes_encrypt(pal_aes_key_bytes: Vec<u8>, plain_bytes:Vec<u8>) -> Result<Vec<u8>> {
-    let encrypted_bytes = pal_aes_encrypt(pal_aes_key_bytes.as_slice(), plain_bytes.as_slice()).unwrap();
+    let encrypted_bytes = pal_aes_encrypt(
+        pal_aes_key_bytes.as_slice(), plain_bytes.as_slice())?;
     Ok(encrypted_bytes)
 }
 
 pub fn aes_decrypt(pal_aes_key_bytes: Vec<u8>, encrypted_bytes:Vec<u8>, nonce_len: Option<usize>) -> Result<Vec<u8>> {
-    let decrypted_bytes = pal_aes_decrypt(pal_aes_key_bytes.as_slice(), encrypted_bytes.as_slice(), nonce_len).unwrap();
+    let decrypted_bytes = pal_aes_decrypt(
+        pal_aes_key_bytes.as_slice(), encrypted_bytes.as_slice(), nonce_len)?;
     Ok(decrypted_bytes)
 }
 
@@ -65,7 +67,9 @@ pub fn generate_cb_key_pair() -> Result<CbKeyPair>{
 pub fn cb_encrypt(peer_pal_crypto_public_key_bytes: Vec<u8>,
                   my_pal_crypto_secret_key_bytes: Vec<u8>,
                   plain_bytes: Vec<u8>) -> Result<Vec<u8>> {
-    let encrypted_bytes = pal_cb_encrypt(peer_pal_crypto_public_key_bytes.as_slice(), my_pal_crypto_secret_key_bytes.as_slice(), plain_bytes.as_slice()).unwrap();
+    let encrypted_bytes = pal_cb_encrypt(
+        peer_pal_crypto_public_key_bytes.as_slice(),
+        my_pal_crypto_secret_key_bytes.as_slice(), plain_bytes.as_slice())?;
     Ok(encrypted_bytes)
 }
 
@@ -74,11 +78,13 @@ pub fn cb_decrypt(
     my_pal_crypto_secret_key_bytes: Vec<u8>,
     encrypted_bytes: Vec<u8>,
     nonce_len: Option<usize>) -> Result<Vec<u8>> {
-    let decrypted_bytes = pal_cb_decrypt(peer_pal_crypto_public_key_bytes.as_slice(), my_pal_crypto_secret_key_bytes.as_slice(), encrypted_bytes.as_slice(), nonce_len).unwrap();
+    let decrypted_bytes = pal_cb_decrypt(
+        peer_pal_crypto_public_key_bytes.as_slice(), my_pal_crypto_secret_key_bytes.as_slice(),
+        encrypted_bytes.as_slice(), nonce_len)?;
     Ok(decrypted_bytes)
 }
 
 pub fn argon2_pwd_hash(password: Vec<u8>) -> Result<Vec<u8>>{
-    let hash_output_bytes = argon2_password_hash(password.as_slice()).unwrap();
+    let hash_output_bytes = argon2_password_hash(password.as_slice())?;
     Ok(hash_output_bytes)
 }
