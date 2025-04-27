@@ -29,6 +29,7 @@ class LlFileThemeData {
 
   static ThemeData get lightTheme {
     return ThemeData(
+      fontFamily: 'NotoSansSC',
       appBarTheme: AppBarTheme(
         backgroundColor: lightCanvasColor,
         foregroundColor: lightOnCanvasColor,
@@ -56,6 +57,7 @@ class LlFileThemeData {
 
   static ThemeData get darkTheme {
     return ThemeData(
+      fontFamily: 'NotoSansSC',
       appBarTheme: AppBarTheme(
         backgroundColor: darkCanvasColor,
         foregroundColor: darkOnCanvasColor,
