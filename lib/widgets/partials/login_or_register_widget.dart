@@ -23,6 +23,7 @@ class _LoginOrRegisterWidgetState extends State<LoginOrRegisterWidget> {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SegmentedButton(
               showSelectedIcon: false,

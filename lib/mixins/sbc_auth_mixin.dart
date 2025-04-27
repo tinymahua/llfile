@@ -30,4 +30,5 @@ mixin SbcAuthMixin {
         base64.encode(privateKey),
     );
   }
+
 }

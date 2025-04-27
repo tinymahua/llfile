@@ -63,6 +63,7 @@
   "loginFormPasswordLabel": "密码",
   "loginFormSubmitLabel": "登录",
 
+  "logoutLabel": "退出登录",
 
   "markdownEditLabel": "编辑",
   "markdownPreviewLabel": "预览",

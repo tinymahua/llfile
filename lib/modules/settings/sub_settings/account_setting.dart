@@ -120,6 +120,13 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
             ]
           ),
         )),
+        Row(
+          children: [
+            ElevatedButton(onPressed: (){
+              sbcLogout();
+            }, child: Text(" (${AppLocalizations.of(context)!.logoutLabel})"))
+          ],
+        )
       ],
     );
   }
@@ -146,5 +153,17 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
     if (resp != null){
       print(prettyJson(resp.toJson()));
     }
+  }
+
+  sbcLogout()async{
+    var _readAppConfig = await _appConfigDb.read<AppConfig>();
+    _readAppConfig.accountSettings.sandbarAuthInfo = null;
+    await _appConfigDb.write(_readAppConfig);
+    setState(() {
+      _appConfig = _readAppConfig;
+      // _currentDeviceInfo = _readAppConfig.accountSettings.sandbarAuthInfo;
+      // _sbcDevices = _readAppConfig.accountSettings.sandbarDevices;
+    });
+
   }
 }

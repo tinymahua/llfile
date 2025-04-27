@@ -63,6 +63,8 @@
   "loginFormPasswordLabel": "Password",
   "loginFormSubmitLabel": "Login",
 
+  "logoutLabel": "Logout",
+
   "markdownEditLabel": "Edit",
   "markdownPreviewLabel": "Preview",
   "markdownDataEmptyText": "No contents",
