@@ -613,10 +613,11 @@ packages:
   multi_column_list_view:
     dependency: "direct main"
     description:
-      path: "../flt_pkgs/flutter_multi_column_list_view"
-      relative: true
-    source: path
-    version: "0.0.9"
+      name: multi_column_list_view
+      sha256: "164612a9c1003d4f325634f92479878816c9452ba80392afc8af2b00a1d14675"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.10"
   multi_split_view:
     dependency: "direct main"
     description:
@@ -965,6 +966,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
+  top_modal_sheet:
+    dependency: "direct main"
+    description:
+      name: top_modal_sheet
+      sha256: "404249c2cec151a5872197601bce2913ff88bb3b714ddae0223756308e7ccf08"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   typed_data:
     dependency: transitive
     description:

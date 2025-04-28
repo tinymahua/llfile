@@ -9,6 +9,7 @@ import 'package:llfile/models/path_model.dart';
 import 'package:llfile/pages/settings_page.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:path/path.dart';
+import 'package:top_modal_sheet/top_modal_sheet.dart';
 import 'package:window_manager/window_manager.dart';
 
 class LlToolbar extends StatefulWidget {
@@ -161,10 +162,19 @@ class _LlToolbarState extends State<LlToolbar> {
                 size: Theme.of(context).appBarTheme.iconTheme!.size,
                 color: Theme.of(context).appBarTheme.iconTheme!.color!,
               ),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
-                  return SettingsPage();
-                }));
+              onPressed: ()async {
+
+                var _ = await showTopModalSheet<String?>(context, Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: SettingsPage()), barrierDismissible: false);
+
+                // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                //   return Container(
+                //       height: MediaQuery.of(context).size.height * 0.6,
+                //       width: MediaQuery.of(context).size.width * 0.5,
+                //       child: SettingsPage());
+                // }));
               },
             ),
           ],),

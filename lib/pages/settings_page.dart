@@ -125,6 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     onPressed: () {
                       eventBus.fire(SettingsSaveEvent());
+                      Navigator.pop(context);
                     },
                     child: Text(AppLocalizations.of(context)!.settingsOk)),
                 SizedBox(
@@ -140,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           borderRadius: BorderRadius.all(Radius.circular(5)))),
                     ),
                     onPressed: () {
-
+                      Navigator.pop(context);
                     },
                     child: Text(
                       AppLocalizations.of(context)!.settingsCancel,
@@ -150,23 +151,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 SizedBox(
                   width: 5,
                 ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.onSurface),
-                      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Theme.of(context).dividerTheme.color!),
-                          borderRadius: BorderRadius.all(Radius.circular(5)))),
-                    ),
-                    onPressed: () {
-
-                    },
-                    child: Text(
-                      AppLocalizations.of(context)!.settingsApply,
-                      style: TextStyle(
-                          color: Theme.of(context).dividerTheme.color!),
-                    ))
+                // ElevatedButton(
+                //     style: ButtonStyle(
+                //       foregroundColor: WidgetStatePropertyAll(
+                //           Theme.of(context).colorScheme.onSurface),
+                //       shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                //           side: BorderSide(
+                //               color: Theme.of(context).dividerTheme.color!),
+                //           borderRadius: BorderRadius.all(Radius.circular(5)))),
+                //     ),
+                //     onPressed: () {
+                //
+                //     },
+                //     child: Text(
+                //       AppLocalizations.of(context)!.settingsApply,
+                //       style: TextStyle(
+                //           color: Theme.of(context).dividerTheme.color!),
+                //     ))
               ],
             )
           ],
