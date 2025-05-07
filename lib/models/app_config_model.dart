@@ -130,8 +130,22 @@ class ExtensionsConfig {
 }
 
 @JsonSerializable()
+class SandbarClientNodeConfig {
+  SandbarClientNodeConfig(this.configFilePath);
+
+  @JsonKey(name: 'config_file_path')
+  String configFilePath;
+
+  factory SandbarClientNodeConfig.fromJson(Map<String, dynamic> json) => _$SandbarClientNodeConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SandbarClientNodeConfigToJson(this);
+}
+
+@JsonSerializable()
 class AdvancedSettingsConfig {
-  AdvancedSettingsConfig();
+  AdvancedSettingsConfig(this.sandbarClientNodeConfig);
+
+  SandbarClientNodeConfig? sandbarClientNodeConfig;
 
   factory AdvancedSettingsConfig.fromJson(Map<String, dynamic> json) => _$AdvancedSettingsConfigFromJson(json);
 

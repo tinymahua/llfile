@@ -7,12 +7,19 @@ class LlNavTreeNode {
     required this.titleWidget,
     this.children = const <LlNavTreeNode>[],
     this.onTap,
+    this.data,
   });
 
   final Key? key;
   final Widget titleWidget;
   final List<LlNavTreeNode> children;
-  final GestureTapCallback? onTap;
+  final void Function(dynamic)? onTap;
+  final dynamic data;
+
+  @override
+  String toString() {
+    return 'LlNavTreeNode{key: $key, titleWidget: $titleWidget, children: $children, onTap: $onTap}';
+  }
 }
 
 
@@ -75,7 +82,7 @@ class _LlSettingsSideNavWidgetState extends State<LlSettingsSideNavWidget> {
                         setState(() {
                           _selectedItemKey = entry.node.key;
                         });
-                        entry.node.onTap?.call();
+                        entry.node.onTap?.call(entry.node.data);
                       },
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

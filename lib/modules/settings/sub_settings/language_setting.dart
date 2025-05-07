@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/models/app_config_model.dart';
+import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LlLanguageSetting extends StatefulWidget {
-  const LlLanguageSetting({super.key});
+class LlLanguageSetting extends SettingsContentPageBaseWidget {
+  const LlLanguageSetting({super.key}): super(pageName: SettingsContentPage.language);
 
   @override
   State<LlLanguageSetting> createState() => _LlLanguageSettingState();

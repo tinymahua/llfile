@@ -43,6 +43,8 @@
   "settingsKeymap": "Keymap",
   "settingsExtensions": "Extensions",
   "settingsAdvancedSettings": "Advanced Settings",
+  "settingsAdvancedSandbarClientNodeConfig": "Sandbar Client",
+  "settingsAdvancedSandbarClientDataLocation": "Data Location",
   "settingsAccountSettings": "Account Settings",
   "settingsOk": "OK",
   "settingsCancel": "Cancel",

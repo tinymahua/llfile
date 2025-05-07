@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/settings_events.dart';
 import 'package:llfile/modules/settings/settings_content.dart';
+import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/modules/settings/side_nav.dart';
 import 'package:llfile/widgets/common/ll_window_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,64 +31,73 @@ class _SettingsPageState extends State<SettingsPage> {
           titleWidget: Text(AppLocalizations.of(context)!.settingsPreferences),
           children: [
             LlNavTreeNode(
-                key: ValueKey(101),
-                titleWidget:
-                    Text(AppLocalizations.of(context)!.settingsLanguage),
-                onTap: () {
-                  switchSettingsPage(0);
-                }),
-            LlNavTreeNode(
-                key: ValueKey(102),
-                titleWidget: Text(AppLocalizations.of(context)!
-                    .settingsConfigurationSaveLocation),
-                onTap: () {
-                  switchSettingsPage(1);
-                }),
-            LlNavTreeNode(
-                key: ValueKey(103),
-                titleWidget: Text(
-                    AppLocalizations.of(context)!.settingsFileDirectoryOptions),
-                onTap: () {
-                  switchSettingsPage(2);
-                }),
-            LlNavTreeNode(
-                key: ValueKey(104),
-                titleWidget: Text(AppLocalizations.of(context)!.settingsKeymap),
-                onTap: () {
-                  switchSettingsPage(3);
-                }),
+              key: ValueKey(101),
+              titleWidget: Text(AppLocalizations.of(context)!.settingsLanguage),
+              data: SettingsContentPage.language,
+              onTap: (data) {
+                switchSettingsPage(0, settingsContentPage: data);
+              },
+            ),
+            // LlNavTreeNode(
+            //     key: ValueKey(102),
+            //     titleWidget: Text(AppLocalizations.of(context)!
+            //         .settingsConfigurationSaveLocation),
+            //     data: SettingsContentPage.language,
+            //     onTap: (data) {
+            //       switchSettingsPage(1,  settingsContentPage: data);
+            //     }),
+            // LlNavTreeNode(
+            //     key: ValueKey(103),
+            //     titleWidget: Text(
+            //         AppLocalizations.of(context)!.settingsFileDirectoryOptions),
+            //     onTap: (node) {
+            //       switchSettingsPage(2);
+            //     }),
+            // LlNavTreeNode(
+            //     key: ValueKey(104),
+            //     titleWidget: Text(AppLocalizations.of(context)!.settingsKeymap),
+            //     onTap: (node) {
+            //       switchSettingsPage(3);
+            //     }),
           ]),
-      LlNavTreeNode(
-          key: ValueKey(200),
-          titleWidget: Text(AppLocalizations.of(context)!.settingsExtensions),
-          onTap: () {
-          switchSettingsPage(4);
-          }
-      ),
+      // LlNavTreeNode(
+      //     key: ValueKey(200),
+      //     titleWidget: Text(AppLocalizations.of(context)!.settingsExtensions),
+      //     onTap: (node) {
+      //       switchSettingsPage(4);
+      //     }),
       LlNavTreeNode(
           key: ValueKey(300),
           titleWidget:
               Text(AppLocalizations.of(context)!.settingsAdvancedSettings),
-    onTap: () {
-    switchSettingsPage(5);
-    }
-      ),
+          onTap: (node) {
+            switchSettingsPage(5);
+          },
+          children: [
+            LlNavTreeNode(
+                titleWidget: Text(AppLocalizations.of(context)!
+                    .settingsAdvancedSandbarClientNodeConfig),
+                onTap: (data) {
+                  print('tapped node from tree: ${data}');
+                  switchSettingsPage(0, settingsContentPage: data);
+                }, data: SettingsContentPage.sandbarClientNodeConfig),
+          ]),
       LlNavTreeNode(
           key: ValueKey(400),
           titleWidget:
-          Text(AppLocalizations.of(context)!.settingsAccountSettings),
-          onTap: () {
-            switchSettingsPage(6);
-          }
-      ),
+              Text(AppLocalizations.of(context)!.settingsAccountSettings),
+          data: SettingsContentPage.account,
+          onTap: (data) {
+            switchSettingsPage(6, settingsContentPage: data);
+          }),
       LlNavTreeNode(
           key: ValueKey(500),
           titleWidget:
-          Text(AppLocalizations.of(context)!.settingsSbcApiHostLabel),
-          onTap: () {
-            switchSettingsPage(7);
-          }
-      )
+              Text(AppLocalizations.of(context)!.settingsSbcApiHostLabel),
+          data: SettingsContentPage.sbcApiHost,
+          onTap: (data) {
+            switchSettingsPage(7, settingsContentPage: data);
+          })
     ];
 
     return Container(
@@ -176,8 +186,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  switchSettingsPage(int index) {
-    eventBus.fire(SettingsChangeContentEvent(index: index));
+  switchSettingsPage(int index, {SettingsContentPage? settingsContentPage}) {
+    eventBus.fire(SettingsChangeContentEvent(index: index, settingsContentPage: settingsContentPage));
   }
-
 }

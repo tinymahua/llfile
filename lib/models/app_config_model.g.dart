@@ -127,13 +127,32 @@ ExtensionsConfig _$ExtensionsConfigFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ExtensionsConfigToJson(ExtensionsConfig instance) =>
     <String, dynamic>{};
 
+SandbarClientNodeConfig _$SandbarClientNodeConfigFromJson(
+        Map<String, dynamic> json) =>
+    SandbarClientNodeConfig(
+      json['config_file_path'] as String,
+    );
+
+Map<String, dynamic> _$SandbarClientNodeConfigToJson(
+        SandbarClientNodeConfig instance) =>
+    <String, dynamic>{
+      'config_file_path': instance.configFilePath,
+    };
+
 AdvancedSettingsConfig _$AdvancedSettingsConfigFromJson(
         Map<String, dynamic> json) =>
-    AdvancedSettingsConfig();
+    AdvancedSettingsConfig(
+      json['sandbarClientNodeConfig'] == null
+          ? null
+          : SandbarClientNodeConfig.fromJson(
+              json['sandbarClientNodeConfig'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$AdvancedSettingsConfigToJson(
         AdvancedSettingsConfig instance) =>
-    <String, dynamic>{};
+    <String, dynamic>{
+      'sandbarClientNodeConfig': instance.sandbarClientNodeConfig,
+    };
 
 SandbarAuthInfo _$SandbarAuthInfoFromJson(Map<String, dynamic> json) =>
     SandbarAuthInfo(

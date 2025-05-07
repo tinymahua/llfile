@@ -1,3 +1,5 @@
+pub mod client_api;
+
 use anyhow::Result;
 use flutter_rust_bridge::frb;
 use base64::prelude::*;

@@ -43,6 +43,8 @@
   "settingsKeymap": "快捷键",
   "settingsExtensions": "扩展",
   "settingsAdvancedSettings": "高级设置",
+  "settingsAdvancedSandbarClientNodeConfig": "沙洲客户端",
+  "settingsAdvancedSandbarClientDataLocation": "数据位置",
   "settingsAccountSettings": "账户",
   "settingsOk": "确定",
   "settingsCancel": "取消",

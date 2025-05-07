@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/settings_events.dart';
 import 'package:llfile/models/app_config_model.dart';
+import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/utils/db.dart';
 
 
-class SbcApiHostSetting extends StatefulWidget {
-  const SbcApiHostSetting({super.key});
+class SbcApiHostSetting extends SettingsContentPageBaseWidget {
+
+  const SbcApiHostSetting({super.key}): super(pageName: SettingsContentPage.sbcApiHost);
 
   @override
   State<SbcApiHostSetting> createState() => _SbcApiHostSettingState();

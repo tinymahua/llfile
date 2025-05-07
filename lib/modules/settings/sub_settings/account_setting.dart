@@ -5,14 +5,16 @@ import 'package:llfile/events/sbc_auth_events.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/sbc_api_model.dart';
 import 'package:llfile/models/sbc_object_model.dart';
+import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/service/sbc_device_service.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/widgets/partials/login_or_register_widget.dart';
 import 'package:pretty_json/pretty_json.dart';
 
-class LlAccountSetting extends StatefulWidget {
-  const LlAccountSetting({super.key});
+class LlAccountSetting extends SettingsContentPageBaseWidget{
+
+  const LlAccountSetting({super.key, }): super(pageName: SettingsContentPage.account);
 
   @override
   State<LlAccountSetting> createState() => _LlAccountSettingState();
