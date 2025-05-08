@@ -6,6 +6,7 @@
 import 'api/lldisk.dart';
 import 'api/llfs.dart';
 import 'api/sandbar.dart';
+import 'api/sandbar_node.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -61,6 +62,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   SandbarAuth dco_decode_sandbar_auth(dynamic raw);
 
   @protected
+  SandbarNodeConfig dco_decode_sandbar_node_config(dynamic raw);
+
+  @protected
   int dco_decode_u_8(dynamic raw);
 
   @protected
@@ -109,6 +113,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SandbarAuth sse_decode_sandbar_auth(SseDeserializer deserializer);
+
+  @protected
+  SandbarNodeConfig sse_decode_sandbar_node_config(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -164,6 +172,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_sandbar_auth(SandbarAuth self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sandbar_node_config(
+      SandbarNodeConfig self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

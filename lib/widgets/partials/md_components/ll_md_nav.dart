@@ -14,6 +14,7 @@ import 'package:llfile/widgets/common/context_menu_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
+import 'package:uuid/v4.dart';
 
 ///
 /// Markdown Nav Tree
@@ -191,7 +192,27 @@ class _LlMdNavTreeWidgetState extends State<LlMdNavTreeWidget> {
                   },
                 ),
               ))
-              : Container()
+              : Container(
+                height: 100,
+                child: Center(
+                  child: ElevatedButton(onPressed: ()async{
+                    // await onNewMdCollection(context, currentItem);
+                    var newMdObject = await _mdConfigDb.createMdObject(
+                        "",
+                        MdObjectType.collection,
+                        MdCollection(
+                            objectType:
+                            MdObjectType.collection.toString(),
+                            id: const Uuid().v4(),
+                            name: "Root",
+                            documents: [],
+                            parentObjectId: "")
+                            .toJson());
+                    await loadMdObjects(_mdConfig!.mdDataFsPath);
+
+                  }, child: Text(AppLocalizations.of(context)!.markdownNewCollectButtonLabel)),
+                ),
+              ),
         ],
       ),
     );

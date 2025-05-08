@@ -292,19 +292,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "asynchronous-codec"
-version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a860072022177f903e59730004fb5dc13db9275b79bb2aef7ba8ce831956c233"
-dependencies = [
- "bytes",
- "futures-sink",
- "futures-util",
- "memchr",
- "pin-project-lite",
-]
-
-[[package]]
 name = "atomic"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -852,15 +839,6 @@ name = "crossbeam-epoch"
 version = "0.9.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e"
-dependencies = [
- "crossbeam-utils",
-]
-
-[[package]]
-name = "crossbeam-queue"
-version = "0.3.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f58bbc28f91df819d0aa2a2c00cd19754769c2fad90579b3592b1c9ba7a3115"
 dependencies = [
  "crossbeam-utils",
 ]
@@ -4385,8 +4363,12 @@ dependencies = [
  "flutter_rust_bridge",
  "flutter_rust_bridge_codegen",
  "palcrypto-rs",
+ "quic-rpc",
  "sandbarclient-lib",
+ "sandbarclient-type",
  "sysinfo 0.33.0",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -4585,19 +4567,32 @@ dependencies = [
  "iroh-quinn",
  "iroh-relay",
  "n0-future",
+ "nested_enum_utils",
  "palcrypto-rs",
  "quic-rpc",
  "quic-rpc-derive",
  "rcgen",
  "rustls",
+ "sandbarclient-type",
  "serde",
+ "serde-error",
  "serde_with",
+ "strum 0.26.3",
  "sysinfo 0.34.2",
  "tokio",
+ "tokio-util",
  "toml 0.8.20",
  "tracing",
  "tracing-subscriber",
- "zeromq",
+]
+
+[[package]]
+name = "sandbarclient-type"
+version = "0.1.0"
+dependencies = [
+ "derive_more",
+ "quic-rpc",
+ "serde",
 ]
 
 [[package]]
@@ -5362,7 +5357,6 @@ dependencies = [
  "bytes",
  "libc",
  "mio 1.0.3",
- "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
@@ -5453,7 +5447,6 @@ checksum = "66a539a9ad6d5d281510d5bd368c973d636c02dbf8a67300bfb6b950696ad7df"
 dependencies = [
  "bytes",
  "futures-core",
- "futures-io",
  "futures-sink",
  "futures-util",
  "hashbrown 0.15.2",
@@ -6754,33 +6747,6 @@ name = "zeroize"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ced3678a2879b30306d323f4542626697a464a97c0a07c9aebf7ebca65cd4dde"
-
-[[package]]
-name = "zeromq"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a4528179201f6eecf211961a7d3276faa61554c82651ecc66387f68fc3004bd"
-dependencies = [
- "async-trait",
- "asynchronous-codec",
- "bytes",
- "crossbeam-queue",
- "dashmap 5.5.3",
- "futures-channel",
- "futures-io",
- "futures-task",
- "futures-util",
- "log",
- "num-traits",
- "once_cell",
- "parking_lot",
- "rand 0.8.5",
- "regex",
- "thiserror 1.0.69",
- "tokio",
- "tokio-util",
- "uuid",
-]
 
 [[package]]
 name = "zerovec"

@@ -6,6 +6,7 @@
 import 'api/lldisk.dart';
 import 'api/llfs.dart';
 import 'api/sandbar.dart';
+import 'api/sandbar_node.dart';
 import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -71,7 +72,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1866773956;
+  int get rustContentHash => 1820956045;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -113,9 +114,20 @@ abstract class RustLibApi extends BaseApi {
 
   Stream<FsEntity> crateApiLlfsGetFsEntities({required String rootPath});
 
+  Future<BigInt> crateApiSandbarNodeGetRpcPort();
+
+  Future<SandbarNodeConfig> crateApiSandbarNodeGetSandbarNodeConfig(
+      {required String configFilePath});
+
   String crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
+
+  Future<void> crateApiSandbarNodeStartSandbarNodeService(
+      {required String configFilePath});
+
+  Future<void> crateApiSandbarNodeStopSandbarNodeService(
+      {required String configFilePath});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -409,12 +421,62 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateApiSandbarNodeGetRpcPort() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_usize,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarNodeGetRpcPortConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarNodeGetRpcPortConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_rpc_port",
+        argNames: [],
+      );
+
+  @override
+  Future<SandbarNodeConfig> crateApiSandbarNodeGetSandbarNodeConfig(
+      {required String configFilePath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(configFilePath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_sandbar_node_config,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarNodeGetSandbarNodeConfigConstMeta,
+      argValues: [configFilePath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarNodeGetSandbarNodeConfigConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_sandbar_node_config",
+        argNames: ["configFilePath"],
+      );
+
+  @override
   String crateApiSimpleGreet({required String name}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -437,7 +499,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -452,6 +514,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiSimpleInitAppConstMeta => const TaskConstMeta(
         debugName: "init_app",
         argNames: [],
+      );
+
+  @override
+  Future<void> crateApiSandbarNodeStartSandbarNodeService(
+      {required String configFilePath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(configFilePath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarNodeStartSandbarNodeServiceConstMeta,
+      argValues: [configFilePath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarNodeStartSandbarNodeServiceConstMeta =>
+      const TaskConstMeta(
+        debugName: "start_sandbar_node_service",
+        argNames: ["configFilePath"],
+      );
+
+  @override
+  Future<void> crateApiSandbarNodeStopSandbarNodeService(
+      {required String configFilePath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(configFilePath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarNodeStopSandbarNodeServiceConstMeta,
+      argValues: [configFilePath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarNodeStopSandbarNodeServiceConstMeta =>
+      const TaskConstMeta(
+        debugName: "stop_sandbar_node_service",
+        argNames: ["configFilePath"],
       );
 
   @protected
@@ -557,6 +671,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       publicKeyBytesB64: dco_decode_String(arr[2]),
       privateKeyBytesB64: dco_decode_String(arr[3]),
       privateKeyEncryptedBytesB64: dco_decode_String(arr[4]),
+    );
+  }
+
+  @protected
+  SandbarNodeConfig dco_decode_sandbar_node_config(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SandbarNodeConfig(
+      rpcPort: dco_decode_usize(arr[0]),
+      sbRpcPort: dco_decode_usize(arr[1]),
     );
   }
 
@@ -694,6 +820,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SandbarNodeConfig sse_decode_sandbar_node_config(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_rpcPort = sse_decode_usize(deserializer);
+    var var_sbRpcPort = sse_decode_usize(deserializer);
+    return SandbarNodeConfig(rpcPort: var_rpcPort, sbRpcPort: var_sbRpcPort);
+  }
+
+  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
@@ -822,6 +957,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.publicKeyBytesB64, serializer);
     sse_encode_String(self.privateKeyBytesB64, serializer);
     sse_encode_String(self.privateKeyEncryptedBytesB64, serializer);
+  }
+
+  @protected
+  void sse_encode_sandbar_node_config(
+      SandbarNodeConfig self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(self.rpcPort, serializer);
+    sse_encode_usize(self.sbRpcPort, serializer);
   }
 
   @protected

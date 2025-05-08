@@ -14,8 +14,11 @@ flutter_rust_bridge_codegen = "=2.5.1"
 sysinfo = { version = "0.33.0" }
 palcrypto-rs = { version = "0.2.8" }
 base64 = { version = "0.22.1" }
+quic-rpc = { version = "0.19", features = ["quinn-transport", "macros", "test-utils"] }
 sandbarclient-lib = { path = "../../rust-sandbarclient/sandbarclient-lib"}
-
+sandbarclient-type = { path = "../../rust-sandbarclient/sandbarclient-type"}
+tokio = { version = "1.40.0", features = [] }
+tokio-util = "0.7.15"
 
 
 [[bin]]

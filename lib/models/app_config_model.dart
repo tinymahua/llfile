@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:llfile/models/fs_model.dart';
 import 'package:llfile/models/sbc_object_model.dart';
+import 'package:path/path.dart' as p;
 
 part 'app_config_model.g.dart';
 
@@ -131,10 +132,14 @@ class ExtensionsConfig {
 
 @JsonSerializable()
 class SandbarClientNodeConfig {
-  SandbarClientNodeConfig(this.configFilePath);
+  String get configLocation {
+    return p.join(dataLocation, 'config.toml');
+  }
 
-  @JsonKey(name: 'config_file_path')
-  String configFilePath;
+  SandbarClientNodeConfig(this.dataLocation);
+
+  @JsonKey(name: 'data_location')
+  String dataLocation;
 
   factory SandbarClientNodeConfig.fromJson(Map<String, dynamic> json) => _$SandbarClientNodeConfigFromJson(json);
 

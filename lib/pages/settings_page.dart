@@ -75,6 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
           },
           children: [
             LlNavTreeNode(
+                key: ValueKey(301),
                 titleWidget: Text(AppLocalizations.of(context)!
                     .settingsAdvancedSandbarClientNodeConfig),
                 onTap: (data) {

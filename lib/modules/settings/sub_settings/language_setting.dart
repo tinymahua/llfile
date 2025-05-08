@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/settings_events.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/utils/db.dart';
@@ -74,6 +76,13 @@ class _LlLanguageSettingState extends State<LlLanguageSetting> {
     LanguageConfig _languageConfig = _appConfig!.preferences.language;
     selectLangLocale(langLocalesMap[_languageConfig.languageCode]!);
     selectLangArea(_selectedLangLocale!.langAreas.firstWhere((e)=>e.areaCode == _languageConfig.countryCode));
+
+    eventBus.on<SettingsSaveEvent>().listen((evt)async{
+      if (mounted){
+        await _appConfigDb.write(_appConfig!);
+        print("Settings Saved: ${_appConfig!.preferences.language.toJson()}");
+      }
+    });
   }
 
   @override
@@ -142,12 +151,14 @@ class _LlLanguageSettingState extends State<LlLanguageSetting> {
       _selectedLangLocale = langLocale;
       _langAreas = langLocalesMap[langLocale.langCode]!.langAreas;
       _selectedLangArea = _langAreas[0];
+      _appConfig!.preferences.language = LanguageConfig(languageCode: langLocale.langCode, countryCode: _langAreas[0].areaCode);
     });
   }
 
   selectLangArea(LangArea langArea){
     setState(() {
       _selectedLangArea = langArea;
+      _appConfig!.preferences.language.countryCode = langArea.areaCode;
     });
   }
 

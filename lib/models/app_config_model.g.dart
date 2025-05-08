@@ -130,13 +130,13 @@ Map<String, dynamic> _$ExtensionsConfigToJson(ExtensionsConfig instance) =>
 SandbarClientNodeConfig _$SandbarClientNodeConfigFromJson(
         Map<String, dynamic> json) =>
     SandbarClientNodeConfig(
-      json['config_file_path'] as String,
+      json['data_location'] as String,
     );
 
 Map<String, dynamic> _$SandbarClientNodeConfigToJson(
         SandbarClientNodeConfig instance) =>
     <String, dynamic>{
-      'config_file_path': instance.configFilePath,
+      'data_location': instance.dataLocation,
     };
 
 AdvancedSettingsConfig _$AdvancedSettingsConfigFromJson(

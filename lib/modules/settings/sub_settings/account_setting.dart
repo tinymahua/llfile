@@ -74,10 +74,12 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
       var resp = await sbcDeviceService.list(SbcDeviceListRequest(1, 100));
       if (resp != null){
         print(prettyJson(resp.toJson()));
-        setState(() {
-          _appConfig!.accountSettings.sandbarDevices = resp.results;
-          _sbcDevices = resp.results;
-        });
+        if (mounted){
+          setState(() {
+            _appConfig!.accountSettings.sandbarDevices = resp.results;
+            _sbcDevices = resp.results;
+          });
+        }
         await _appConfigDb.write(_appConfig);
       }
     }
