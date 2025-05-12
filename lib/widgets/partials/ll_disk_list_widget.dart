@@ -25,8 +25,9 @@ class _LlDiskListWidgetState extends State<LlDiskListWidget> {
   }
 
   loadDisks()async{
+    var gotDisks = await getDiskPartitions();
     setState(() {
-      _disks = getDiskPartitions();
+      _disks = gotDisks;
     });
   }
 

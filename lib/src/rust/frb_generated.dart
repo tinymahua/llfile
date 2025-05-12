@@ -60,9 +60,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
       RustLibWire.fromExternalLibrary;
 
   @override
-  Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
-  }
+  Future<void> executeRustInitializers() async {}
 
   @override
   ExternalLibraryLoaderConfig get defaultExternalLibraryLoaderConfig =>
@@ -72,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1820956045;
+  int get rustContentHash => 1929630531;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -104,13 +102,23 @@ abstract class RustLibApi extends BaseApi {
       required List<int> myPalCryptoSecretKeyBytes,
       required List<int> plainBytes});
 
+  Future<String> crateApiSandbarNodeCreateSandbarNode(
+      {required String configFilePath,
+      required bool parentDirAutoCreate,
+      required String palCbPrivateKeyB64,
+      required String palCbPublicKeyB64,
+      BigInt? rpcPort,
+      BigInt? sbRpcPort,
+      required List<String> relayNodes,
+      required String sbcApiHost});
+
   Future<Uint8List> crateApiSandbarGenerateAesKey();
 
   Future<SandbarAuth> crateApiSandbarGenerateAuth({required String password});
 
   Future<CbKeyPair> crateApiSandbarGenerateCbKeyPair();
 
-  List<DiskPartition> crateApiLldiskGetDiskPartitions();
+  Future<List<DiskPartition>> crateApiLldiskGetDiskPartitions();
 
   Stream<FsEntity> crateApiLlfsGetFsEntities({required String rootPath});
 
@@ -119,7 +127,7 @@ abstract class RustLibApi extends BaseApi {
   Future<SandbarNodeConfig> crateApiSandbarNodeGetSandbarNodeConfig(
       {required String configFilePath});
 
-  String crateApiSimpleGreet({required String name});
+  Future<String> crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
 
@@ -298,12 +306,70 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<String> crateApiSandbarNodeCreateSandbarNode(
+      {required String configFilePath,
+      required bool parentDirAutoCreate,
+      required String palCbPrivateKeyB64,
+      required String palCbPublicKeyB64,
+      BigInt? rpcPort,
+      BigInt? sbRpcPort,
+      required List<String> relayNodes,
+      required String sbcApiHost}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(configFilePath, serializer);
+        sse_encode_bool(parentDirAutoCreate, serializer);
+        sse_encode_String(palCbPrivateKeyB64, serializer);
+        sse_encode_String(palCbPublicKeyB64, serializer);
+        sse_encode_opt_box_autoadd_usize(rpcPort, serializer);
+        sse_encode_opt_box_autoadd_usize(sbRpcPort, serializer);
+        sse_encode_list_String(relayNodes, serializer);
+        sse_encode_String(sbcApiHost, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSandbarNodeCreateSandbarNodeConstMeta,
+      argValues: [
+        configFilePath,
+        parentDirAutoCreate,
+        palCbPrivateKeyB64,
+        palCbPublicKeyB64,
+        rpcPort,
+        sbRpcPort,
+        relayNodes,
+        sbcApiHost
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSandbarNodeCreateSandbarNodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "create_sandbar_node",
+        argNames: [
+          "configFilePath",
+          "parentDirAutoCreate",
+          "palCbPrivateKeyB64",
+          "palCbPublicKeyB64",
+          "rpcPort",
+          "sbRpcPort",
+          "relayNodes",
+          "sbcApiHost"
+        ],
+      );
+
+  @override
   Future<Uint8List> crateApiSandbarGenerateAesKey() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -328,7 +394,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(password, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sandbar_auth,
@@ -352,7 +418,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 9, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_cb_key_pair,
@@ -371,11 +437,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  List<DiskPartition> crateApiLldiskGetDiskPartitions() {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<List<DiskPartition>> crateApiLldiskGetDiskPartitions() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_disk_partition,
@@ -402,7 +469,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_StreamSink_fs_entity_Sse(s, serializer);
         sse_encode_String(rootPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -426,7 +493,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 12, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_usize,
@@ -452,7 +519,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(configFilePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_sandbar_node_config,
@@ -471,12 +538,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  String crateApiSimpleGreet({required String name}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
+  Future<String> crateApiSimpleGreet({required String name}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -499,7 +567,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 15, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -524,7 +592,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(configFilePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 16, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -550,7 +618,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(configFilePath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 17, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -636,6 +704,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
   List<DiskPartition> dco_decode_list_disk_partition(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_disk_partition).toList();
@@ -678,11 +752,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   SandbarNodeConfig dco_decode_sandbar_node_config(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return SandbarNodeConfig(
       rpcPort: dco_decode_usize(arr[0]),
       sbRpcPort: dco_decode_usize(arr[1]),
+      running: dco_decode_bool(arr[2]),
     );
   }
 
@@ -766,6 +841,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<DiskPartition> sse_decode_list_disk_partition(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -825,7 +912,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_rpcPort = sse_decode_usize(deserializer);
     var var_sbRpcPort = sse_decode_usize(deserializer);
-    return SandbarNodeConfig(rpcPort: var_rpcPort, sbRpcPort: var_sbRpcPort);
+    var var_running = sse_decode_bool(deserializer);
+    return SandbarNodeConfig(
+        rpcPort: var_rpcPort, sbRpcPort: var_sbRpcPort, running: var_running);
   }
 
   @protected
@@ -912,6 +1001,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_disk_partition(
       List<DiskPartition> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -965,6 +1063,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(self.rpcPort, serializer);
     sse_encode_usize(self.sbRpcPort, serializer);
+    sse_encode_bool(self.running, serializer);
   }
 
   @protected

@@ -1,12 +1,12 @@
 
 use anyhow::Result;
-use flutter_rust_bridge::frb;
+// use flutter_rust_bridge::frb;
 use base64::prelude::*;
 use palcrypto_rs::aes_crypto::{generate_pal_aes_key, pal_aes_decrypt, pal_aes_encrypt};
 use palcrypto_rs::crypto_box_crypto::{generate_pal_key_pair, pal_cb_decrypt, pal_cb_encrypt};
 use palcrypto_rs::hash::argon2_password_hash;
 
-#[frb]
+// #[frb]
 pub struct SandbarAuth{
     pub master_key_bytes_b64: String,
     pub master_key_encrypted_bytes_b64: String,
@@ -51,7 +51,7 @@ pub fn aes_decrypt(pal_aes_key_bytes: Vec<u8>, encrypted_bytes:Vec<u8>, nonce_le
     Ok(decrypted_bytes)
 }
 
-#[frb]
+// #[frb]
 pub struct CbKeyPair {
     pub public_key_bytes_b64: String,
     pub private_key_bytes_b64: String,

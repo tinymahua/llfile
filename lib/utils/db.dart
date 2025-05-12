@@ -117,7 +117,7 @@ class AppConfigDb extends Db {
               keymap: KeymapConfig(keyItems: [])
           ),
         extensions: ExtensionsConfig(),
-        advancedSettings: AdvancedSettingsConfig(null),
+        advancedSettings: AdvancedSettingsConfig(null, true),
         accountSettings: AccountSettingsConfig(),
         sbcApiHost: "",
       ));

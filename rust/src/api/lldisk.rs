@@ -1,15 +1,15 @@
 use anyhow::Result;
-use flutter_rust_bridge::frb;
+// use flutter_rust_bridge::frb;
 use sysinfo::Disks;
 
-#[frb]
+// #[frb]
 pub struct DiskPartition {
     pub name: String,
-    #[frb(name = "mountPoint")]
+    // #[frb(name = "mountPoint")]
     pub mount_point: String,
 }
 
-#[frb(sync)]
+// #[frb(sync)]
 pub fn get_disk_partitions() -> Result<Vec<DiskPartition>> {
     let disks = Disks::new_with_refreshed_list();
     let disk_partitions = disks

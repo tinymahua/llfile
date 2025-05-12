@@ -10,21 +10,23 @@ sandbarNodeWorkerMainMessageHandler(dynamic data, SendPort isolateSendPort){
 
 sandbarNodeWorkerIsolateMessageHandler(dynamic data, SendPort isolateSendPort, easy_isolate.SendErrorFunction sendError,)async{
   print('in isolate func： ${data}');
+  try {
+    await RustLib.init();
+  } catch (e) {
+    //
+  }
   if (data is SandbarNodeOperateEvent){
     print('111');
+    String configFile = data.sandbarNodeConfigFile;
     if (data.operate == Operate.start) {
       print('222');
-      try {
-        await RustLib.init();
-      } catch (e) {
-        //
-      }
+
       print('do start');
       await startSandbarNodeService(
-          configFilePath: "C:\\Users\\Maple\\.sbn1_remote\\config.toml");
+          configFilePath: configFile);
     }else if (data.operate == Operate.stop){
       print('do stop');
-      await stopSandbarNodeService(configFilePath: "C:\\Users\\Maple\\.sbn1_remote\\config.toml");
+      await stopSandbarNodeService(configFilePath: configFile);
     }else if (data.operate == Operate.terminate){
       print('do terminate');
       RustLib.dispose();
@@ -32,57 +34,6 @@ sandbarNodeWorkerIsolateMessageHandler(dynamic data, SendPort isolateSendPort, e
   }
 }
 
-// class SandbarNodeWorker {
-//   SandbarNodeWorker(this.worker);
-//
-//   easy_isolate.Worker worker;
-//
-//   Future<void> init() async {
-//     await worker.init(
-//       mainMessageHandler,
-//       controlSandbarNodeServiceIsolateMessageHandler,
-//       errorHandler: print,
-//     );
-//     worker.sendMessage(SandbarNodeOperateEvent(Operate.start));
-//   }
-//
-//   Future<void> sendMessage(SandbarNodeOperateEvent evt)async{
-//     worker.sendMessage(evt);
-//   }
-//
-//   void mainMessageHandler(dynamic data, SendPort isolateSendPort) {
-//   }
-//
-//   static controlSandbarNodeServiceIsolateMessageHandler(
-//       dynamic data,
-//       SendPort mainSendPort,
-//       easy_isolate.SendErrorFunction sendError,
-//       ) async {
-//     if (data is SandbarNodeOperateEvent){
-//       print(data);
-//       if (data.operate == Operate.start) {
-//         print('do start');
-//         await RustLib.init();
-//         // Get.put(AppConfigDb());
-//         // AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
-//         // AppConfig _appConfig = await _appConfigDb.read<AppConfig>();
-//         // SandbarClientNodeConfig? sandbarClientNodeConfig = _appConfig.advancedSettings.sandbarClientNodeConfig;
-//         await startSandbarNodeService(
-//             configFilePath: "C:\\Users\\Maple\\.sbn1_remote\\config.toml");
-//         RustLib.dispose();
-//       }else if (data.operate == Operate.stop){
-//         try {
-//           await RustLib.init();
-//         }catch (err) {
-//           //
-//         }
-//         print('do stop');
-//         await stopSandbarNodeService(configFilePath: "C:\\Users\\Maple\\.sbn1_remote\\config.toml");
-//         RustLib.dispose();
-//       }
-//     }
-//   }
-// }
 
 enum Operate {
   start,
@@ -92,5 +43,6 @@ enum Operate {
 
 class SandbarNodeOperateEvent {
   Operate operate;
-  SandbarNodeOperateEvent(this.operate);
+  String sandbarNodeConfigFile;
+  SandbarNodeOperateEvent(this.operate, this.sandbarNodeConfigFile);
 }

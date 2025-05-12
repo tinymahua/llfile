@@ -148,9 +148,10 @@ class SandbarClientNodeConfig {
 
 @JsonSerializable()
 class AdvancedSettingsConfig {
-  AdvancedSettingsConfig(this.sandbarClientNodeConfig);
+  AdvancedSettingsConfig(this.sandbarClientNodeConfig, this.sandbarClientNodeEnabled);
 
   SandbarClientNodeConfig? sandbarClientNodeConfig;
+  bool sandbarClientNodeEnabled;
 
   factory AdvancedSettingsConfig.fromJson(Map<String, dynamic> json) => _$AdvancedSettingsConfigFromJson(json);
 

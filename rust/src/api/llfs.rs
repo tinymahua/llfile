@@ -1,16 +1,16 @@
 use crate::frb_generated::StreamSink;
 use anyhow::Result;
-use flutter_rust_bridge::frb;
+// use flutter_rust_bridge::frb;
 use std::fs;
 use chrono::prelude::*;
 use chrono::DateTime;
 
-#[frb]
+// #[frb]
 pub struct FsEntity {
     pub name: String,
-    #[frb(name = "isDir")]
+    // #[frb(name = "isDir")]
     pub is_dir: bool,
-    #[frb(name = "dateCreated")]
+    // #[frb(name = "dateCreated")]
     pub date_created: String,
 }
 

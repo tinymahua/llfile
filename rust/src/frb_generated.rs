@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1820956045;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1929630531;
 
 // Section: executor
 
@@ -244,6 +244,59 @@ fn wire__crate__api__sandbar__cb_encrypt_impl(
         },
     )
 }
+fn wire__crate__api__sandbar_node__create_sandbar_node_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "create_sandbar_node",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_config_file_path = <String>::sse_decode(&mut deserializer);
+            let api_parent_dir_auto_create = <bool>::sse_decode(&mut deserializer);
+            let api_pal_cb_private_key_b64 = <String>::sse_decode(&mut deserializer);
+            let api_pal_cb_public_key_b64 = <String>::sse_decode(&mut deserializer);
+            let api_rpc_port = <Option<usize>>::sse_decode(&mut deserializer);
+            let api_sb_rpc_port = <Option<usize>>::sse_decode(&mut deserializer);
+            let api_relay_nodes = <Vec<String>>::sse_decode(&mut deserializer);
+            let api_sbc_api_host = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::sandbar_node::create_sandbar_node(
+                            api_config_file_path,
+                            api_parent_dir_auto_create,
+                            api_pal_cb_private_key_b64,
+                            api_pal_cb_public_key_b64,
+                            api_rpc_port,
+                            api_sb_rpc_port,
+                            api_relay_nodes,
+                            api_sbc_api_host,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__sandbar__generate_aes_key_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -348,15 +401,16 @@ fn wire__crate__api__sandbar__generate_cb_key_pair_impl(
     )
 }
 fn wire__crate__api__lldisk__get_disk_partitions_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "get_disk_partitions",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -369,12 +423,14 @@ fn wire__crate__api__lldisk__get_disk_partitions_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end();
-            transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
-                (move || {
-                    let output_ok = crate::api::lldisk::get_disk_partitions()?;
-                    Ok(output_ok)
-                })(),
-            )
+            move |context| {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || {
+                        let output_ok = crate::api::lldisk::get_disk_partitions()?;
+                        Ok(output_ok)
+                    })(),
+                )
+            }
         },
     )
 }
@@ -490,15 +546,16 @@ fn wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
     )
 }
 fn wire__crate__api__simple__greet_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "greet",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -512,10 +569,12 @@ fn wire__crate__api__simple__greet_impl(
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_name = <String>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse::<_, ()>((move || {
-                let output_ok = Result::<_, ()>::Ok(crate::api::simple::greet(api_name))?;
-                Ok(output_ok)
-            })())
+            move |context| {
+                transform_result_sse::<_, ()>((move || {
+                    let output_ok = Result::<_, ()>::Ok(crate::api::simple::greet(api_name))?;
+                    Ok(output_ok)
+                })())
+            }
         },
     )
 }
@@ -705,6 +764,18 @@ impl SseDecode for crate::api::llfs::FsEntity {
     }
 }
 
+impl SseDecode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<String>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::api::lldisk::DiskPartition> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -765,9 +836,11 @@ impl SseDecode for crate::api::sandbar_node::SandbarNodeConfig {
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_rpcPort = <usize>::sse_decode(deserializer);
         let mut var_sbRpcPort = <usize>::sse_decode(deserializer);
+        let mut var_running = <bool>::sse_decode(deserializer);
         return crate::api::sandbar_node::SandbarNodeConfig {
             rpc_port: var_rpcPort,
             sb_rpc_port: var_sbRpcPort,
+            running: var_running,
         };
     }
 }
@@ -812,27 +885,35 @@ fn pde_ffi_dispatcher_primary_impl(
         3 => wire__crate__api__sandbar__argon2_pwd_hash_impl(port, ptr, rust_vec_len, data_len),
         4 => wire__crate__api__sandbar__cb_decrypt_impl(port, ptr, rust_vec_len, data_len),
         5 => wire__crate__api__sandbar__cb_encrypt_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__sandbar__generate_aes_key_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire__crate__api__sandbar__generate_auth_impl(port, ptr, rust_vec_len, data_len),
-        8 => {
+        6 => wire__crate__api__sandbar_node__create_sandbar_node_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        7 => wire__crate__api__sandbar__generate_aes_key_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire__crate__api__sandbar__generate_auth_impl(port, ptr, rust_vec_len, data_len),
+        9 => {
             wire__crate__api__sandbar__generate_cb_key_pair_impl(port, ptr, rust_vec_len, data_len)
         }
-        10 => wire__crate__api__llfs__get_fs_entities_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__sandbar_node__get_rpc_port_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
+        10 => wire__crate__api__lldisk__get_disk_partitions_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire__crate__api__llfs__get_fs_entities_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__sandbar_node__get_rpc_port_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__sandbar_node__start_sandbar_node_service_impl(
+        14 => wire__crate__api__simple__greet_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__sandbar_node__start_sandbar_node_service_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__sandbar_node__stop_sandbar_node_service_impl(
+        17 => wire__crate__api__sandbar_node__stop_sandbar_node_service_impl(
             port,
             ptr,
             rust_vec_len,
@@ -850,8 +931,6 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        9 => wire__crate__api__lldisk__get_disk_partitions_impl(ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -951,6 +1030,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::sandbar_node::SandbarNodeConf
         [
             self.rpc_port.into_into_dart().into_dart(),
             self.sb_rpc_port.into_into_dart().into_dart(),
+            self.running.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1022,6 +1102,16 @@ impl SseEncode for crate::api::llfs::FsEntity {
     }
 }
 
+impl SseEncode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <String>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::api::lldisk::DiskPartition> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1068,6 +1158,7 @@ impl SseEncode for crate::api::sandbar_node::SandbarNodeConfig {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <usize>::sse_encode(self.rpc_port, serializer);
         <usize>::sse_encode(self.sb_rpc_port, serializer);
+        <bool>::sse_encode(self.running, serializer);
     }
 }
 

@@ -146,12 +146,14 @@ AdvancedSettingsConfig _$AdvancedSettingsConfigFromJson(
           ? null
           : SandbarClientNodeConfig.fromJson(
               json['sandbarClientNodeConfig'] as Map<String, dynamic>),
+      json['sandbarClientNodeEnabled'] as bool,
     );
 
 Map<String, dynamic> _$AdvancedSettingsConfigToJson(
         AdvancedSettingsConfig instance) =>
     <String, dynamic>{
       'sandbarClientNodeConfig': instance.sandbarClientNodeConfig,
+      'sandbarClientNodeEnabled': instance.sandbarClientNodeEnabled,
     };
 
 SandbarAuthInfo _$SandbarAuthInfoFromJson(Map<String, dynamic> json) =>

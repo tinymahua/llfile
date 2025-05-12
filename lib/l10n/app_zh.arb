@@ -45,6 +45,11 @@
   "settingsAdvancedSettings": "高级设置",
   "settingsAdvancedSandbarClientNodeConfig": "沙洲客户端",
   "settingsAdvancedSandbarClientDataLocation": "数据位置",
+  "settingsAdvancedSandbarClientRunningStatus": "状态",
+  "settingsAdvancedSandbarClientRunningStatusIng": "运行中",
+  "settingsAdvancedSandbarClientRunningStatusStopped": "未运行",
+  "settingsAdvancedSandbarClientStartService": "启动",
+  "settingsAdvancedSandbarClientStopService": "停止",
   "settingsAccountSettings": "账户",
   "settingsOk": "确定",
   "settingsCancel": "取消",
@@ -75,9 +80,15 @@
   "markdownNewDocumentButtonLabel": "创建新文档",
 
   "sbcDevicesNumLabel": "已注册设备数量",
+  "sbcDevicesViewLabel": "查看所有设备",
+  "sbcDevicesHideLabel": "隐藏设备列表",
   "sbcCurrentDeviceLabel": "本设备",
   "sbcCurrentDeviceUnregistered": "未注册",
-  "sbcRegisterNewDeviceLabel": "注册新设备"
+  "sbcRegisterNewDeviceLabel": "注册新设备",
+  "sandbarClientNodeDataLocation": "数据位置",
+  "sandbarClientNodeConfigPath": "配置文件",
+  "sandbarClientNodeCreate": "创建",
+  "sandbarClientNodeNotExists": "实例未创建"
 }
 
 

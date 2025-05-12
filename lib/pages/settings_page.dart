@@ -74,14 +74,14 @@ class _SettingsPageState extends State<SettingsPage> {
             switchSettingsPage(5);
           },
           children: [
-            LlNavTreeNode(
-                key: ValueKey(301),
-                titleWidget: Text(AppLocalizations.of(context)!
-                    .settingsAdvancedSandbarClientNodeConfig),
-                onTap: (data) {
-                  print('tapped node from tree: ${data}');
-                  switchSettingsPage(0, settingsContentPage: data);
-                }, data: SettingsContentPage.sandbarClientNodeConfig),
+            // LlNavTreeNode(
+            //     key: ValueKey(301),
+            //     titleWidget: Text(AppLocalizations.of(context)!
+            //         .settingsAdvancedSandbarClientNodeConfig),
+            //     onTap: (data) {
+            //       print('tapped node from tree: ${data}');
+            //       switchSettingsPage(0, settingsContentPage: data);
+            //     }, data: SettingsContentPage.sandbarClientNodeConfig),
           ]),
       LlNavTreeNode(
           key: ValueKey(400),

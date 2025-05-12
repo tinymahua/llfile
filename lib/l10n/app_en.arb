@@ -45,6 +45,11 @@
   "settingsAdvancedSettings": "Advanced Settings",
   "settingsAdvancedSandbarClientNodeConfig": "Sandbar Client",
   "settingsAdvancedSandbarClientDataLocation": "Data Location",
+  "settingsAdvancedSandbarClientRunningStatus": "Status",
+  "settingsAdvancedSandbarClientRunningStatusIng": "Running",
+  "settingsAdvancedSandbarClientRunningStatusStopped": "Stopped",
+  "settingsAdvancedSandbarClientStartService": "Start",
+  "settingsAdvancedSandbarClientStopService": "Stop",
   "settingsAccountSettings": "Account Settings",
   "settingsOk": "OK",
   "settingsCancel": "Cancel",
@@ -75,9 +80,15 @@
   "markdownNewDocumentButtonLabel": "Create new document",
 
   "sbcDevicesNumLabel": "Registered devices num",
+  "sbcDevicesViewLabel": "View all devices",
+  "sbcDevicesHideLabel": "Hide devices list",
   "sbcCurrentDeviceLabel": "Current",
   "sbcCurrentDeviceUnregistered": "Unregistered",
-  "sbcRegisterNewDeviceLabel": "Register new device"
+  "sbcRegisterNewDeviceLabel": "Register new device",
+    "sandbarClientNodeDataLocation": "Data Location",
+    "sandbarClientNodeConfigPath": "Config File",
+    "sandbarClientNodeCreate": "Create",
+    "sandbarClientNodeNotExists": "Instance not exists"
 }
 
 

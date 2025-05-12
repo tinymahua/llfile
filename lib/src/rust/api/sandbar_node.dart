@@ -6,6 +6,25 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+Future<String> createSandbarNode(
+        {required String configFilePath,
+        required bool parentDirAutoCreate,
+        required String palCbPrivateKeyB64,
+        required String palCbPublicKeyB64,
+        BigInt? rpcPort,
+        BigInt? sbRpcPort,
+        required List<String> relayNodes,
+        required String sbcApiHost}) =>
+    RustLib.instance.api.crateApiSandbarNodeCreateSandbarNode(
+        configFilePath: configFilePath,
+        parentDirAutoCreate: parentDirAutoCreate,
+        palCbPrivateKeyB64: palCbPrivateKeyB64,
+        palCbPublicKeyB64: palCbPublicKeyB64,
+        rpcPort: rpcPort,
+        sbRpcPort: sbRpcPort,
+        relayNodes: relayNodes,
+        sbcApiHost: sbcApiHost);
+
 Future<BigInt> getRpcPort() =>
     RustLib.instance.api.crateApiSandbarNodeGetRpcPort();
 
@@ -25,14 +44,16 @@ Future<SandbarNodeConfig> getSandbarNodeConfig(
 class SandbarNodeConfig {
   final BigInt rpcPort;
   final BigInt sbRpcPort;
+  final bool running;
 
   const SandbarNodeConfig({
     required this.rpcPort,
     required this.sbRpcPort,
+    required this.running,
   });
 
   @override
-  int get hashCode => rpcPort.hashCode ^ sbRpcPort.hashCode;
+  int get hashCode => rpcPort.hashCode ^ sbRpcPort.hashCode ^ running.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -40,5 +61,6 @@ class SandbarNodeConfig {
       other is SandbarNodeConfig &&
           runtimeType == other.runtimeType &&
           rpcPort == other.rpcPort &&
-          sbRpcPort == other.sbRpcPort;
+          sbRpcPort == other.sbRpcPort &&
+          running == other.running;
 }
