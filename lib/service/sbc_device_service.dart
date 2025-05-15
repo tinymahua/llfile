@@ -1,4 +1,4 @@
-import 'package:dio_util/dio_util.dart';
+import 'package:pal_dio_util/pal_dio_util.dart';
 import 'package:llfile/models/sbc_api_model.dart';
 import 'package:llfile/service/common_service.dart';
 

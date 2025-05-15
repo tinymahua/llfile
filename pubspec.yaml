@@ -55,8 +55,9 @@ dependencies:
   get: ^4.6.6
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
-  flutter_colorful_tab:
-    path: ../flt_pkgs/flutter_colorful_tab_keep
+  flutter_colorful_tab_keep: ^0.1.2
+#  flutter_colorful_tab_keep:
+#    path: ../flt_pkgs/flutter_colorful_tab_keep
   dynamic_tabbar: ^1.0.9
   contextmenu: ^3.0.0
   archive: ^4.0.2
@@ -65,8 +66,9 @@ dependencies:
   flutter_pty: ^0.4.2
   dio: ^5.8.0+1
   pretty_json: ^2.0.0
-  dio_util:
-    path: ../flt_pkgs/flutter_dio_util
+  pal_dio_util: ^0.0.1
+#  pal_dio_util:
+#    path: ../flt_pkgs/flutter_dio_util
   flutter_markdown: ^0.7.6+2
   code_text_field: ^1.1.0
   linked_scroll_controller: ^0.2.0

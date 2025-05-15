@@ -1,4 +1,4 @@
-import 'package:dio_util/dio_util.dart';
+import 'package:pal_dio_util/pal_dio_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:llfile/models/common_model.dart';
 import 'package:llfile/models/sbc_object_model.dart';

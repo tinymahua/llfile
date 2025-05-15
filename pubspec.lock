@@ -241,13 +241,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.8.0+1"
-  dio_util:
-    dependency: "direct main"
-    description:
-      path: "../flt_pkgs/flutter_dio_util"
-      relative: true
-    source: path
-    version: "0.0.1"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -341,13 +334,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_colorful_tab:
+  flutter_colorful_tab_keep:
     dependency: "direct main"
     description:
-      path: "../flt_pkgs/flutter_colorful_tab_keep"
-      relative: true
-    source: path
-    version: "0.1.1"
+      name: flutter_colorful_tab_keep
+      sha256: "34dc00862afa5bf524d6dc9a6ccc8ea0356ba44127dec0fd3f39ec7f84a1bbd9"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.2"
   flutter_driver:
     dependency: transitive
     description: flutter
@@ -682,6 +676,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.2.0"
+  pal_dio_util:
+    dependency: "direct main"
+    description:
+      name: pal_dio_util
+      sha256: "9271c224126a8fbedbb924973a994c77756d3925d8fffdc8b3ee90daff418c4c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.1"
   path:
     dependency: "direct main"
     description:

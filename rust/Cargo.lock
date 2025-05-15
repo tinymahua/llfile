@@ -4360,6 +4360,7 @@ dependencies = [
  "anyhow",
  "base64",
  "chrono",
+ "derive_more",
  "flutter_rust_bridge",
  "flutter_rust_bridge_codegen",
  "palcrypto-rs",

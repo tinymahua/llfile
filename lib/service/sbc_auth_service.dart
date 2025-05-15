@@ -1,6 +1,6 @@
 import 'package:llfile/models/sbc_auth_model.dart';
 import 'package:llfile/service/common_service.dart';
-import 'package:dio_util/dio_util.dart';
+import 'package:pal_dio_util/pal_dio_util.dart';
 
 class SbcAuthService extends SbcBaseService {
   SbcAuthService();

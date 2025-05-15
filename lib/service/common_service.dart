@@ -4,7 +4,7 @@ import 'package:llfile/utils/db.dart';
 import 'dart:async';
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:dio/dio.dart';
-import 'package:dio_util/dio_util.dart';
+import 'package:pal_dio_util/pal_dio_util.dart';
 
 const String SBC_PROD_API_HOST = '';
 const String SBC_TEST_API_HOST = '';
@@ -82,7 +82,7 @@ class SbcErrorResponse {
   }
 }
 
-class SbcBaseService extends DioUtil {
+class SbcBaseService extends PalDioUtil {
   SbcBaseService(): super();
 
   @override
