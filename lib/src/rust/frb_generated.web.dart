@@ -31,6 +31,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustStreamSink<FsEntity> dco_decode_StreamSink_fs_entity_Sse(dynamic raw);
 
   @protected
+  RustStreamSink<SandbarFsAddPathResponse>
+      dco_decode_StreamSink_sandbar_fs_add_path_response_Sse(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
@@ -61,13 +65,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
   BigInt? dco_decode_opt_box_autoadd_usize(dynamic raw);
 
   @protected
   SandbarAuth dco_decode_sandbar_auth(dynamic raw);
 
   @protected
-  SandbarNodeConfig dco_decode_sandbar_node_config(dynamic raw);
+  SandbarFsAddPathResponse dco_decode_sandbar_fs_add_path_response(dynamic raw);
+
+  @protected
+  SandbarNodeStat dco_decode_sandbar_node_stat(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -84,6 +94,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   RustStreamSink<FsEntity> sse_decode_StreamSink_fs_entity_Sse(
       SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<SandbarFsAddPathResponse>
+      sse_decode_StreamSink_sandbar_fs_add_path_response_Sse(
+          SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -117,14 +132,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
   BigInt? sse_decode_opt_box_autoadd_usize(SseDeserializer deserializer);
 
   @protected
   SandbarAuth sse_decode_sandbar_auth(SseDeserializer deserializer);
 
   @protected
-  SandbarNodeConfig sse_decode_sandbar_node_config(
+  SandbarFsAddPathResponse sse_decode_sandbar_fs_add_path_response(
       SseDeserializer deserializer);
+
+  @protected
+  SandbarNodeStat sse_decode_sandbar_node_stat(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -145,6 +166,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_fs_entity_Sse(
       RustStreamSink<FsEntity> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_sandbar_fs_add_path_response_Sse(
+      RustStreamSink<SandbarFsAddPathResponse> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -179,14 +204,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_usize(BigInt? self, SseSerializer serializer);
 
   @protected
   void sse_encode_sandbar_auth(SandbarAuth self, SseSerializer serializer);
 
   @protected
-  void sse_encode_sandbar_node_config(
-      SandbarNodeConfig self, SseSerializer serializer);
+  void sse_encode_sandbar_fs_add_path_response(
+      SandbarFsAddPathResponse self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sandbar_node_stat(
+      SandbarNodeStat self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);

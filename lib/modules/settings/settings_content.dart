@@ -19,8 +19,8 @@ class LlSettingsContentWidget extends StatefulWidget {
 class _LlSettingsContentWidgetState extends State<LlSettingsContentWidget> {
   final PageController _pageController = PageController();
   final List<SettingsContentPageBaseWidget> _pages = [
-    const LlAccountSetting(),
     const LlLanguageSetting(),
+    const LlAccountSetting(),
     const SbcApiHostSetting(),
     // const SandbarClientNodeSetting(),
   ];

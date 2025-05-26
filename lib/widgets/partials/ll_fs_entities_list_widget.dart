@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/path_events.dart';
+import 'package:llfile/events/sbn_events.dart';
+import 'package:llfile/mixins/sbn_mixin.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/fs_model.dart';
 import 'package:llfile/models/operate_record_model.dart';
@@ -27,7 +29,7 @@ class LlFsEntitiesListWidget extends StatefulWidget {
   State<LlFsEntitiesListWidget> createState() => _LlFsEntitiesListWidgetState();
 }
 
-class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
+class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with SbnMixin{
   final MultiColumnListController _fsEntitiesMultiColumnListController =
       MultiColumnListController();
   late Stream<FsEntity> _fsEntitiesStream;
@@ -38,6 +40,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
   AppConfig? _appConfig;
   TextEditingController _renameTextEditingController = TextEditingController();
   TextEditingController _newFolderTextEditingController = TextEditingController();
+
+  bool _sandbarNodeReady = false;
 
   @override
   void initState() {
@@ -57,6 +61,16 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
     });
 
     _appConfig = await _appConfigDb.read<AppConfig>();
+
+    var sandbarNodeReady = await isReady(_appConfig);
+    setState(() {
+      _sandbarNodeReady = sandbarNodeReady;
+    });
+    eventBus.on<SbnReadyEvent>().listen((evt){
+      setState(() {
+        _sandbarNodeReady = evt.ready;
+      });
+    });
   }
 
   retrieveFsEntities() async {
@@ -251,6 +265,21 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
                   shortcut: "",
                 ),
               ],
+              _sandbarNodeReady ? [
+                ContextMenuItem(
+                  onTap: () {
+                    onAddToSandbarFs(fsEntityPath);
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.drive_folder_upload,
+                    size: iconSize,
+                    weight: iconWeight,
+                  ),
+                  title: Text(AppLocalizations.of(context)!.contextMenuAddToSandbarFs),
+                  shortcut: "",
+                ),
+              ]: [],
               [
                 ContextMenuItem(
                   onTap: () {
@@ -375,6 +404,12 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> {
         }
       }
     }
+  }
+
+  onAddToSandbarFs(String fsEntityPath)async {
+    eventBus.fire(AddToSandbarFsTaskWidget(
+      fsEntityPath
+    ));
   }
 
   onNewDir()async{

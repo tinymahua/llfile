@@ -18,6 +18,7 @@
   "contextMenuCopy": "复制",
   "contextMenuCut": "剪切",
   "contextMenuPaste": "粘贴",
+  "contextMenuAddToSandbarFs": "添加到沙洲",
   "contextMenuDelete": "删除",
   "contextMenuRename": "重命名",
   "contextMenuNewFolder": "新建文件夹",

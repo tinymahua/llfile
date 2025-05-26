@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/sbc_auth_events.dart';
+import 'package:llfile/events/sbn_events.dart';
 import 'package:llfile/isolates/sandbar_node_worker.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/sbc_api_model.dart';
@@ -42,7 +43,7 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
   
   SbcDeviceService sbcDeviceService = Get.find<SbcDeviceService>();
 
-  SandbarNodeConfig? _sandbarNodeConfig;
+  SandbarNodeStat? _sandbarNodeStat;
 
   easy_isolate.Worker _worker = easy_isolate.Worker();
 
@@ -129,8 +130,8 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
     }
   }
 
-  Widget makeSandbarNodeStatus(SandbarNodeConfig sandbarNodeConfig) {
-    var btnText = sandbarNodeConfig.running? AppLocalizations.of(context)!
+  Widget makeSandbarNodeStatus(SandbarNodeStat sandbarNodeStat) {
+    var btnText = sandbarNodeStat.running? AppLocalizations.of(context)!
         .settingsAdvancedSandbarClientStopService: AppLocalizations.of(context)!.settingsAdvancedSandbarClientStartService;
     return Column(
       children: [
@@ -141,7 +142,7 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
               child: Text(
                   "${AppLocalizations.of(context)!.settingsAdvancedSandbarClientRunningStatus}:"),
             ),
-            sandbarNodeConfig.running
+            sandbarNodeStat.running
                 ? Text(
                 "${AppLocalizations.of(context)!.settingsAdvancedSandbarClientRunningStatusIng}")
                 : Text(
@@ -152,7 +153,7 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  sandbarNodeConfig.running? onStopSandbarNodeService(): onStartSandbarNodeService();
+                  sandbarNodeStat.running? onStopSandbarNodeService(): onStartSandbarNodeService();
                 },
                 child: Text(btnText)),
           ],
@@ -307,7 +308,7 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
               SizedBox(height: 6,),
               makeSandbarClientNodeControl(),
               SizedBox(height: 3,),
-              if (_sandbarClientNodeEnabled && _sandbarClientNodeExists && _sandbarNodeConfig != null) makeSandbarNodeStatus(_sandbarNodeConfig!),
+              if (_sandbarClientNodeEnabled && _sandbarClientNodeExists && _sandbarNodeStat != null) makeSandbarNodeStatus(_sandbarNodeStat!),
             ]
           ),
         )),
@@ -363,17 +364,22 @@ class _LlAccountSettingState extends State<LlAccountSetting> {
     var configFile = sandbarClientNodeConfig!.configLocation;
     if (File(configFile).existsSync()){
       Future.delayed(duration, ()async {
-        var sandbarStatus = await getSandbarNodeConfig(
+        var sandbarStatus = await getSandbarNodeStat(
             configFilePath:configFile);
         setState(() {
-          _sandbarNodeConfig = sandbarStatus;
+          _sandbarNodeStat = sandbarStatus;
         });
+        print('_sandbarNodeStat1: ${_sandbarNodeStat}');
+
+        eventBus.fire(SbnReadyEvent(sandbarStatus.running));
       });
 
     }else{
       setState(() {
-        _sandbarNodeConfig = SandbarNodeConfig(rpcPort: BigInt.from(0), sbRpcPort: BigInt.from(0), running: false);
+        _sandbarNodeStat = SandbarNodeStat(rpcPort: BigInt.from(0), sbRpcPort: BigInt.from(0), running: false);
       });
+      print('_sandbarNodeStat2: ${_sandbarNodeStat}');
+
     }
 
   }

@@ -18,6 +18,7 @@
   "contextMenuCopy": "Copy",
   "contextMenuCut": "Cut",
   "contextMenuPaste": "Paste",
+  "contextMenuAddToSandbarFs": "Add To SandbarFS",
   "contextMenuDelete": "Delete",
   "contextMenuRename": "Rename",
   "contextMenuNewFolder": "New folder",

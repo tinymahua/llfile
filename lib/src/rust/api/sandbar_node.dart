@@ -6,6 +6,9 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `load_config_from_file`, `make_blobs_rpc_client`, `make_sb_rpc_client`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `fmt`, `from`, `from`
+
 Future<String> createSandbarNode(
         {required String configFilePath,
         required bool parentDirAutoCreate,
@@ -36,17 +39,44 @@ Future<void> stopSandbarNodeService({required String configFilePath}) => RustLib
     .instance.api
     .crateApiSandbarNodeStopSandbarNodeService(configFilePath: configFilePath);
 
-Future<SandbarNodeConfig> getSandbarNodeConfig(
-        {required String configFilePath}) =>
-    RustLib.instance.api.crateApiSandbarNodeGetSandbarNodeConfig(
-        configFilePath: configFilePath);
+Future<SandbarNodeStat> getSandbarNodeStat({required String configFilePath}) =>
+    RustLib.instance.api
+        .crateApiSandbarNodeGetSandbarNodeStat(configFilePath: configFilePath);
 
-class SandbarNodeConfig {
+Stream<SandbarFsAddPathResponse> addPathToSandbarFs(
+        {required String configFilePath,
+        required String path,
+        String? wrapName}) =>
+    RustLib.instance.api.crateApiSandbarNodeAddPathToSandbarFs(
+        configFilePath: configFilePath, path: path, wrapName: wrapName);
+
+class SandbarFsAddPathResponse {
+  final String jsonData;
+  final String kind;
+
+  const SandbarFsAddPathResponse({
+    required this.jsonData,
+    required this.kind,
+  });
+
+  @override
+  int get hashCode => jsonData.hashCode ^ kind.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SandbarFsAddPathResponse &&
+          runtimeType == other.runtimeType &&
+          jsonData == other.jsonData &&
+          kind == other.kind;
+}
+
+class SandbarNodeStat {
   final BigInt rpcPort;
   final BigInt sbRpcPort;
   final bool running;
 
-  const SandbarNodeConfig({
+  const SandbarNodeStat({
     required this.rpcPort,
     required this.sbRpcPort,
     required this.running,
@@ -58,7 +88,7 @@ class SandbarNodeConfig {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SandbarNodeConfig &&
+      other is SandbarNodeStat &&
           runtimeType == other.runtimeType &&
           rpcPort == other.rpcPort &&
           sbRpcPort == other.sbRpcPort &&

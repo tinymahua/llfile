@@ -37,7 +37,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.9.0";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1929630531;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1301528475;
 
 // Section: executor
 
@@ -45,6 +45,54 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire__crate__api__sandbar_node__add_path_to_sandbar_fs_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "add_path_to_sandbar_fs",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <StreamSink<
+                crate::api::sandbar_node::SandbarFsAddPathResponse,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            let api_config_file_path = <String>::sse_decode(&mut deserializer);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            let api_wrap_name = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
+                    (move || async move {
+                        let output_ok = crate::api::sandbar_node::add_path_to_sandbar_fs(
+                            api_s,
+                            api_config_file_path,
+                            api_path,
+                            api_wrap_name,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__sandbar__aes_decrypt_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -507,7 +555,7 @@ fn wire__crate__api__sandbar_node__get_rpc_port_impl(
         },
     )
 }
-fn wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
+fn wire__crate__api__sandbar_node__get_sandbar_node_stat_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -515,7 +563,7 @@ fn wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "get_sandbar_node_config",
+            debug_name: "get_sandbar_node_stat",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -535,7 +583,7 @@ fn wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
                 transform_result_sse::<_, flutter_rust_bridge::for_generated::anyhow::Error>(
                     (move || async move {
                         let output_ok =
-                            crate::api::sandbar_node::get_sandbar_node_config(api_config_file_path)
+                            crate::api::sandbar_node::get_sandbar_node_stat(api_config_file_path)
                                 .await?;
                         Ok(output_ok)
                     })()
@@ -711,6 +759,19 @@ impl SseDecode
     }
 }
 
+impl SseDecode
+    for StreamSink<
+        crate::api::sandbar_node::SandbarFsAddPathResponse,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
+    }
+}
+
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -802,6 +863,17 @@ impl SseDecode for Vec<u8> {
     }
 }
 
+impl SseDecode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<String>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -831,13 +903,25 @@ impl SseDecode for crate::api::sandbar::SandbarAuth {
     }
 }
 
-impl SseDecode for crate::api::sandbar_node::SandbarNodeConfig {
+impl SseDecode for crate::api::sandbar_node::SandbarFsAddPathResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_jsonData = <String>::sse_decode(deserializer);
+        let mut var_kind = <String>::sse_decode(deserializer);
+        return crate::api::sandbar_node::SandbarFsAddPathResponse {
+            json_data: var_jsonData,
+            kind: var_kind,
+        };
+    }
+}
+
+impl SseDecode for crate::api::sandbar_node::SandbarNodeStat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_rpcPort = <usize>::sse_decode(deserializer);
         let mut var_sbRpcPort = <usize>::sse_decode(deserializer);
         let mut var_running = <bool>::sse_decode(deserializer);
-        return crate::api::sandbar_node::SandbarNodeConfig {
+        return crate::api::sandbar_node::SandbarNodeStat {
             rpc_port: var_rpcPort,
             sb_rpc_port: var_sbRpcPort,
             running: var_running,
@@ -880,40 +964,46 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        1 => wire__crate__api__sandbar__aes_decrypt_impl(port, ptr, rust_vec_len, data_len),
-        2 => wire__crate__api__sandbar__aes_encrypt_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire__crate__api__sandbar__argon2_pwd_hash_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire__crate__api__sandbar__cb_decrypt_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire__crate__api__sandbar__cb_encrypt_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire__crate__api__sandbar_node__create_sandbar_node_impl(
+        1 => wire__crate__api__sandbar_node__add_path_to_sandbar_fs_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__sandbar__generate_aes_key_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire__crate__api__sandbar__generate_auth_impl(port, ptr, rust_vec_len, data_len),
-        9 => {
+        2 => wire__crate__api__sandbar__aes_decrypt_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire__crate__api__sandbar__aes_encrypt_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire__crate__api__sandbar__argon2_pwd_hash_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire__crate__api__sandbar__cb_decrypt_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire__crate__api__sandbar__cb_encrypt_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire__crate__api__sandbar_node__create_sandbar_node_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        8 => wire__crate__api__sandbar__generate_aes_key_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire__crate__api__sandbar__generate_auth_impl(port, ptr, rust_vec_len, data_len),
+        10 => {
             wire__crate__api__sandbar__generate_cb_key_pair_impl(port, ptr, rust_vec_len, data_len)
         }
-        10 => wire__crate__api__lldisk__get_disk_partitions_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__llfs__get_fs_entities_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire__crate__api__sandbar_node__get_rpc_port_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire__crate__api__sandbar_node__get_sandbar_node_config_impl(
+        11 => wire__crate__api__lldisk__get_disk_partitions_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire__crate__api__llfs__get_fs_entities_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__sandbar_node__get_rpc_port_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire__crate__api__sandbar_node__get_sandbar_node_stat_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__simple__greet_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__sandbar_node__start_sandbar_node_service_impl(
+        15 => wire__crate__api__simple__greet_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire__crate__api__sandbar_node__start_sandbar_node_service_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        17 => wire__crate__api__sandbar_node__stop_sandbar_node_service_impl(
+        18 => wire__crate__api__sandbar_node__stop_sandbar_node_service_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1025,7 +1115,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::api::sandbar::SandbarAuth>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::sandbar_node::SandbarNodeConfig {
+impl flutter_rust_bridge::IntoDart for crate::api::sandbar_node::SandbarFsAddPathResponse {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.json_data.into_into_dart().into_dart(),
+            self.kind.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::api::sandbar_node::SandbarFsAddPathResponse
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sandbar_node::SandbarFsAddPathResponse>
+    for crate::api::sandbar_node::SandbarFsAddPathResponse
+{
+    fn into_into_dart(self) -> crate::api::sandbar_node::SandbarFsAddPathResponse {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::api::sandbar_node::SandbarNodeStat {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.rpc_port.into_into_dart().into_dart(),
@@ -1036,13 +1147,13 @@ impl flutter_rust_bridge::IntoDart for crate::api::sandbar_node::SandbarNodeConf
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::sandbar_node::SandbarNodeConfig
+    for crate::api::sandbar_node::SandbarNodeStat
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::sandbar_node::SandbarNodeConfig>
-    for crate::api::sandbar_node::SandbarNodeConfig
+impl flutter_rust_bridge::IntoIntoDart<crate::api::sandbar_node::SandbarNodeStat>
+    for crate::api::sandbar_node::SandbarNodeStat
 {
-    fn into_into_dart(self) -> crate::api::sandbar_node::SandbarNodeConfig {
+    fn into_into_dart(self) -> crate::api::sandbar_node::SandbarNodeStat {
         self
     }
 }
@@ -1056,6 +1167,18 @@ impl SseEncode for flutter_rust_bridge::for_generated::anyhow::Error {
 
 impl SseEncode
     for StreamSink<crate::api::llfs::FsEntity, flutter_rust_bridge::for_generated::SseCodec>
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
+    }
+}
+
+impl SseEncode
+    for StreamSink<
+        crate::api::sandbar_node::SandbarFsAddPathResponse,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1132,6 +1255,16 @@ impl SseEncode for Vec<u8> {
     }
 }
 
+impl SseEncode for Option<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <String>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<usize> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1153,7 +1286,15 @@ impl SseEncode for crate::api::sandbar::SandbarAuth {
     }
 }
 
-impl SseEncode for crate::api::sandbar_node::SandbarNodeConfig {
+impl SseEncode for crate::api::sandbar_node::SandbarFsAddPathResponse {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.json_data, serializer);
+        <String>::sse_encode(self.kind, serializer);
+    }
+}
+
+impl SseEncode for crate::api::sandbar_node::SandbarNodeStat {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <usize>::sse_encode(self.rpc_port, serializer);
