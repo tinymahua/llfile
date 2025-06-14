@@ -9,7 +9,7 @@ import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/common/keep_alive_wrapper.dart';
 import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 
 class LlTabBar extends StatefulWidget {
   const LlTabBar({super.key});

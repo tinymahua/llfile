@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/settings_events.dart';

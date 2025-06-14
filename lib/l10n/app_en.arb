@@ -9,12 +9,18 @@
       }
     }
   },
+
+  "fsFavoriteTitle": "Favorites",
+  "fsDiskTitle": "Disk",
+  "fsMyComputerTitle": "This machine",
+
   "fsEntitiesTableHeaderName": "Name",
   "fsEntitiesTableHeaderDate": "Date",
   "fsEntitiesTableHeaderType": "Type",
 
   "tabLabelBlank": "New Tab",
 
+  "contextMenuAddFavorite": "Add Favorite",
   "contextMenuCopy": "Copy",
   "contextMenuCut": "Cut",
   "contextMenuPaste": "Paste",

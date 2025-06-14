@@ -19,7 +19,8 @@ use tokio::time::sleep;
 use tokio_util::sync::CancellationToken;
 use sandbarclient_lib::utils::blobs_util::SetTagOption;
 use sandbarclient_lib::rpc::protos::blobs_rpc_proto;
-use sandbarclient_lib::blobs_provider;
+use sandbarclient_lib::{blobs_provider, BlobHash};
+use sandbarclient_lib::fsdb::FsDb;
 use sandbarclient_lib::rpc::protos::blobs_rpc_proto::blobs::AddPathResponse;
 use serde::{Deserialize, Serialize};
 use crate::frb_generated::StreamSink;
@@ -106,6 +107,7 @@ pub async fn create_sandbar_node(
                 .data_root(parent_dir.clone())
             .rpc_port(rpc_port.unwrap_or(RPC_DEFAULT_PORT))
             .sb_rpc_port(sb_rpc_port.unwrap_or(SBC_RPC_DEFAULT_PORT))
+                .redb_path(parent_dir.join("redb.db"))
                 .build())
         .standalone_mode(false)
         .pal_cb_private_key_b64(pal_cb_private_key_b64)
@@ -205,23 +207,22 @@ pub struct SandbarFsAddPathResponse {
     pub json_data: String,
     pub kind: String,
 }
-
-impl From<AddPathResponse> for SandbarFsAddPathResponse {
-    fn from(value: AddPathResponse) -> Self {
-        let kind = match &value.0 {
-            blobs_provider::AddProgress::Found {..} => "Found".to_string(),
-            blobs_provider::AddProgress::Progress {..} => "Progress".to_string(),
-            blobs_provider::AddProgress::Done {..} => "Done".to_string(),
-            blobs_provider::AddProgress::AllDone {..}  => "AllDone".to_string(),
-            blobs_provider::AddProgress::Abort(_) => "Abort".to_string(),
-        };
-
+//
+impl SandbarFsAddPathResponse {
+    pub fn from_add_path_response(resp: &AddPathResponse) -> Self{
         Self {
-            kind,
-            json_data: serde_json::to_string(&value.0).expect("Failed to serialize AddPathResponse")
+            json_data: serde_json::to_string(&resp.0).expect("Failed to serialize AddPathResponse"),
+            kind: match &resp.0 {
+                blobs_provider::AddProgress::Found {..} => "Found".to_string(),
+                blobs_provider::AddProgress::Progress {..} => "Progress".to_string(),
+                blobs_provider::AddProgress::Done {..} => "Done".to_string(),
+                blobs_provider::AddProgress::AllDone {..}  => "AllDone".to_string(),
+                blobs_provider::AddProgress::Abort(_) => "Abort".to_string(),
+            }
         }
     }
 }
+
 
 pub async fn add_path_to_sandbar_fs(
     s: StreamSink<SandbarFsAddPathResponse>,
@@ -238,7 +239,7 @@ pub async fn add_path_to_sandbar_fs(
     };
 
     let msg = blobs_rpc_proto::blobs::AddPathRequest {
-        path: PathBuf::from(path),
+        path: PathBuf::from(path.clone()),
         in_place,
         tag: SetTagOption::Auto,
         wrap: match wrap_name {
@@ -250,13 +251,21 @@ pub async fn add_path_to_sandbar_fs(
     };
     println!("Msg: {:?}", msg);
 
-    let client = make_blobs_rpc_client(config_file_path).await?;
+    let client = make_blobs_rpc_client(config_file_path.clone()).await?;
     let mut res = client.server_streaming(msg).await?;
     while let Some(blob_resp) = res.next().await {
         match blob_resp {
             Ok(resp_info) => {
-                println!("{:?}", resp_info);
-                s.add(resp_info.into()).unwrap()
+                // println!("{:?}", resp_info);
+                s.add(SandbarFsAddPathResponse::from_add_path_response(&resp_info)).unwrap();
+                println!("resp_info.0: {:?}", resp_info.0);
+                match resp_info.0 {
+                    blobs_provider::AddProgress::AllDone {hash,..} => {
+                        println!("AllDone matched: {:?}", hash);
+                        insert_blob_record_to_sandbar_fs_db(config_file_path.clone(), path.clone(), hash, in_place).await?;
+                    },
+                    _ => {}
+                }
             },
             Err(e) => {
                 println!("{:?}", e);
@@ -264,5 +273,21 @@ pub async fn add_path_to_sandbar_fs(
         }
     }
 
+    Ok(())
+}
+
+pub async fn insert_blob_record_to_sandbar_fs_db(config_file_path: String, file_path: String, blob_hash: BlobHash, in_place: bool) -> anyhow::Result<()>{
+    if PathBuf::from(config_file_path.clone()).exists() == false {
+        return Err(anyhow::anyhow!("config file not found"));
+    }
+    let Config {
+        sandbar_fs: SandbarFsConfig {
+            redb_path,
+            ..
+        },
+        ..
+    } = read_config_file(config_file_path).await?;
+    let fsdb = FsDb::new(redb_path.to_str().unwrap());
+    let _ = fsdb.insert_blob(blob_hash.to_hex(), in_place, file_path)?;
     Ok(())
 }

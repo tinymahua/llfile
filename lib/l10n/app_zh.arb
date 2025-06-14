@@ -9,12 +9,18 @@
       }
     }
   },
+
+  "fsFavoriteTitle": "收藏夹",
+  "fsDiskTitle": "本地磁盘",
+  "fsMyComputerTitle": "此电脑",
+
   "fsEntitiesTableHeaderName": "名称",
   "fsEntitiesTableHeaderDate": "日期",
   "fsEntitiesTableHeaderType": "类型",
 
   "tabLabelBlank": "新标签",
 
+  "contextMenuAddFavorite": "添加到快速访问",
   "contextMenuCopy": "复制",
   "contextMenuCut": "剪切",
   "contextMenuPaste": "粘贴",

@@ -9,7 +9,7 @@ import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/service/sbc_auth_service.dart';
 import 'package:llfile/service/sbc_device_service.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 import 'package:llfile/theme.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/event_bus_test.dart';
@@ -44,6 +44,7 @@ Future<void> main() async {
   var mdConfigDb = MdConfigDb();
   await mdConfigDb.read<MdConfig>();
   Get.put(MdConfigDb());
+  Get.put(FsFavoriteItemsDb());
 
   await RustLib.init();
   runApp(const MyApp());

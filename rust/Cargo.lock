@@ -2488,6 +2488,8 @@ dependencies = [
 [[package]]
 name = "iroh-blobs"
 version = "0.34.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7fa596a999c2df0269942918ec51abc64766433872f3c64ba9e9be8d9d2c7200"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -4573,6 +4575,7 @@ dependencies = [
  "quic-rpc",
  "quic-rpc-derive",
  "rcgen",
+ "redb",
  "rustls",
  "sandbarclient-type",
  "serde",

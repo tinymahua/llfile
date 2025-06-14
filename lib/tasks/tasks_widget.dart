@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/tasks/base_task.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 
 class LlTasksWidget extends StatefulWidget {
   const LlTasksWidget({super.key});

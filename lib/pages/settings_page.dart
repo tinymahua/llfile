@@ -5,7 +5,7 @@ import 'package:llfile/modules/settings/settings_content.dart';
 import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/modules/settings/side_nav.dart';
 import 'package:llfile/widgets/common/ll_window_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

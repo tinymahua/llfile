@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/events/events.dart';
+import 'package:llfile/events/fs_events.dart';
 import 'package:llfile/events/path_events.dart';
 import 'package:llfile/events/sbn_events.dart';
 import 'package:llfile/mixins/sbn_mixin.dart';
@@ -12,13 +13,14 @@ import 'package:llfile/models/operate_record_model.dart';
 import 'package:llfile/models/path_model.dart';
 import 'package:llfile/models/types.dart';
 import 'package:llfile/src/rust/api/llfs.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 import 'package:llfile/tasks/fs_tasks.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/widgets/common/context_menu_widget.dart';
 import 'package:multi_column_list_view/multi_column_list_view.dart';
 import 'package:path/path.dart' hide context;
 import 'package:contextmenu/contextmenu.dart';
+
 
 class LlFsEntitiesListWidget extends StatefulWidget {
   const LlFsEntitiesListWidget({super.key, required this.tabIndex});
@@ -30,6 +32,8 @@ class LlFsEntitiesListWidget extends StatefulWidget {
 }
 
 class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with SbnMixin{
+  FsFavoriteItemsDb favoriteItemsDb = Get.find<FsFavoriteItemsDb>();
+
   final MultiColumnListController _fsEntitiesMultiColumnListController =
       MultiColumnListController();
   late Stream<FsEntity> _fsEntitiesStream;
@@ -144,6 +148,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
     ];
 
     return MultiColumnListView(
+      dataRowHeight: 30,
       optimizeListRender: true,
       controller: _fsEntitiesMultiColumnListController,
       rowCellsBuilder: (BuildContext context, int rowIndex) {
@@ -168,8 +173,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.0,
+                    // fontWeight: FontWeight.w100,
+                    fontSize: 12.0,
                   ),
                 ),
               ),
@@ -179,7 +184,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
             fsEntity.dateCreated,
             style: TextStyle(
               color: Theme.of(context).appBarTheme.foregroundColor,
-              fontWeight: FontWeight.w900,
+              // fontWeight: FontWeight.w700,
               fontSize: 12.0,
               overflow: TextOverflow.ellipsis,
             ),
@@ -188,7 +193,7 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
             ext,
             style: TextStyle(
               color: Theme.of(context).appBarTheme.foregroundColor,
-              fontWeight: FontWeight.w900,
+              // fontWeight: FontWeight.w900,
               fontSize: 12.0,
               overflow: TextOverflow.ellipsis,
             ),
@@ -197,8 +202,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
           // )
         ];
       },
-      tappedRowColor: Colors.blue.withOpacity(0.2),
-      hoveredRowColor: Colors.grey.withOpacity(0.2),
+      tappedRowColor: Colors.blue[300]!.withValues(alpha: 0.2),
+      hoveredRowColor: Colors.blue[200]!.withValues(alpha: 0.2),
       onRowTap: onFsEntityRowTap,
       onRowDoubleTap: onFsEntityRowDoubleTap,
       onRowContextMenu: onFsEntityRowContextMenu,
@@ -224,92 +229,283 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
     }
   }
 
+  getFileContextMenuViews(FsEntity fsEntity){
+    var iconSize = 18.0;
+    var iconWeight = 8.0;
+    var fsEntityPath = join(_currentFsPath, fsEntity.name);
+    return [
+      ContextMenuView(
+          divider: Divider(
+            height: 1,
+          ),
+          menuSections: [
+            [
+              ContextMenuItem(
+                onTap: () {
+                  onCopyOrCut(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.copy_all_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuCopy),
+                shortcut: "",
+              ),
+              ContextMenuItem(
+                onTap: () {
+                  onCopyOrCut(fsEntityPath, isCopy: false);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.cut_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuCut),
+                shortcut: "",
+              ),
+            ],
+            _sandbarNodeReady ? [
+              ContextMenuItem(
+                onTap: () {
+                  onAddToSandbarFs(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.drive_folder_upload,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuAddToSandbarFs),
+                shortcut: "",
+              ),
+            ]: [],
+            [
+              ContextMenuItem(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onRename(fsEntityPath);
+                },
+                icon: Icon(
+                  Icons.drive_file_rename_outline_rounded,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuRename),
+                shortcut: "",
+              ),
+              ContextMenuItem(
+                onTap: () {
+                  onDelete(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.delete,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuDelete),
+                shortcut: "",
+              )
+            ]
+          ]),
+    ];
+  }
+
+  getDirContextMenuViews(FsEntity fsEntity){
+    var iconSize = 18.0;
+    var iconWeight = 8.0;
+    var fsEntityPath = join(_currentFsPath, fsEntity.name);
+    return [
+      ContextMenuView(
+          divider: Divider(
+            height: 1,
+          ),
+          menuSections: [
+            [
+              ContextMenuItem(
+                onTap: () {
+                  onAddFavorite(fsEntity);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.star_border,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuAddFavorite),
+                shortcut: "",
+              ),
+            ],
+            [
+              ContextMenuItem(
+                onTap: () {
+                  onCopyOrCut(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.copy_all_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuCopy),
+                shortcut: "",
+              ),
+              ContextMenuItem(
+                onTap: () {
+                  onCopyOrCut(fsEntityPath, isCopy: false);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.cut_outlined,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuCut),
+                shortcut: "",
+              ),
+            ],
+            _sandbarNodeReady ? [
+              ContextMenuItem(
+                onTap: () {
+                  onAddToSandbarFs(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.drive_folder_upload,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuAddToSandbarFs),
+                shortcut: "",
+              ),
+            ]: [],
+            [
+              ContextMenuItem(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onRename(fsEntityPath);
+                },
+                icon: Icon(
+                  Icons.drive_file_rename_outline_rounded,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuRename),
+                shortcut: "",
+              ),
+              ContextMenuItem(
+                onTap: () {
+                  onDelete(fsEntityPath);
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.delete,
+                  size: iconSize,
+                  weight: iconWeight,
+                ),
+                title: Text(AppLocalizations.of(context)!.contextMenuDelete),
+                shortcut: "",
+              )
+            ]
+          ]),
+    ];
+  }
+
   getContextMenuContextViews(FsEntity? fsEntity) {
     var iconSize = 18.0;
     var iconWeight = 8.0;
     List<ContextMenuView> contextMenuViews = [];
 
     if (fsEntity != null) {
-      var fsEntityPath = join(_currentFsPath, fsEntity.name);
-      contextMenuViews = [
-        ContextMenuView(
-            divider: Divider(
-              height: 1,
-            ),
-            menuSections: [
-              [
-                ContextMenuItem(
-                  onTap: () {
-                    onCopyOrCut(fsEntityPath);
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.copy_all_outlined,
-                    size: iconSize,
-                    weight: iconWeight,
-                  ),
-                  title: Text(AppLocalizations.of(context)!.contextMenuCopy),
-                  shortcut: "",
-                ),
-                ContextMenuItem(
-                  onTap: () {
-                    onCopyOrCut(fsEntityPath, isCopy: false);
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.cut_outlined,
-                    size: iconSize,
-                    weight: iconWeight,
-                  ),
-                  title: Text(AppLocalizations.of(context)!.contextMenuCut),
-                  shortcut: "",
-                ),
-              ],
-              _sandbarNodeReady ? [
-                ContextMenuItem(
-                  onTap: () {
-                    onAddToSandbarFs(fsEntityPath);
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.drive_folder_upload,
-                    size: iconSize,
-                    weight: iconWeight,
-                  ),
-                  title: Text(AppLocalizations.of(context)!.contextMenuAddToSandbarFs),
-                  shortcut: "",
-                ),
-              ]: [],
-              [
-                ContextMenuItem(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onRename(fsEntityPath);
-                  },
-                  icon: Icon(
-                    Icons.drive_file_rename_outline_rounded,
-                    size: iconSize,
-                    weight: iconWeight,
-                  ),
-                  title: Text(AppLocalizations.of(context)!.contextMenuRename),
-                  shortcut: "",
-                ),
-                ContextMenuItem(
-                  onTap: () {
-                    onDelete(fsEntityPath);
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.delete,
-                    size: iconSize,
-                    weight: iconWeight,
-                  ),
-                  title: Text(AppLocalizations.of(context)!.contextMenuDelete),
-                  shortcut: "",
-                )
-              ]
-            ]),
-      ];
+      // var fsEntityPath = join(_currentFsPath, fsEntity.name);
+      // contextMenuViews = [
+      //   ContextMenuView(
+      //       divider: Divider(
+      //         height: 1,
+      //       ),
+      //       menuSections: [
+      //         [
+      //           ContextMenuItem(
+      //             onTap: () {
+      //               onCopyOrCut(fsEntityPath);
+      //               Navigator.of(context).pop();
+      //             },
+      //             icon: Icon(
+      //               Icons.copy_all_outlined,
+      //               size: iconSize,
+      //               weight: iconWeight,
+      //             ),
+      //             title: Text(AppLocalizations.of(context)!.contextMenuCopy),
+      //             shortcut: "",
+      //           ),
+      //           ContextMenuItem(
+      //             onTap: () {
+      //               onCopyOrCut(fsEntityPath, isCopy: false);
+      //               Navigator.of(context).pop();
+      //             },
+      //             icon: Icon(
+      //               Icons.cut_outlined,
+      //               size: iconSize,
+      //               weight: iconWeight,
+      //             ),
+      //             title: Text(AppLocalizations.of(context)!.contextMenuCut),
+      //             shortcut: "",
+      //           ),
+      //         ],
+      //         _sandbarNodeReady ? [
+      //           ContextMenuItem(
+      //             onTap: () {
+      //               onAddToSandbarFs(fsEntityPath);
+      //               Navigator.of(context).pop();
+      //             },
+      //             icon: Icon(
+      //               Icons.drive_folder_upload,
+      //               size: iconSize,
+      //               weight: iconWeight,
+      //             ),
+      //             title: Text(AppLocalizations.of(context)!.contextMenuAddToSandbarFs),
+      //             shortcut: "",
+      //           ),
+      //         ]: [],
+      //         [
+      //           ContextMenuItem(
+      //             onTap: () {
+      //               Navigator.of(context).pop();
+      //               onRename(fsEntityPath);
+      //             },
+      //             icon: Icon(
+      //               Icons.drive_file_rename_outline_rounded,
+      //               size: iconSize,
+      //               weight: iconWeight,
+      //             ),
+      //             title: Text(AppLocalizations.of(context)!.contextMenuRename),
+      //             shortcut: "",
+      //           ),
+      //           ContextMenuItem(
+      //             onTap: () {
+      //               onDelete(fsEntityPath);
+      //               Navigator.of(context).pop();
+      //             },
+      //             icon: Icon(
+      //               Icons.delete,
+      //               size: iconSize,
+      //               weight: iconWeight,
+      //             ),
+      //             title: Text(AppLocalizations.of(context)!.contextMenuDelete),
+      //             shortcut: "",
+      //           )
+      //         ]
+      //       ]),
+      // ];
+      //
+      if (fsEntity.isDir){
+        contextMenuViews = getDirContextMenuViews(fsEntity);
+      }else{
+        contextMenuViews = getFileContextMenuViews(fsEntity);
+      }
     } else {
       contextMenuViews = [
         ContextMenuView(
@@ -368,6 +564,12 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
     }, 8.0, 240.0);
   }
 
+  onAddFavorite(FsEntity fsEntity)async{
+    var favoriteDir = FsFavoriteDir(name: fsEntity.name, path: join(_currentFsPath, fsEntity.name));
+    await favoriteItemsDb.addFavoriteDir(favoriteDir);
+    eventBus.fire(FsFavoriteDirCreatedEvent(favoriteDir));
+  }
+  
   onCopyOrCut(String fsEntityPath, {bool isCopy = true}) async {
     _appStatesMemDb.copyOrCutOperateRecord = OperateRecord(
         type: isCopy ? OperateType.copy : OperateType.cut,

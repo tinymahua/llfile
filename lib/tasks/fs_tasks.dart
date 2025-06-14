@@ -17,7 +17,7 @@ import 'package:llfile/tasks/base_task.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/utils/fs.dart';
 import 'package:path/path.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 
 class AddToSandbarFsTaskWidget extends GeneralTask {
   const AddToSandbarFsTaskWidget(this.path, {super.key})
@@ -52,10 +52,10 @@ class _AddToSandbarFsTaskWidgetState extends State<AddToSandbarFsTaskWidget>
 
   late Stream<SandbarFsAddPathResponse> _stream;
 
-  List<SandbarFsAddPathResponse> _addPathResponses = [];
+  // List<SandbarFsAddPathResponse> _addPathResponses = [];
 
-  SandbarFsAddPathResponse? get _latestAddPathResponse =>
-      _addPathResponses.isNotEmpty ? _addPathResponses.last : null;
+  // SandbarFsAddPathResponse? get _latestAddPathResponse =>
+  //     _addPathResponses.isNotEmpty ? _addPathResponses.last : null;
   int _totalSize = -1;
   int _offsetSize = -1;
 

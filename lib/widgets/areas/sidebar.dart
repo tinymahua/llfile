@@ -23,7 +23,8 @@ class _LlSidebarState extends State<LlSidebar> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: 6,),
-        LlDiskListWidget(sidebarFolded: widget.sidebarFolded,)
+        LlDiskListWidget(sidebarFolded: widget.sidebarFolded,),
+        SizedBox(height: 6,),
       ],
     );
   }

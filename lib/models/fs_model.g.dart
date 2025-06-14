@@ -51,3 +51,15 @@ Map<String, dynamic> _$FileDataProcessProgressToJson(
       'error': instance.error,
       'done': instance.done,
     };
+
+FsFavoriteDir _$FsFavoriteDirFromJson(Map<String, dynamic> json) =>
+    FsFavoriteDir(
+      path: json['path'] as String,
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$FsFavoriteDirToJson(FsFavoriteDir instance) =>
+    <String, dynamic>{
+      'path': instance.path,
+      'name': instance.name,
+    };

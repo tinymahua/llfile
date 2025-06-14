@@ -9,15 +9,14 @@ import 'package:llfile/events/events.dart';
 import 'package:llfile/events/md_events.dart';
 import 'package:llfile/models/markdown_model.dart';
 import 'package:llfile/widgets/common/keep_alive_wrapper.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:llfile/widgets/partials/ll_md_widget.dart';
 
 
-///
+@immutable
 class LlMdDocView extends StatefulWidget {
-  LlMdDocView({super.key, required this.mdDocument});
+  const LlMdDocView({super.key, required this.mdDocument});
 
-  MdDocument mdDocument;
+  final MdDocument mdDocument;
 
   @override
   State<LlMdDocView> createState() => _LlMdDocViewState();
@@ -113,10 +112,11 @@ class _LlMdDocViewState extends State<LlMdDocView> {
 ///
 /// Markdown Collection View
 ///
+@immutable
 class LlMdCollectionView extends StatefulWidget {
-  LlMdCollectionView({super.key, required this.mdCollection});
+  const LlMdCollectionView({super.key, required this.mdCollection});
 
-  MdCollection mdCollection;
+  final MdCollection mdCollection;
 
   @override
   State<LlMdCollectionView> createState() => _LlMdCollectionViewState();

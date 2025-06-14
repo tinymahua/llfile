@@ -11,10 +11,9 @@ import 'package:llfile/utils/db.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fui;
 import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/common/context_menu_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
-import 'package:uuid/v4.dart';
 
 ///
 /// Markdown Nav Tree
@@ -197,7 +196,7 @@ class _LlMdNavTreeWidgetState extends State<LlMdNavTreeWidget> {
                 child: Center(
                   child: ElevatedButton(onPressed: ()async{
                     // await onNewMdCollection(context, currentItem);
-                    var newMdObject = await _mdConfigDb.createMdObject(
+                    var _ = await _mdConfigDb.createMdObject(
                         "",
                         MdObjectType.collection,
                         MdCollection(

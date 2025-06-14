@@ -73,3 +73,42 @@ class FileDataProcessProgress{
 }
 
 
+@JsonSerializable()
+class FsFavoriteDir {
+  String path;
+  String name;
+
+  FsFavoriteDir({
+    required this.path,
+    required this.name,
+  });
+
+  factory FsFavoriteDir.fromJson(Map<String, dynamic> json) => _$FsFavoriteDirFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FsFavoriteDirToJson(this);
+}
+
+// @JsonSerializable()
+class FsFavoriteItems {
+  List<FsFavoriteDir> favoriteDirs;
+
+  FsFavoriteItems({
+    required this.favoriteDirs,
+  });
+
+  factory FsFavoriteItems.fromJson(Map<String, dynamic> json) {
+    List<FsFavoriteDir> favoriteDirs = [];
+    for (var item in json['favorite_dirs']) {
+      favoriteDirs.add(FsFavoriteDir.fromJson(item));
+    }
+    return FsFavoriteItems(
+      favoriteDirs: favoriteDirs,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'favorite_dirs': favoriteDirs.map((item) => item.toJson()).toList(),
+    };
+  }
+}

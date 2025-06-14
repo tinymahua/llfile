@@ -5,7 +5,7 @@ import 'package:llfile/events/settings_events.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/utils/db.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 
 class LlLanguageSetting extends SettingsContentPageBaseWidget {
   const LlLanguageSetting({super.key}): super(pageName: SettingsContentPage.language);
@@ -59,7 +59,6 @@ List<LangLocale> langLocales = langLocalesMap.values.toList();
 class _LlLanguageSettingState extends State<LlLanguageSetting> {
   AppConfigDb _appConfigDb = Get.find<AppConfigDb>();
   AppConfig? _appConfig;
-  LanguageConfig? _languageConfig;
 
   LangLocale? _selectedLangLocale;
   LangArea? _selectedLangArea;

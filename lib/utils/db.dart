@@ -14,7 +14,6 @@ import 'package:llfile/utils/fs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 abstract class Db {
   Db._(this.dbName);
@@ -272,4 +271,38 @@ class AppStatesMemDb {
   OperateRecord? copyOrCutOperateRecord;
 
   AppStatesMemDb();
+}
+
+
+class FsFavoriteItemsDb  extends Db {
+  static const String _dbName = "fs_favorite_items.json";
+
+  FsFavoriteItemsDb() : super._(_dbName);
+
+  @override
+  Future<String> initDb() async {
+    var dbPath = await getDbPath();
+    if (!File(dbPath).existsSync()) {
+      await File(dbPath).create(recursive: true);
+      write(FsFavoriteItems(favoriteDirs: []));
+    }
+    return dbPath;
+  }
+
+  @override
+  deserialize(Map<String, dynamic> json) {
+    return FsFavoriteItems.fromJson(json);
+  }
+
+  @override
+  serialize(dynamic value) {
+    return value.toJson();
+  }
+
+  Future<FsFavoriteItems> addFavoriteDir(FsFavoriteDir favoriteDir) async{
+    var favoriteItems = await read<FsFavoriteItems>();
+    favoriteItems.favoriteDirs.add(favoriteDir);
+    await write(favoriteItems);
+    return favoriteItems;
+  }
 }

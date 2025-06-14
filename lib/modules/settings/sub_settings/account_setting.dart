@@ -15,7 +15,7 @@ import 'package:llfile/modules/settings/settings_values.dart';
 import 'package:llfile/service/sbc_device_service.dart';
 import 'package:llfile/src/rust/api/sandbar_node.dart';
 import 'package:llfile/utils/db.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:llfile/generated/i10n/app_localizations.dart';
 import 'package:llfile/utils/fs.dart';
 import 'package:llfile/widgets/partials/login_or_register_widget.dart';
 import 'package:pretty_json/pretty_json.dart';
