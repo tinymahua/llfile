@@ -11,6 +11,8 @@
   },
 
   "fsFavoriteTitle": "收藏夹",
+    "addFavoriteTitle": "添加收藏夹（可指定新的别名）",
+    "addFavoriteNameAlias": "收藏夹别名",
   "fsDiskTitle": "本地磁盘",
   "fsMyComputerTitle": "此电脑",
 

@@ -47,6 +47,12 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
 
   bool _sandbarNodeReady = false;
 
+  TextEditingController _addFavoriteController = TextEditingController();
+
+  bool get canAddFavorite {
+    return _addFavoriteController.text.trim().isNotEmpty;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -326,8 +332,8 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
           menuSections: [
             [
               ContextMenuItem(
-                onTap: () {
-                  onAddFavorite(fsEntity);
+                onTap: () async{
+                  await onAddFavorite(fsEntity);
                   Navigator.of(context).pop();
                 },
                 icon: Icon(
@@ -565,11 +571,62 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
   }
 
   onAddFavorite(FsEntity fsEntity)async{
-    var favoriteDir = FsFavoriteDir(name: fsEntity.name, path: join(_currentFsPath, fsEntity.name));
+    setState(() {
+      _addFavoriteController.text = fsEntity.name;
+    });
+    await showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(AppLocalizations.of(context)!.addFavoriteTitle),
+                  TextField(
+                    controller: _addFavoriteController,
+                    decoration: InputDecoration(
+                        hintText:AppLocalizations.of(context)!.addFavoriteNameAlias
+                    ),
+                    // onEditingComplete: (value){
+                    //   _addFavoriteController.text = value;
+                    // },
+                  ),
+                  ElevatedButton(onPressed: canAddFavorite ? ()async{
+                    await addFavorite(join(_currentFsPath, fsEntity.name), _addFavoriteController.text.trim());
+                    Navigator.of(context).pop();
+                  }: null, child: Text(AppLocalizations.of(context)!.okLabel))
+                ]
+            )),
+      );
+    });
+
+    // await showTopModalSheet(context, Container(
+    //   child: Column(
+    //     children: [
+    //       Text(AppLocalizations.of(context)!.addFavoriteTitle),
+    //       TextField(
+    //         controller: _addFavoriteController,
+    //         decoration: InputDecoration(
+    //           hintText:AppLocalizations.of(context)!.addFavoriteNameAlias
+    //         ),
+    //         onChanged: (value){
+    //           _addFavoriteController.text = value;
+    //         },
+    //       ),
+    //       ElevatedButton(onPressed: canAddFavorite ? ()async{
+    //         await addFavorite(join(_currentFsPath, fsEntity.name), _addFavoriteController.text.trim());
+    //       }: null, child: Text(AppLocalizations.of(context)!.okLabel))
+    //     ]
+    //   )
+    // ), barrierDismissible: false);
+
+  }
+
+  addFavorite(String path, String name)async{
+    var favoriteDir = FsFavoriteDir(name: name, path: path);
     await favoriteItemsDb.addFavoriteDir(favoriteDir);
     eventBus.fire(FsFavoriteDirCreatedEvent(favoriteDir));
   }
-  
+
   onCopyOrCut(String fsEntityPath, {bool isCopy = true}) async {
     _appStatesMemDb.copyOrCutOperateRecord = OperateRecord(
         type: isCopy ? OperateType.copy : OperateType.cut,

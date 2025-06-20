@@ -11,6 +11,8 @@
   },
 
   "fsFavoriteTitle": "Favorites",
+  "addFavoriteTitle": "Add Favorite （You can rename it to alias)",
+  "addFavoriteNameAlias": "Favorite Name Alias",
   "fsDiskTitle": "Disk",
   "fsMyComputerTitle": "This machine",
 

@@ -107,6 +107,18 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get fsFavoriteTitle;
 
+  /// No description provided for @addFavoriteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Favorite （You can rename it to alias)'**
+  String get addFavoriteTitle;
+
+  /// No description provided for @addFavoriteNameAlias.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite Name Alias'**
+  String get addFavoriteNameAlias;
+
   /// No description provided for @fsDiskTitle.
   ///
   /// In en, this message translates to:

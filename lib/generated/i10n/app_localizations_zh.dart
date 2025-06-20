@@ -17,6 +17,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get fsFavoriteTitle => '收藏夹';
 
   @override
+  String get addFavoriteTitle => '添加收藏夹（可指定新的别名）';
+
+  @override
+  String get addFavoriteNameAlias => '收藏夹别名';
+
+  @override
   String get fsDiskTitle => '本地磁盘';
 
   @override

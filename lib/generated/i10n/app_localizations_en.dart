@@ -17,6 +17,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fsFavoriteTitle => 'Favorites';
 
   @override
+  String get addFavoriteTitle => 'Add Favorite （You can rename it to alias)';
+
+  @override
+  String get addFavoriteNameAlias => 'Favorite Name Alias';
+
+  @override
   String get fsDiskTitle => 'Disk';
 
   @override
