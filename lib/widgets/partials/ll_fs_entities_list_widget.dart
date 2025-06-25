@@ -225,13 +225,20 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
     eventBus.fire(PreviewFsEntityEvent(fsPath: _currentFsPath, fsEntity: _fsEntitiesMultiColumnListController.rows.value[index]));
   }
 
-  onFsEntityRowDoubleTap(int index) {
+  onFsEntityRowDoubleTap(int index) async{
     print("FileSystem Entity Row Double Tapped");
     var fsEntity =
         _fsEntitiesMultiColumnListController.rows.value[index] as FsEntity;
+    var newPath = join(_currentFsPath, fsEntity.name);
     if (fsEntity.isDir) {
-      var newPath = join(_currentFsPath, fsEntity.name);
       eventBus.fire(PathChangeEvent(path: newPath));
+    }else{
+      // TODO: need process different os.
+      var ext = fsEntity.name.split(".").last.toLowerCase();
+      if (['exe'].contains(ext)){
+        // TODO: it dose not work yet.
+        // await Process.run("cmd", ["/c", newPath]);
+      }
     }
   }
 
