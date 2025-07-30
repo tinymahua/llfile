@@ -108,6 +108,8 @@ class AppConfigDb extends Db {
       }
       write(AppConfig(
           fileIcons: fileIcons,
+          appMode: AppMode.fsMgr,
+          scene: AppScene.note,
           appearance: AppearanceConfig(themeMode: ThemeMode.light),
           preferences: PreferencesConfig(
               language: LanguageConfig(languageCode: 'zh', countryCode: 'CN'),

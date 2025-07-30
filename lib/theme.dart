@@ -1,4 +1,61 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
+class MoonBoxFloatingContainer extends ThemeExtension<MoonBoxFloatingContainer> {
+  static Color lightBgColor = const Color(0xffd8eaf4);
+
+  static Color darkBgColor = const Color(0xff494949);
+
+  static double _borderRadius = 6.0;
+
+  final Color bgColor;
+  final double borderRadius;
+
+
+  MoonBoxFloatingContainer({
+    required this.bgColor,
+    required this.borderRadius,
+  });
+
+  static MoonBoxFloatingContainer get light {
+    return MoonBoxFloatingContainer(
+      bgColor: lightBgColor,
+      borderRadius: _borderRadius,
+    );
+  }
+
+  static MoonBoxFloatingContainer get dark {
+    return MoonBoxFloatingContainer(
+      bgColor: darkBgColor,
+      borderRadius: _borderRadius,
+    );
+  }
+
+  @override
+  ThemeExtension<MoonBoxFloatingContainer> copyWith({
+    Color? withBgColor,
+    double? withBorderRadius,
+  }) {
+    return MoonBoxFloatingContainer(
+      bgColor: withBgColor ?? bgColor,
+      borderRadius: withBorderRadius ?? borderRadius,
+    );
+  }
+
+  @override
+  MoonBoxFloatingContainer lerp(ThemeExtension<MoonBoxFloatingContainer>? other, double t) {
+    if (other is! MoonBoxFloatingContainer) {
+      return this;
+    }
+    return MoonBoxFloatingContainer(
+      bgColor: Color.lerp(bgColor, other.bgColor, t) ?? bgColor,
+      borderRadius: lerpDouble(borderRadius, other.borderRadius, t) ?? borderRadius,
+    );
+  }
+}
+
+
 
 class LlFileThemeData {
   static double dividerThickness = 1.0;
@@ -52,6 +109,9 @@ class LlFileThemeData {
           onSurface: lightOnSurfaceColor,
           surfaceContainer: lightSurfaceColor,
       ),
+      extensions: [
+        MoonBoxFloatingContainer.light,
+      ]
     );
   }
 
@@ -81,6 +141,9 @@ class LlFileThemeData {
           surfaceContainer: darkSurfaceColor,
       ),
       // ...
+      extensions: [
+        MoonBoxFloatingContainer.dark,
+      ]
     );
   }
 }

@@ -202,6 +202,8 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       fileIcons: (json['file_icons'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, FileIcon.fromJson(e as Map<String, dynamic>)),
       ),
+      appMode: $enumDecode(_$AppModeEnumMap, json['appMode']),
+      scene: $enumDecode(_$AppSceneEnumMap, json['scene']),
       appearance:
           AppearanceConfig.fromJson(json['appearance'] as Map<String, dynamic>),
       preferences: PreferencesConfig.fromJson(
@@ -217,6 +219,8 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'file_icons': instance.fileIcons,
+      'appMode': _$AppModeEnumMap[instance.appMode]!,
+      'scene': _$AppSceneEnumMap[instance.scene]!,
       'appearance': instance.appearance,
       'preferences': instance.preferences,
       'extensions': instance.extensions,
@@ -224,3 +228,13 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'accountSettings': instance.accountSettings,
       'sbcApiHost': instance.sbcApiHost,
     };
+
+const _$AppModeEnumMap = {
+  AppMode.fsMgr: 'fsMgr',
+  AppMode.moonBox: 'moonBox',
+};
+
+const _$AppSceneEnumMap = {
+  AppScene.note: 'note',
+  AppScene.chat: 'chat',
+};

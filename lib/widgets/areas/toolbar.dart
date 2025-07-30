@@ -138,6 +138,16 @@ class _LlToolbarState extends State<LlToolbar> {
 
           Row(children: [
             IconButton(
+                onPressed: (){
+                  eventBus.fire(AppModeChangedEvent(AppMode.moonBox));
+                },
+                icon: Icon(
+                    _appConfig != null && _appConfig!.appMode == AppMode.fsMgr ? Icons.lightbulb : Icons.manage_history_rounded,
+                  size: Theme.of(context).appBarTheme.iconTheme!.size,
+                  color: Theme.of(context).appBarTheme.iconTheme!.color!,
+                )
+            ),
+            IconButton(
               alignment: Alignment.center,
               icon: Icon(
                 _appConfig != null && _appConfig!.appearance.themeMode == ThemeMode.light ? Icons.dark_mode :Icons.light_mode,

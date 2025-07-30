@@ -188,10 +188,24 @@ class AccountSettingsConfig {
   Map<String, dynamic> toJson() => _$AccountSettingsConfigToJson(this);
 }
 
+enum AppMode {
+  fsMgr,
+  moonBox,
+}
+
+enum AppScene {
+  note,
+  chat,
+}
+
+
 @JsonSerializable()
 class AppConfig {
   @JsonKey(name: 'file_icons')
   Map<String, FileIcon> fileIcons;
+
+  AppMode appMode;
+  AppScene scene;
 
   AppearanceConfig appearance;
   PreferencesConfig preferences;
@@ -202,6 +216,8 @@ class AppConfig {
 
   AppConfig({
     required this.fileIcons,
+    required this.appMode,
+    required this.scene,
     required this.appearance,
     required this.preferences,
     required this.extensions,
@@ -210,7 +226,13 @@ class AppConfig {
     required this.sbcApiHost,
   });
 
-  factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
+  factory AppConfig.fromJson(Map<String, dynamic> json){
+    if (!json.containsKey('scene')){
+      json['scene'] = AppScene.note.name;
+    }
+
+    return _$AppConfigFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 }
