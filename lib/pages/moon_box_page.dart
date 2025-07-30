@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:llfile/events/events.dart';
+import 'package:llfile/events/ui_events.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/pages/scenes/note_scene_page.dart';
@@ -56,6 +58,14 @@ class _MoonBoxPageState extends State<MoonBoxPage> {
     }
 
     return IconButton(onPressed: onPressed, icon: icon);
+  }
+
+  Widget makeAppModeSwitchWidget(){
+    Widget icon = Icon(Icons.file_copy_sharp, size: 16,);
+
+    return IconButton(onPressed: (){
+      eventBus.fire(AppModeChangedEvent(AppMode.fsMgr));
+    }, icon: icon);
   }
 
   Widget getSceneContentWidget(){
@@ -129,6 +139,7 @@ class _MoonBoxPageState extends State<MoonBoxPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    makeAppModeSwitchWidget(),
                     makeSceneSwitchWidget(),
                   ],
                 ),
