@@ -10,6 +10,6 @@ class NoteScenePage extends StatefulWidget {
 class _NoteScenePageState extends State<NoteScenePage> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Note'));
+    return Container(child: Center(child: Text('Note')));
   }
 }

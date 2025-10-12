@@ -196,6 +196,7 @@ enum AppMode {
 enum AppScene {
   note,
   chat,
+  audio,
 }
 
 
