@@ -2,18 +2,12 @@ import 'package:fluent_ui/fluent_ui.dart' as fui;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:llfile/app.dart';
-import 'package:llfile/events/events.dart';
-import 'package:llfile/events/ui_events.dart';
 import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/models/markdown_model.dart';
-import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/service/sbc_auth_service.dart';
 import 'package:llfile/service/sbc_device_service.dart';
 import 'package:llfile/src/rust/frb_generated.dart';
-import 'package:llfile/generated/i10n/app_localizations.dart';
-import 'package:llfile/theme.dart';
 import 'package:llfile/utils/db.dart';
-import 'package:llfile/widgets/event_bus_test.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {

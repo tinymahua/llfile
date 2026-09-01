@@ -10,7 +10,7 @@ import 'package:llfile/models/app_config_model.dart';
 import 'package:llfile/pages/scenes/note_scene_page.dart';
 import 'package:llfile/theme.dart';
 import 'package:get/get.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:window_manager/window_manager.dart' ;
 
 class MoonBoxPage extends StatefulWidget {
   const MoonBoxPage({super.key});
