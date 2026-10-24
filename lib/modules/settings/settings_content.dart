@@ -20,7 +20,7 @@ class _LlSettingsContentWidgetState extends State<LlSettingsContentWidget> {
   final PageController _pageController = PageController();
   final List<SettingsContentPageBaseWidget> _pages = [
     const LlLanguageSetting(),
-    const LlAccountSetting(),
+    // const LlAccountSetting(),
     const SbcApiHostSetting(),
     // const SandbarClientNodeSetting(),
   ];

@@ -92,9 +92,9 @@ class LlFileThemeData {
         foregroundColor: lightOnCanvasColor,
         iconTheme: IconThemeData(color: lightToolIconColor, size: iconSize),
       ),
-      bottomAppBarTheme: BottomAppBarTheme(
-        color: lightCanvasColor
-      ),
+      // bottomAppBarTheme: BottomAppBarTheme(
+      //   color: lightCanvasColor
+      // ),
       dividerTheme: DividerThemeData(color: const Color(0xffe6e6e6), thickness: dividerThickness),
       scaffoldBackgroundColor: lightSurfaceColor,
       colorScheme: ColorScheme(
@@ -123,9 +123,9 @@ class LlFileThemeData {
         foregroundColor: darkOnCanvasColor,
         iconTheme: IconThemeData(color: darkToolIconColor, size: iconSize),
       ),
-      bottomAppBarTheme: const BottomAppBarTheme(
-        color: Color(0xff262626),
-      ),
+      // bottomAppBarTheme: const BottomAppBarTheme(
+      //   color: Color(0xff262626),
+      // ),
       dividerTheme: DividerThemeData(color: const Color(0xff3b3b3b), thickness: dividerThickness),
       scaffoldBackgroundColor: darkSurfaceColor,
       colorScheme: ColorScheme(

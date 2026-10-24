@@ -31,7 +31,7 @@ class LlFsEntitiesListWidget extends StatefulWidget {
   State<LlFsEntitiesListWidget> createState() => _LlFsEntitiesListWidgetState();
 }
 
-class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with SbnMixin{
+class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget>{
   FsFavoriteItemsDb favoriteItemsDb = Get.find<FsFavoriteItemsDb>();
 
   final MultiColumnListController _fsEntitiesMultiColumnListController =
@@ -72,10 +72,10 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
 
     _appConfig = await _appConfigDb.read<AppConfig>();
 
-    var sandbarNodeReady = await isReady(_appConfig);
-    setState(() {
-      _sandbarNodeReady = sandbarNodeReady;
-    });
+    // var sandbarNodeReady = await isReady(_appConfig);
+    // setState(() {
+    //   _sandbarNodeReady = sandbarNodeReady;
+    // });
     eventBus.on<SbnReadyEvent>().listen((evt){
       setState(() {
         _sandbarNodeReady = evt.ready;
@@ -673,9 +673,9 @@ class _LlFsEntitiesListWidgetState extends State<LlFsEntitiesListWidget> with Sb
   }
 
   onAddToSandbarFs(String fsEntityPath)async {
-    eventBus.fire(AddToSandbarFsTaskWidget(
-      fsEntityPath
-    ));
+    // eventBus.fire(AddToSandbarFsTaskWidget(
+    //   fsEntityPath
+    // ));
   }
 
   onNewDir()async{

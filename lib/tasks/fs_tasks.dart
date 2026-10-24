@@ -19,16 +19,16 @@ import 'package:llfile/utils/fs.dart';
 import 'package:path/path.dart';
 import 'package:llfile/generated/i10n/app_localizations.dart';
 
-class AddToSandbarFsTaskWidget extends GeneralTask {
-  const AddToSandbarFsTaskWidget(this.path, {super.key})
-      : super(taskName: "AddToSandbarFs", taskLabel: "Add To SandbarFS");
-
-  final String path;
-
-  @override
-  State<AddToSandbarFsTaskWidget> createState() =>
-      _AddToSandbarFsTaskWidgetState();
-}
+// class AddToSandbarFsTaskWidget extends GeneralTask {
+//   const AddToSandbarFsTaskWidget(this.path, {super.key})
+//       : super(taskName: "AddToSandbarFs", taskLabel: "Add To SandbarFS");
+//
+//   final String path;
+//
+//   @override
+//   State<AddToSandbarFsTaskWidget> createState() =>
+//       _AddToSandbarFsTaskWidgetState();
+// }
 
 class AddToSandbarFsTaskInfo {
   int? id;
@@ -41,188 +41,188 @@ class AddToSandbarFsTaskInfo {
   String? error;
 }
 
-class _AddToSandbarFsTaskWidgetState extends State<AddToSandbarFsTaskWidget>
-    with TaskMixin, SbnMixin {
-  final _appConfigDb = Get.find<AppConfigDb>();
-  AppConfig? _appConfig;
-  bool _sandbarNodeReady = false;
-
-  TaskStatus _taskStatus = TaskStatus.waiting;
-  AddToSandbarFsTaskInfo _taskInfo = AddToSandbarFsTaskInfo();
-
-  late Stream<SandbarFsAddPathResponse> _stream;
-
-  // List<SandbarFsAddPathResponse> _addPathResponses = [];
-
-  // SandbarFsAddPathResponse? get _latestAddPathResponse =>
-  //     _addPathResponses.isNotEmpty ? _addPathResponses.last : null;
-  int _totalSize = -1;
-  int _offsetSize = -1;
-
-  int get _percent => _offsetSize >= 0 && _totalSize > 0
-      ? (_offsetSize * 100 / _totalSize).toInt()
-      : 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    setupEvents();
-  }
-
-  setupEvents() async {
-
-    var appConfig = await _appConfigDb.read<AppConfig>();
-    setState(() {
-      _appConfig = appConfig;
-    });
-
-    var sandbarNodeReady = await isReady(_appConfig);
-    setState(() {
-      _sandbarNodeReady = sandbarNodeReady;
-    });
-    print('_sandbarNodeReady__: ${_sandbarNodeReady}');
-    if (_sandbarNodeReady){
-      var configPath = getSandbarNodeConfigFilePath(_appConfig!);
-      var myStream = addPathToSandbarFs(configFilePath: configPath, path: widget.path);
-      print("myStream: ${myStream}");
-      setState(() {
-        _stream = myStream;
-      });
-
-      _stream.listen((evt) {
-        print("Got progress from sandbar fs: ${evt.jsonData}");
-        updateProgress(evt);
-      });
-    }
-
-    eventBus.on<SbnReadyEvent>().listen((evt){
-      setState(() {
-        _sandbarNodeReady = evt.ready;
-      });
-      if(evt.ready){
-        var configPath = getSandbarNodeConfigFilePath(_appConfig!);
-        setState(() {
-          _stream = addPathToSandbarFs(configFilePath: configPath, path: widget.path);
-        });
-      }else{
-        // Cancel
-        resetTask();
-      }
-    });
-  }
-
-  resetTask(){
-    setState(() {
-      _taskStatus = TaskStatus.waiting;
-      _taskInfo = AddToSandbarFsTaskInfo();
-      _totalSize = -1;
-      _offsetSize = -1;
-    });
-  }
-
-  updateProgress(SandbarFsAddPathResponse response) async {
-    Map<String, dynamic> jsonMap = jsonDecode(response.jsonData);
-    Map<String, dynamic> infoData = jsonMap[response.kind];
-    switch (response.kind) {
-      case "Found":
-        processFound(SandbarFsAddPathProgressFound.fromJson(infoData));
-        break;
-      case "Progress":
-        processProgress(SandbarFsAddPathProgressProgress.fromJson(infoData));
-        break;
-      case "Done":
-        processDone(SandbarFsAddPathProgressDone.fromJson(infoData));
-        break;
-      case "AllDone":
-        processAllDone(SandbarFsAddPathProgressAllDone.fromJson(infoData));
-        break;
-      case "Abort":
-        processAbort(SandbarFsAddPathProgressAbort.fromJson(infoData));
-        break;
-      default:
-        break;
-    }
-  }
-
-  processFound(SandbarFsAddPathProgressFound found) async {
-    setState(() {
-      _totalSize = found.size;
-      _offsetSize = 0;
-      _taskInfo.id = found.id;
-      _taskInfo.name = found.name;
-      _taskInfo.size = found.size;
-    });
-  }
-
-  processProgress(SandbarFsAddPathProgressProgress progress) async {
-    setState(() {
-      _offsetSize = progress.offset;
-    });
-  }
-
-  processDone(SandbarFsAddPathProgressDone done) async {
-    setState(() {
-      _taskInfo.hash = done.hash;
-    });
-  }
-
-  processAllDone(SandbarFsAddPathProgressAllDone allDone) async {
-    setState(() {
-      _taskInfo.allDoneHash = allDone.hash;
-      _taskInfo.allDoneFormat = allDone.format;
-      _taskInfo.allDoneTag = allDone.tag;
-      _taskStatus = TaskStatus.done;
-    });
-  }
-
-  processAbort(SandbarFsAddPathProgressAbort abort) async {
-    setState(() {
-      _taskInfo.error = abort.error;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              "${AppLocalizations.of(context)!.contextMenuCopy} ${basename(widget.path)}",
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-                flex: 4,
-              ),
-              Expanded(
-                child: Text(
-                  "[${_percent}]",
-                  textAlign: TextAlign.right,
-                ),
-                flex: 2,
-              ),
-            ]),
-        Row(
-          children: [makeStatus(context, _taskStatus)],
-        )
-      ],
-    );
-  }
-}
+// class _AddToSandbarFsTaskWidgetState extends State<AddToSandbarFsTaskWidget>
+//     with TaskMixin, SbnMixin {
+//   final _appConfigDb = Get.find<AppConfigDb>();
+//   AppConfig? _appConfig;
+//   bool _sandbarNodeReady = false;
+//
+//   TaskStatus _taskStatus = TaskStatus.waiting;
+//   AddToSandbarFsTaskInfo _taskInfo = AddToSandbarFsTaskInfo();
+//
+//   late Stream<SandbarFsAddPathResponse> _stream;
+//
+//   // List<SandbarFsAddPathResponse> _addPathResponses = [];
+//
+//   // SandbarFsAddPathResponse? get _latestAddPathResponse =>
+//   //     _addPathResponses.isNotEmpty ? _addPathResponses.last : null;
+//   int _totalSize = -1;
+//   int _offsetSize = -1;
+//
+//   int get _percent => _offsetSize >= 0 && _totalSize > 0
+//       ? (_offsetSize * 100 / _totalSize).toInt()
+//       : 0;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     setupEvents();
+//   }
+//
+//   setupEvents() async {
+//
+//     var appConfig = await _appConfigDb.read<AppConfig>();
+//     setState(() {
+//       _appConfig = appConfig;
+//     });
+//
+//     var sandbarNodeReady = await isReady(_appConfig);
+//     setState(() {
+//       _sandbarNodeReady = sandbarNodeReady;
+//     });
+//     print('_sandbarNodeReady__: ${_sandbarNodeReady}');
+//     if (_sandbarNodeReady){
+//       var configPath = getSandbarNodeConfigFilePath(_appConfig!);
+//       var myStream = addPathToSandbarFs(configFilePath: configPath, path: widget.path);
+//       print("myStream: ${myStream}");
+//       setState(() {
+//         _stream = myStream;
+//       });
+//
+//       _stream.listen((evt) {
+//         print("Got progress from sandbar fs: ${evt.jsonData}");
+//         updateProgress(evt);
+//       });
+//     }
+//
+//     eventBus.on<SbnReadyEvent>().listen((evt){
+//       setState(() {
+//         _sandbarNodeReady = evt.ready;
+//       });
+//       if(evt.ready){
+//         var configPath = getSandbarNodeConfigFilePath(_appConfig!);
+//         setState(() {
+//           _stream = addPathToSandbarFs(configFilePath: configPath, path: widget.path);
+//         });
+//       }else{
+//         // Cancel
+//         resetTask();
+//       }
+//     });
+//   }
+//
+//   resetTask(){
+//     setState(() {
+//       _taskStatus = TaskStatus.waiting;
+//       _taskInfo = AddToSandbarFsTaskInfo();
+//       _totalSize = -1;
+//       _offsetSize = -1;
+//     });
+//   }
+//
+//   updateProgress(SandbarFsAddPathResponse response) async {
+//     Map<String, dynamic> jsonMap = jsonDecode(response.jsonData);
+//     Map<String, dynamic> infoData = jsonMap[response.kind];
+//     switch (response.kind) {
+//       case "Found":
+//         processFound(SandbarFsAddPathProgressFound.fromJson(infoData));
+//         break;
+//       case "Progress":
+//         processProgress(SandbarFsAddPathProgressProgress.fromJson(infoData));
+//         break;
+//       case "Done":
+//         processDone(SandbarFsAddPathProgressDone.fromJson(infoData));
+//         break;
+//       case "AllDone":
+//         processAllDone(SandbarFsAddPathProgressAllDone.fromJson(infoData));
+//         break;
+//       case "Abort":
+//         processAbort(SandbarFsAddPathProgressAbort.fromJson(infoData));
+//         break;
+//       default:
+//         break;
+//     }
+//   }
+//
+//   processFound(SandbarFsAddPathProgressFound found) async {
+//     setState(() {
+//       _totalSize = found.size;
+//       _offsetSize = 0;
+//       _taskInfo.id = found.id;
+//       _taskInfo.name = found.name;
+//       _taskInfo.size = found.size;
+//     });
+//   }
+//
+//   processProgress(SandbarFsAddPathProgressProgress progress) async {
+//     setState(() {
+//       _offsetSize = progress.offset;
+//     });
+//   }
+//
+//   processDone(SandbarFsAddPathProgressDone done) async {
+//     setState(() {
+//       _taskInfo.hash = done.hash;
+//     });
+//   }
+//
+//   processAllDone(SandbarFsAddPathProgressAllDone allDone) async {
+//     setState(() {
+//       _taskInfo.allDoneHash = allDone.hash;
+//       _taskInfo.allDoneFormat = allDone.format;
+//       _taskInfo.allDoneTag = allDone.tag;
+//       _taskStatus = TaskStatus.done;
+//     });
+//   }
+//
+//   processAbort(SandbarFsAddPathProgressAbort abort) async {
+//     setState(() {
+//       _taskInfo.error = abort.error;
+//     });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Expanded(
+//                 child: Container(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Container(
+//                         child: SingleChildScrollView(
+//                             scrollDirection: Axis.horizontal,
+//                             child: Text(
+//                               "${AppLocalizations.of(context)!.contextMenuCopy} ${basename(widget.path)}",
+//                               overflow: TextOverflow.ellipsis,
+//                             )),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//                 flex: 4,
+//               ),
+//               Expanded(
+//                 child: Text(
+//                   "[${_percent}]",
+//                   textAlign: TextAlign.right,
+//                 ),
+//                 flex: 2,
+//               ),
+//             ]),
+//         Row(
+//           children: [makeStatus(context, _taskStatus)],
+//         )
+//       ],
+//     );
+//   }
+// }
 
 class CopyFileTaskWidget extends GeneralTask {
   const CopyFileTaskWidget(
