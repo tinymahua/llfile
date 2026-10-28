@@ -7,6 +7,7 @@ import 'package:llfile/widgets/areas/sidebar.dart';
 import 'package:llfile/widgets/areas/tabbar.dart';
 import 'package:llfile/widgets/areas/toolbar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
+import 'package:window_manager/window_manager.dart';
 
 class FsmgrPage extends StatefulWidget {
   const FsmgrPage({super.key});
@@ -96,7 +97,9 @@ class _FsmgrPageState extends State<FsmgrPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).appBarTheme.backgroundColor,
       ),
-      child: LlToolbar(),
+      child: DragToMoveArea(
+        child: LlToolbar(),
+      ),
     );
   }
 

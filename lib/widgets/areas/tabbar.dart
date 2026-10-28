@@ -10,6 +10,7 @@ import 'package:llfile/widgets/common/buttons.dart';
 import 'package:llfile/widgets/common/keep_alive_wrapper.dart';
 import 'package:llfile/widgets/partials/ll_fs_entities_list_widget.dart';
 import 'package:llfile/generated/i10n/app_localizations.dart';
+import 'package:window_manager/window_manager.dart';
 
 class LlTabBar extends StatefulWidget {
   const LlTabBar({super.key});
@@ -48,9 +49,10 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
     return _tabController != null && _tabItems.isNotEmpty
         ? Column(
             children: [
-              Container(
-                decoration: BoxDecoration(color: Theme.of(context).appBarTheme.backgroundColor),
-                child: Row(
+              DragToMoveArea(
+                child: Container(
+                  decoration: BoxDecoration(color: Theme.of(context).appBarTheme.backgroundColor),
+                  child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
@@ -127,6 +129,7 @@ class _LlTabBarState extends State<LlTabBar> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
+              ),
               ),
               Expanded(
                 child: PageView(
