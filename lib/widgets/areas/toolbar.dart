@@ -137,15 +137,29 @@ class _LlToolbarState extends State<LlToolbar> {
           // 放置最小化、最大化、关闭按钮的Row
 
           Row(children: [
-            IconButton(
-                onPressed: (){
-                  eventBus.fire(AppModeChangedEvent(AppMode.moonBox));
-                },
-                icon: Icon(
-                    _appConfig != null && _appConfig!.appMode == AppMode.fsMgr ? Icons.lightbulb : Icons.manage_history_rounded,
-                  size: Theme.of(context).appBarTheme.iconTheme!.size,
-                  color: Theme.of(context).appBarTheme.iconTheme!.color!,
-                )
+            PopupMenuButton<AppMode>(
+              icon: Icon(
+                Icons.apps,
+                size: Theme.of(context).appBarTheme.iconTheme!.size,
+                color: Theme.of(context).appBarTheme.iconTheme!.color!,
+              ),
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<AppMode>>[
+                const PopupMenuItem<AppMode>(
+                  value: AppMode.fsMgr,
+                  child: Text('文件管理器'),
+                ),
+                const PopupMenuItem<AppMode>(
+                  value: AppMode.moonBox,
+                  child: Text('月光宝盒'),
+                ),
+                const PopupMenuItem<AppMode>(
+                  value: AppMode.toolBox,
+                  child: Text('百宝箱'),
+                ),
+              ],
+              onSelected: (AppMode mode) {
+                eventBus.fire(AppModeChangedEvent(mode));
+              },
             ),
             IconButton(
               alignment: Alignment.center,

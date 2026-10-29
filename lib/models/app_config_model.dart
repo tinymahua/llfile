@@ -191,6 +191,7 @@ class AccountSettingsConfig {
 enum AppMode {
   fsMgr,
   moonBox,
+  toolBox,
 }
 
 enum AppScene {

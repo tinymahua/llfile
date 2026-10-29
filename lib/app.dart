@@ -1,5 +1,6 @@
 import 'package:llfile/pages/fsmgr_page.dart';
 import 'package:llfile/pages/moon_box_page.dart';
+import 'package:llfile/pages/toolbox_page.dart';
 import 'package:llfile/utils/db.dart';
 import 'package:llfile/events/events.dart';
 import 'package:llfile/events/ui_events.dart';
@@ -86,7 +87,11 @@ class _LlFileAppState extends State<LlFileApp> {
         //   }
         // },
         // child: MoonBoxPage(),
-        child: _appMode == AppMode.fsMgr ? FsmgrPage() : MoonBoxPage(),
+        child: _appMode == AppMode.toolBox
+            ? ToolBoxPage()
+            : _appMode == AppMode.fsMgr
+                ? FsmgrPage()
+                : MoonBoxPage(),
       ),
     );
   }
